@@ -4,6 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>极简计划本</title>
+  <link rel="manifest" href="manifest.json">
+    <script>
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('sw.js');
+      }
+    </script>
   <!-- Tailwind CSS via CDN with inline fallback -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Chart.js via CDN with local canvas fallback -->
