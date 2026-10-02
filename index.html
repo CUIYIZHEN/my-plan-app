@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>极简计划本 · PlanFlow</title>
+  <title>Planner</title>
   <link rel="manifest" href="manifest.json">
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -31,8 +31,8 @@
 
     /* Scrollbars */
     ::-webkit-scrollbar {
-      width: 3px;
-      height: 3px;
+      width: 4px;
+      height: 4px;
     }
     ::-webkit-scrollbar-track {
       background: transparent;
@@ -42,21 +42,21 @@
       border-radius: 4px;
     }
 
-    /* Safe Area insets */
+    /* Safe Area Insets */
     .safe-top {
-      padding-top: max(10px, env(safe-area-inset-top));
+      padding-top: max(12px, env(safe-area-inset-top));
     }
     .safe-bottom {
-      padding-bottom: max(64px, calc(env(safe-area-inset-bottom) + 56px));
+      padding-bottom: max(68px, calc(env(safe-area-inset-bottom) + 60px));
     }
 
-    /* 7-Column No-Scroll Timetable Rows */
-    .time-slot-row-compact {
-      height: 40px;
+    /* 7-Column Adaptive Timetable */
+    .time-slot-row {
+      height: 44px;
       border-bottom: 1px solid #F1F5F9;
       position: relative;
     }
-    .time-slot-sub-compact {
+    .time-slot-sub {
       position: absolute;
       top: 50%;
       left: 0;
@@ -64,31 +64,31 @@
       border-bottom: 1px dashed #E2E8F0;
     }
 
-    /* Timer Screen Minimal Flip-Style Cards (参考图三真实视觉) */
+    /* Minimal Flip-Clock Style Cards (Timer Screen) */
     .timer-digit-card {
       position: relative;
-      width: 44px;
-      height: 68px;
+      width: 46px;
+      height: 72px;
       background: #1C1C1E;
       color: #FFFFFF;
-      border-radius: 8px;
+      border-radius: 10px;
       font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", Roboto, "Segoe UI", monospace;
-      font-size: 42px;
+      font-size: 44px;
       font-weight: 800;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 6px 14px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.12);
-      margin: 0 1.5px;
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.55), inset 0 1px 1px rgba(255, 255, 255, 0.15);
+      margin: 0 2px;
       overflow: hidden;
     }
-    @media (min-width: 380px) {
+    @media (min-width: 390px) {
       .timer-digit-card {
-        width: 52px;
-        height: 78px;
-        font-size: 48px;
-        margin: 0 2px;
-        border-radius: 10px;
+        width: 54px;
+        height: 82px;
+        font-size: 52px;
+        margin: 0 2.5px;
+        border-radius: 12px;
       }
     }
     /* Horizontal Card Center Split Slit */
@@ -99,14 +99,14 @@
       left: 0;
       right: 0;
       height: 1.5px;
-      background: rgba(0, 0, 0, 0.85);
-      box-shadow: 0 1px 0 rgba(255, 255, 255, 0.1);
+      background: rgba(0, 0, 0, 0.9);
+      box-shadow: 0 1px 0 rgba(255, 255, 255, 0.12);
       z-index: 2;
     }
 
     /* Toast Animation */
     #toast-msg {
-      transition: all 0.25s ease-out;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
       transform: translate(-50%, 20px);
       opacity: 0;
       pointer-events: none;
@@ -132,49 +132,49 @@
 
     <!-- ==========================================================================
          VIEW 1: 首页：每周时间表 (Weekly Timetable View)
-         1. 语言切换按钮 (中 / 한 / EN) 仅放在本页右上角！
-         2. 取消横向滚动条，7天并排全屏自适应，一目了然！
-         3. 支持“每周同一时间重复”与“重复截止月份”选择！
-         4. 点击时间块可弹出修改/删除弹窗！
+         1. 软件标题统一为 "Planner"
+         2. 语言切换按钮 (中 / 한 / EN) 仅放在本页右上角！
+         3. 7天并排全屏自适应，一目了然看清全周！
+         4. 时间跨度：09:00 ~ 次日凌晨 03:00 (18小时)
          ========================================================================== -->
-    <section id="view-timetable" class="view-panel p-2.5 max-w-lg mx-auto safe-top">
+    <section id="view-timetable" class="view-panel p-3 max-w-lg mx-auto safe-top">
       <!-- Header: Title on Left, Language Switcher ONLY on Right -->
-      <div class="flex items-center justify-between mb-2 px-1">
+      <div class="flex items-center justify-between mb-2.5 px-1">
         <div>
-          <h1 class="text-lg font-bold text-slate-800 tracking-tight flex items-center gap-1.5">
-            <span class="w-2.5 h-2.5 rounded-full bg-blue-600"></span>
-            <span data-i18n="timetable_title">每周时间表</span>
-          </h1>
-          <p id="timetable-week-label" class="text-[11px] text-slate-500 font-medium mt-0.5"></p>
+          <div class="flex items-center gap-2">
+            <span class="w-3 h-3 rounded-full bg-blue-600 shadow-xs"></span>
+            <h1 class="text-xl font-black text-slate-900 tracking-tight" data-i18n="timetable_title">每周时间表</h1>
+          </div>
+          <p id="timetable-week-label" class="text-xs text-slate-500 font-medium mt-0.5 tracking-wide"></p>
         </div>
 
         <!-- Multilingual Switcher (ONLY HERE in Tab 1) -->
-        <div class="flex items-center bg-white rounded-lg p-0.5 border border-slate-200 shadow-xs">
-          <button onclick="changeLanguage('zh')" id="lang-btn-zh" class="px-2 py-0.5 text-xs font-semibold rounded transition-all bg-blue-600 text-white shadow-xs">中</button>
-          <button onclick="changeLanguage('ko')" id="lang-btn-ko" class="px-2 py-0.5 text-xs font-semibold rounded transition-all text-slate-500 hover:text-slate-800">한</button>
-          <button onclick="changeLanguage('en')" id="lang-btn-en" class="px-2 py-0.5 text-xs font-semibold rounded transition-all text-slate-500 hover:text-slate-800">EN</button>
+        <div class="flex items-center bg-white rounded-xl p-1 border border-slate-200 shadow-xs">
+          <button onclick="changeLanguage('zh')" id="lang-btn-zh" class="px-2.5 py-1 text-xs font-bold rounded-lg transition-all bg-blue-600 text-white shadow-xs">中</button>
+          <button onclick="changeLanguage('ko')" id="lang-btn-ko" class="px-2.5 py-1 text-xs font-bold rounded-lg transition-all text-slate-500 hover:text-slate-800">한</button>
+          <button onclick="changeLanguage('en')" id="lang-btn-en" class="px-2.5 py-1 text-xs font-bold rounded-lg transition-all text-slate-500 hover:text-slate-800">EN</button>
         </div>
       </div>
 
       <!-- Controls: Week Switcher & Add Plan Button -->
-      <div class="flex items-center justify-between mb-2 px-1">
-        <div class="flex items-center gap-1 bg-white border border-slate-200 rounded-lg p-0.5 shadow-xs">
-          <button onclick="changeWeek(-1)" class="w-6 h-6 flex items-center justify-center rounded text-slate-600 hover:bg-slate-100 active:scale-95 text-xs">◀</button>
-          <button onclick="goToCurrentWeek()" class="px-2 py-0.5 text-xs font-semibold text-blue-600 hover:bg-blue-50 rounded" data-i18n="this_week">本周</button>
-          <button onclick="changeWeek(1)" class="w-6 h-6 flex items-center justify-center rounded text-slate-600 hover:bg-slate-100 active:scale-95 text-xs">▶</button>
+      <div class="flex items-center justify-between mb-3 px-1">
+        <div class="flex items-center gap-1 bg-white border border-slate-200 rounded-xl p-1 shadow-xs">
+          <button onclick="changeWeek(-1)" class="w-7 h-7 flex items-center justify-center rounded-lg text-slate-600 hover:bg-slate-100 active:scale-95 text-xs font-bold">◀</button>
+          <button onclick="goToCurrentWeek()" class="px-3 py-1 text-xs font-bold text-blue-600 hover:bg-blue-50 rounded-lg" data-i18n="this_week">本周</button>
+          <button onclick="changeWeek(1)" class="w-7 h-7 flex items-center justify-center rounded-lg text-slate-600 hover:bg-slate-100 active:scale-95 text-xs font-bold">▶</button>
         </div>
 
-        <button onclick="openAddPlanModal()" class="inline-flex items-center gap-1 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 px-3 py-1.5 rounded-lg shadow-xs active:scale-95">
-          <span>+</span> <span data-i18n="btn_add_plan">规划时间块</span>
+        <button onclick="openAddPlanModal()" class="inline-flex items-center gap-1.5 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 px-3.5 py-2 rounded-xl shadow-xs active:scale-95 transition-all">
+          <span class="text-sm leading-none">+</span> <span data-i18n="btn_add_plan">规划时间块</span>
         </button>
       </div>
 
       <!-- 7-Column Adaptive Grid (全屏无横向滚动条，7天并排一目了然) -->
       <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden mb-12">
         <!-- 7-Day Header -->
-        <div class="flex border-b border-slate-200 bg-slate-50/90 text-center text-xs font-bold text-slate-700">
-          <!-- Time Axis Column Header (Compact 28px) -->
-          <div class="w-7 shrink-0 py-2 border-r border-slate-200 text-[10px] font-mono text-slate-400">
+        <div class="flex border-b border-slate-200 bg-slate-50/95 text-center text-xs font-bold text-slate-700">
+          <!-- Time Axis Column Header -->
+          <div class="w-9 shrink-0 py-2.5 border-r border-slate-200 text-xs font-mono font-bold text-slate-400">
             时
           </div>
           <!-- 7 Equal Day Columns (Mon-Sun) -->
@@ -183,27 +183,27 @@
           </div>
         </div>
 
-        <!-- Timetable Scroll Body (Vertical only, 06:00 to 24:00) -->
-        <div class="overflow-y-auto max-h-[580px] relative" id="timetable-scroll-box">
+        <!-- Timetable Scroll Body (Vertical only, 09:00 to 次日 03:00) -->
+        <div class="overflow-y-auto max-h-[620px] relative" id="timetable-scroll-box">
           <div class="flex w-full relative">
-            <!-- Left Compact Time Axis (06 to 24, 40px per hour) -->
-            <div class="w-7 shrink-0 border-r border-slate-200 bg-slate-50/70 text-[9px] font-mono text-slate-400 select-none flex flex-col text-center" id="timetable-time-axis">
+            <!-- Left Compact Time Axis (09 to 03, 44px per hour) -->
+            <div class="w-9 shrink-0 border-r border-slate-200 bg-slate-50/80 text-[11px] font-mono text-slate-500 font-semibold select-none flex flex-col text-center" id="timetable-time-axis">
               <!-- Populated dynamically -->
             </div>
 
             <!-- 7 Days Grid Area (100% width, no horizontal scroll) -->
             <div class="flex-1 relative bg-white">
-              <!-- Background Horizontal Grid lines (40px per hour, 20px per 30m) -->
+              <!-- Background Horizontal Grid lines (44px per hour, 22px per 30m) -->
               <div id="timetable-bg-grid" class="absolute inset-0 pointer-events-none"></div>
 
               <!-- 7 Column Slots Container -->
-              <div class="grid grid-cols-7 w-full relative z-10 min-h-[720px]" id="timetable-columns-container">
-                <div class="relative border-r border-slate-100/80 timetable-day-col" data-col-day="0"></div>
-                <div class="relative border-r border-slate-100/80 timetable-day-col" data-col-day="1"></div>
-                <div class="relative border-r border-slate-100/80 timetable-day-col" data-col-day="2"></div>
-                <div class="relative border-r border-slate-100/80 timetable-day-col" data-col-day="3"></div>
-                <div class="relative border-r border-slate-100/80 timetable-day-col" data-col-day="4"></div>
-                <div class="relative border-r border-slate-100/80 timetable-day-col" data-col-day="5"></div>
+              <div class="grid grid-cols-7 w-full relative z-10 min-h-[792px]" id="timetable-columns-container">
+                <div class="relative border-r border-slate-100 timetable-day-col" data-col-day="0"></div>
+                <div class="relative border-r border-slate-100 timetable-day-col" data-col-day="1"></div>
+                <div class="relative border-r border-slate-100 timetable-day-col" data-col-day="2"></div>
+                <div class="relative border-r border-slate-100 timetable-day-col" data-col-day="3"></div>
+                <div class="relative border-r border-slate-100 timetable-day-col" data-col-day="4"></div>
+                <div class="relative border-r border-slate-100 timetable-day-col" data-col-day="5"></div>
                 <div class="relative timetable-day-col" data-col-day="6"></div>
               </div>
             </div>
@@ -214,63 +214,58 @@
 
     <!-- ==========================================================================
          VIEW 2: 第二页：计划 vs 实际对比页 (Plan vs Actual)
-         左栏显示原本计划，右栏点击“点亮”代表实际完成
+         左栏显示原本计划，右栏点击“点亮”代表实际执行，时间轴09:00~次日03:00
          ========================================================================== -->
-    <section id="view-plan-actual" class="view-panel p-2.5 max-w-lg mx-auto safe-top hidden">
+    <section id="view-plan-actual" class="view-panel p-3 max-w-lg mx-auto safe-top hidden">
       <!-- Date & Status -->
-      <div class="flex items-center justify-between mb-2.5 px-1">
+      <div class="flex items-center justify-between mb-3 px-1">
         <div>
-          <div class="flex items-center gap-1.5">
-            <h1 class="text-base font-bold text-slate-800 tracking-tight" id="pa-date-display"></h1>
-            <span class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-blue-50 text-blue-600 border border-blue-200" id="pa-today-badge">今天</span>
+          <div class="flex items-center gap-2">
+            <h1 class="text-lg font-black text-slate-900 tracking-tight" id="pa-date-display"></h1>
+            <span class="px-2 py-0.5 rounded-full text-xs font-bold bg-blue-100 text-blue-700 border border-blue-200" id="pa-today-badge">今天</span>
           </div>
-          <p class="text-[11px] text-slate-500 font-medium" data-i18n="pa_subtitle">点击右栏直接点亮完成状态</p>
         </div>
-
-        <button onclick="openAddPlanModal()" class="px-2.5 py-1 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow-xs active:scale-95">
-          + <span data-i18n="btn_add_plan">规划时间块</span>
-        </button>
       </div>
 
       <!-- Quick Weekday Strip -->
-      <div class="grid grid-cols-7 gap-1 bg-white border border-slate-200 rounded-xl p-1.5 mb-2.5 shadow-xs text-center" id="pa-day-strip">
+      <div class="grid grid-cols-7 gap-1.5 bg-white border border-slate-200 rounded-2xl p-2 mb-3 shadow-xs text-center" id="pa-day-strip">
         <!-- populated dynamically -->
       </div>
 
       <!-- Stats Bar: Planned vs Actual Hours -->
-      <div class="grid grid-cols-2 gap-2 mb-2.5">
-        <div class="bg-blue-50/70 border border-blue-100 rounded-xl p-2.5 flex items-center justify-between">
+      <div class="grid grid-cols-2 gap-2.5 mb-3">
+        <div class="bg-blue-50/80 border border-blue-100 rounded-2xl p-3 flex items-center justify-between">
           <div>
-            <div class="text-[11px] font-semibold text-blue-600" data-i18n="planned_total_hours">计划总时长</div>
-            <div class="text-base font-bold text-blue-950 mt-0.5" id="pa-stat-planned">0 <span class="text-xs font-normal text-blue-700" data-i18n="unit_hour">小时</span></div>
+            <div class="text-xs font-bold text-blue-600" data-i18n="planned_total_hours">计划总时长</div>
+            <div class="text-lg font-black text-blue-950 mt-0.5" id="pa-stat-planned">0 <span class="text-xs font-normal text-blue-700" data-i18n="unit_hour">小时</span></div>
           </div>
-          <span class="text-xl">📋</span>
+          <span class="text-2xl">📋</span>
         </div>
-        <div class="bg-emerald-50/70 border border-emerald-100 rounded-xl p-2.5 flex items-center justify-between">
+        <div class="bg-emerald-50/80 border border-emerald-100 rounded-2xl p-3 flex items-center justify-between">
           <div>
-            <div class="text-[11px] font-semibold text-emerald-600" data-i18n="actual_completed_hours">实际已执行 (已点亮)</div>
-            <div class="text-base font-bold text-emerald-950 mt-0.5" id="pa-stat-actual">0 <span class="text-xs font-normal text-emerald-700" data-i18n="unit_hour">小时</span></div>
+            <div class="text-xs font-bold text-emerald-600" data-i18n="actual_completed_hours">实际已执行</div>
+            <div class="text-lg font-black text-emerald-950 mt-0.5" id="pa-stat-actual">0 <span class="text-xs font-normal text-emerald-700" data-i18n="unit_hour">小时</span></div>
           </div>
-          <span class="text-xl">🎯</span>
+          <span class="text-2xl">🎯</span>
         </div>
       </div>
 
-      <!-- Dual Column Timetable -->
+      <!-- Dual Column Timetable (09:00 ~ 次日 03:00) -->
       <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden mb-12">
-        <div class="grid grid-cols-11 bg-slate-50 border-b border-slate-200 text-center py-2 text-xs font-bold text-slate-700">
-          <div class="col-span-5 flex items-center justify-center gap-1 text-blue-700">
-            <span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span> <span data-i18n="col_planned">原本计划</span>
+        <div class="grid grid-cols-11 bg-slate-50 border-b border-slate-200 text-center py-2.5 text-xs font-bold text-slate-700">
+          <div class="col-span-5 flex items-center justify-center gap-1.5 text-blue-700">
+            <span class="w-2 h-2 rounded-full bg-blue-500"></span> <span data-i18n="col_planned">原本计划</span>
           </div>
-          <div class="col-span-1 text-slate-400 font-mono text-[10px] flex items-center justify-center" data-i18n="col_time">时间</div>
-          <div class="col-span-5 flex items-center justify-center gap-1 text-emerald-700">
-            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> <span data-i18n="col_actual">实际执行 (点击点亮)</span>
+          <div class="col-span-1 text-slate-400 font-mono text-[11px] font-bold flex items-center justify-center" data-i18n="col_time">时</div>
+          <div class="col-span-5 flex items-center justify-center gap-1.5 text-emerald-700">
+            <span class="w-2 h-2 rounded-full bg-emerald-500"></span> <span data-i18n="col_actual">实际执行</span>
           </div>
         </div>
 
-        <div class="max-h-[500px] overflow-y-auto relative" id="dual-col-scroll">
-          <div class="grid grid-cols-11 relative min-h-[720px]">
-            <div class="col-span-5 border-r border-slate-100 relative bg-slate-50/20" id="pa-plan-column"></div>
-            <div class="col-span-1 border-r border-slate-200 bg-slate-50/80 text-[9px] font-mono text-slate-400 select-none flex flex-col text-center" id="pa-time-ruler"></div>
+        <div class="max-h-[560px] overflow-y-auto relative" id="dual-col-scroll">
+          <div class="grid grid-cols-11 relative min-h-[792px]">
+            <div class="col-span-5 border-r border-slate-100 relative bg-slate-50/30" id="pa-plan-column"></div>
+            <div class="col-span-1 border-r border-slate-200 bg-slate-50/80 text-[11px] font-mono font-semibold text-slate-400 select-none flex flex-col text-center" id="pa-time-ruler"></div>
             <div class="col-span-5 relative bg-white" id="pa-actual-column"></div>
           </div>
         </div>
@@ -280,36 +275,36 @@
     <!-- ==========================================================================
          VIEW 3: 第三页：专注计时器 (Timer Screen · 还原翻页钟黑底白字视觉)
          1. 绝对时间戳计算防锁屏假死！
-         2. 全屏纯黑背景 (#000000) + 深灰圆角数字底牌 (#1C1C1E) + 大号纯白粗体！
+         2. 全屏纯黑背景 (#000000) + 深灰圆角底牌 (#1C1C1E) + 大号纯白粗体！
          ========================================================================== -->
-    <section id="view-timer" class="view-panel fixed inset-0 bg-[#000000] text-white z-50 flex flex-col items-center justify-between p-6 pb-20 select-none hidden">
+    <section id="view-timer" class="view-panel fixed inset-0 bg-[#000000] text-white z-50 flex flex-col items-center justify-between p-6 pb-24 select-none hidden">
       <!-- Top Mode Switcher -->
       <div class="w-full flex items-center justify-between text-slate-400">
-        <button onclick="switchView('timetable')" class="w-9 h-9 flex items-center justify-center rounded-full bg-zinc-800/80 text-zinc-300 hover:text-white active:scale-95 text-sm">
+        <button onclick="switchView('timetable')" class="w-10 h-10 flex items-center justify-center rounded-full bg-zinc-800/90 text-zinc-200 hover:text-white active:scale-95 text-base">
           ←
         </button>
 
-        <div class="flex bg-zinc-900 rounded-xl p-1 border border-zinc-800">
-          <button id="btn-mode-countup" onclick="setTimerMode('countup')" class="px-3.5 py-1 rounded-lg text-xs font-bold bg-zinc-700 text-white transition-all" data-i18n="timer_mode_countup">正计时</button>
-          <button id="btn-mode-countdown" onclick="setTimerMode('countdown')" class="px-3.5 py-1 rounded-lg text-xs font-bold text-zinc-400 hover:text-white transition-all" data-i18n="timer_mode_countdown">倒计时</button>
+        <div class="flex bg-zinc-900 rounded-2xl p-1 border border-zinc-800">
+          <button id="btn-mode-countup" onclick="setTimerMode('countup')" class="px-4 py-1.5 rounded-xl text-xs font-bold bg-zinc-700 text-white transition-all" data-i18n="timer_mode_countup">正计时</button>
+          <button id="btn-mode-countdown" onclick="setTimerMode('countdown')" class="px-4 py-1.5 rounded-xl text-xs font-bold text-zinc-400 hover:text-white transition-all" data-i18n="timer_mode_countdown">倒计时</button>
         </div>
 
-        <div class="w-9"></div>
+        <div class="w-10"></div>
       </div>
 
       <!-- Current Focus Subject -->
-      <div class="flex flex-col items-center mt-3">
-        <div onclick="openTimerTaskModal()" class="flex items-center gap-2 bg-zinc-900/90 border border-zinc-800 rounded-full px-4 py-1.5 cursor-pointer hover:bg-zinc-800 transition-all">
-          <span class="w-2.5 h-2.5 rounded-full bg-blue-500"></span>
-          <span id="timer-task-name" class="text-sm font-semibold text-zinc-100">深度专注</span>
+      <div class="flex flex-col items-center mt-2">
+        <div onclick="openTimerTaskModal()" class="flex items-center gap-2.5 bg-zinc-900/90 border border-zinc-800 rounded-full px-5 py-2 cursor-pointer hover:bg-zinc-800 transition-all active:scale-95">
+          <span class="w-3 h-3 rounded-full bg-blue-500 shadow-xs"></span>
+          <span id="timer-task-name" class="text-base font-bold text-zinc-100">深度专注</span>
           <span class="text-xs text-zinc-500">▼</span>
         </div>
-        <span class="text-[11px] text-zinc-500 mt-1" data-i18n="timer_hint_switch">点击自定义当前专注事项</span>
+        <span class="text-xs text-zinc-500 mt-1.5" data-i18n="timer_hint_switch">点击自定义当前专注事项</span>
       </div>
 
       <!-- Classic Flip-Clock Style Centerpiece (HH : MM : SS) -->
       <div class="my-auto flex flex-col items-center">
-        <div class="flex items-center gap-1.5 sm:gap-2">
+        <div class="flex items-center gap-2 sm:gap-3">
           <!-- Hours -->
           <div class="flex">
             <div class="timer-digit-card" id="time-h1">0</div>
@@ -329,24 +324,25 @@
           </div>
         </div>
 
-        <!-- Presets for Countdown (15m, 25m, 45m, 60m) -->
-        <div id="countdown-presets" class="flex items-center gap-2 mt-6 hidden">
-          <button onclick="setCountdownMinutes(15)" class="px-3 py-1 rounded-full bg-zinc-900 text-xs text-zinc-300 border border-zinc-800 hover:bg-zinc-800 active:scale-95">15m</button>
-          <button onclick="setCountdownMinutes(25)" class="px-3 py-1 rounded-full bg-zinc-700 text-xs text-white border border-zinc-600 hover:bg-zinc-600 active:scale-95">25m</button>
-          <button onclick="setCountdownMinutes(45)" class="px-3 py-1 rounded-full bg-zinc-900 text-xs text-zinc-300 border border-zinc-800 hover:bg-zinc-800 active:scale-95">45m</button>
-          <button onclick="setCountdownMinutes(60)" class="px-3 py-1 rounded-full bg-zinc-900 text-xs text-zinc-300 border border-zinc-800 hover:bg-zinc-800 active:scale-95">60m</button>
+        <!-- Presets for Countdown (15m, 25m, 45m, 60m, Custom) -->
+        <div id="countdown-presets" class="flex items-center gap-1.5 sm:gap-2 mt-6 hidden">
+          <button onclick="setCountdownMinutes(15)" class="px-3 py-1.5 rounded-full bg-zinc-900 text-xs font-bold text-zinc-300 border border-zinc-800 hover:bg-zinc-800 active:scale-95">15m</button>
+          <button onclick="setCountdownMinutes(25)" class="px-3 py-1.5 rounded-full bg-zinc-700 text-xs font-bold text-white border border-zinc-600 hover:bg-zinc-600 active:scale-95">25m</button>
+          <button onclick="setCountdownMinutes(45)" class="px-3 py-1.5 rounded-full bg-zinc-900 text-xs font-bold text-zinc-300 border border-zinc-800 hover:bg-zinc-800 active:scale-95">45m</button>
+          <button onclick="setCountdownMinutes(60)" class="px-3 py-1.5 rounded-full bg-zinc-900 text-xs font-bold text-zinc-300 border border-zinc-800 hover:bg-zinc-800 active:scale-95">60m</button>
+          <button onclick="promptCustomCountdown()" class="px-3 py-1.5 rounded-full bg-blue-900/40 text-xs font-bold text-blue-300 border border-blue-700/60 hover:bg-blue-800/50 active:scale-95" data-i18n="btn_custom_timer">自定义</button>
         </div>
 
-        <p id="timer-status-hint" class="text-xs text-zinc-500 mt-5 tracking-widest uppercase font-medium" data-i18n="timer_hint_ready">准备就绪 · 保持专注</p>
+        <p id="timer-status-hint" class="text-xs text-zinc-400 mt-6 tracking-widest uppercase font-semibold" data-i18n="timer_hint_ready">准备就绪 · 保持专注</p>
       </div>
 
       <!-- Pure Focus Controls -->
       <div class="w-full max-w-xs flex items-center gap-3 mb-2">
-        <button id="btn-timer-toggle" onclick="toggleTimer()" class="flex-1 py-3.5 rounded-2xl bg-white text-zinc-950 font-bold text-base hover:bg-zinc-200 active:scale-95 shadow-lg transition-all flex items-center justify-center gap-2">
+        <button id="btn-timer-toggle" onclick="toggleTimer()" class="flex-1 py-4 rounded-2xl bg-white text-zinc-950 font-black text-base hover:bg-zinc-200 active:scale-95 shadow-xl transition-all flex items-center justify-center gap-2">
           <span id="timer-play-icon">▶</span>
           <span id="timer-play-text" data-i18n="btn_start_focus">开始专注</span>
         </button>
-        <button onclick="resetTimer()" class="w-13 h-13 px-4 py-3.5 rounded-2xl bg-zinc-900 text-zinc-300 hover:text-white hover:bg-zinc-800 active:scale-95 text-base border border-zinc-800" title="重置">
+        <button onclick="resetTimer()" class="w-14 h-14 rounded-2xl bg-zinc-900 text-zinc-300 hover:text-white hover:bg-zinc-800 active:scale-95 text-lg border border-zinc-800 flex items-center justify-center font-bold" title="重置">
           ↺
         </button>
       </div>
@@ -354,43 +350,47 @@
 
     <!-- ==========================================================================
          VIEW 4: 第四页：统计打卡与趋势 (Analytics & Habit Tracker)
-         1. 右上角设置“导出备份”与“导入恢复”按钮（双重保障）
+         1. 右上角设置“导出备份”与“导入恢复”按钮 (双重保障)
+            韩文简化缩短为：백업 与 복원
          2. 科目打卡自动提取，点亮自动同步
+         3. 分类名称（学习/工作/运动/阅读/日常）多语言实时翻译
          ========================================================================== -->
-    <section id="view-analytics" class="view-panel p-2.5 max-w-lg mx-auto safe-top hidden">
+    <section id="view-analytics" class="view-panel p-3 max-w-lg mx-auto safe-top hidden">
       <!-- Header: Title on Left, Export/Import Buttons ONLY on Right -->
-      <div class="flex items-center justify-between mb-2.5 px-1">
+      <div class="flex items-center justify-between mb-3 px-1">
         <div>
-          <h1 class="text-base font-bold text-slate-800 tracking-tight" data-i18n="analytics_title">数据统计与打卡</h1>
-          <p class="text-[11px] text-slate-500 font-medium" data-i18n="analytics_subtitle">科目月度打卡与多维时长分析</p>
+          <h1 class="text-lg font-black text-slate-900 tracking-tight" data-i18n="analytics_title">数据统计与打卡</h1>
         </div>
 
         <!-- Export & Import Buttons (Dual-protection) -->
-        <div class="flex items-center gap-1.5">
-          <button onclick="openExportModal()" class="px-2.5 py-1 text-xs font-semibold bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 rounded-lg shadow-xs active:scale-95 flex items-center gap-1" title="导出备份">
+        <div class="flex items-center gap-2">
+          <button onclick="openExportModal()" class="px-3 py-1.5 text-xs font-bold bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 rounded-xl shadow-xs active:scale-95 flex items-center gap-1.5 transition-all" title="导出备份">
             <span>💾</span> <span data-i18n="btn_export">导出备份</span>
           </button>
-          <button onclick="openImportModal()" class="px-2.5 py-1 text-xs font-semibold bg-blue-50 border border-blue-200 hover:bg-blue-100 text-blue-700 rounded-lg shadow-xs active:scale-95 flex items-center gap-1" title="导入恢复">
+          <button onclick="openImportModal()" class="px-3 py-1.5 text-xs font-bold bg-blue-50 border border-blue-200 hover:bg-blue-100 text-blue-700 rounded-xl shadow-xs active:scale-95 flex items-center gap-1.5 transition-all" title="导入恢复">
             <span>📂</span> <span data-i18n="btn_import">导入恢复</span>
           </button>
         </div>
       </div>
 
       <!-- Sub-tabs: 打卡方格 vs 时长图表 -->
-      <div class="flex items-center justify-between mb-3 bg-white p-1 rounded-xl border border-slate-200 shadow-xs">
-        <button id="btn-sub-heatmap" onclick="switchAnalyticsSubTab('heatmap')" class="flex-1 py-1.5 text-xs font-semibold rounded-lg bg-blue-600 text-white transition-all" data-i18n="subtab_habit_grid">打卡方格</button>
-        <button id="btn-sub-charts" onclick="switchAnalyticsSubTab('charts')" class="flex-1 py-1.5 text-xs font-semibold rounded-lg text-slate-600 hover:text-slate-900 transition-all" data-i18n="subtab_charts">时长图表</button>
+      <div class="flex items-center justify-between mb-3 bg-white p-1 rounded-2xl border border-slate-200 shadow-xs">
+        <button id="btn-sub-heatmap" onclick="switchAnalyticsSubTab('heatmap')" class="flex-1 py-2 text-xs font-bold rounded-xl bg-blue-600 text-white transition-all" data-i18n="subtab_habit_grid">打卡方格</button>
+        <button id="btn-sub-charts" onclick="switchAnalyticsSubTab('charts')" class="flex-1 py-2 text-xs font-bold rounded-xl text-slate-600 hover:text-slate-900 transition-all" data-i18n="subtab_charts">时长图表</button>
       </div>
 
-      <!-- SUB-PANEL A: 科目月度打卡方格 (自动提取首页创建的科目) -->
+      <!-- SUB-PANEL A: 科目月度打卡方格 (自动提取首页创建的科目，支持月份切换) -->
       <div id="analytics-heatmap-panel" class="space-y-3 mb-12">
         <div class="bg-white rounded-2xl border border-slate-200 p-3 shadow-xs flex items-center justify-between">
-          <div>
-            <div class="text-[10px] text-slate-400 font-medium" data-i18n="current_month">当前月份</div>
-            <div class="text-sm font-bold text-slate-800" id="habit-month-label"></div>
+          <div class="flex items-center gap-1.5">
+            <button onclick="changeHabitMonth(-1)" class="w-7 h-7 flex items-center justify-center rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold active:scale-95 transition-all">◀</button>
+            <div class="text-center px-1">
+              <div class="text-sm font-black text-slate-900" id="habit-month-label"></div>
+            </div>
+            <button onclick="changeHabitMonth(1)" class="w-7 h-7 flex items-center justify-center rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold active:scale-95 transition-all">▶</button>
           </div>
           <div class="text-right">
-            <span class="text-[10px] text-slate-400" data-i18n="auto_sync_hint">第二页点亮实际执行自动打卡</span>
+            <span class="text-xs text-slate-400 font-medium" data-i18n="auto_sync_hint">第二页点亮实际执行自动打卡</span>
           </div>
         </div>
 
@@ -400,45 +400,45 @@
 
       <!-- SUB-PANEL B: 时长分布图表 (日 / 周 / 月 / 年) -->
       <div id="analytics-charts-panel" class="space-y-3 mb-12 hidden">
-        <div class="bg-white border border-slate-200 rounded-xl p-1 flex items-center justify-around shadow-xs text-xs font-semibold">
-          <button id="chart-dim-day" onclick="setChartDimension('day')" class="flex-1 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 transition-all" data-i18n="dim_day">日</button>
-          <button id="chart-dim-week" onclick="setChartDimension('week')" class="flex-1 py-1.5 rounded-lg bg-blue-600 text-white shadow-xs transition-all" data-i18n="dim_week">周</button>
-          <button id="chart-dim-month" onclick="setChartDimension('month')" class="flex-1 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 transition-all" data-i18n="dim_month">月</button>
-          <button id="chart-dim-year" onclick="setChartDimension('year')" class="flex-1 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 transition-all" data-i18n="dim_year">年</button>
+        <div class="bg-white border border-slate-200 rounded-2xl p-1 flex items-center justify-around shadow-xs text-xs font-bold">
+          <button id="chart-dim-day" onclick="setChartDimension('day')" class="flex-1 py-2 rounded-xl text-slate-600 hover:text-slate-900 transition-all" data-i18n="dim_day">日</button>
+          <button id="chart-dim-week" onclick="setChartDimension('week')" class="flex-1 py-2 rounded-xl bg-blue-600 text-white shadow-xs transition-all" data-i18n="dim_week">周</button>
+          <button id="chart-dim-month" onclick="setChartDimension('month')" class="flex-1 py-2 rounded-xl text-slate-600 hover:text-slate-900 transition-all" data-i18n="dim_month">月</button>
+          <button id="chart-dim-year" onclick="setChartDimension('year')" class="flex-1 py-2 rounded-xl text-slate-600 hover:text-slate-900 transition-all" data-i18n="dim_year">年</button>
         </div>
 
-        <div class="grid grid-cols-3 gap-2">
-          <div class="bg-white border border-slate-200 rounded-xl p-2.5 text-center shadow-xs">
-            <span class="text-[10px] text-slate-400 block font-medium" data-i18n="stat_focus_sessions">完成次数</span>
-            <span class="text-base font-bold text-slate-800 mt-0.5 block" id="stat-sessions-count">0</span>
+        <div class="grid grid-cols-3 gap-2.5">
+          <div class="bg-white border border-slate-200 rounded-2xl p-3 text-center shadow-xs">
+            <span class="text-xs text-slate-400 block font-medium" data-i18n="stat_focus_sessions">完成次数</span>
+            <span class="text-lg font-black text-slate-800 mt-0.5 block" id="stat-sessions-count">0</span>
           </div>
-          <div class="bg-white border border-slate-200 rounded-xl p-2.5 text-center shadow-xs">
-            <span class="text-[10px] text-slate-400 block font-medium" data-i18n="stat_total_duration">总专注时长</span>
-            <span class="text-base font-bold text-blue-600 mt-0.5 block" id="stat-total-hours">0 <span class="text-[10px] font-normal text-slate-500">h</span></span>
+          <div class="bg-white border border-slate-200 rounded-2xl p-3 text-center shadow-xs">
+            <span class="text-xs text-slate-400 block font-medium" data-i18n="stat_total_duration">总专注时长</span>
+            <span class="text-lg font-black text-blue-600 mt-0.5 block" id="stat-total-hours">0 <span class="text-xs font-normal text-slate-500">h</span></span>
           </div>
-          <div class="bg-white border border-slate-200 rounded-xl p-2.5 text-center shadow-xs">
-            <span class="text-[10px] text-slate-400 block font-medium" data-i18n="stat_avg_duration">平均时长</span>
-            <span class="text-base font-bold text-emerald-600 mt-0.5 block" id="stat-avg-hours">0 <span class="text-[10px] font-normal text-slate-500">h</span></span>
+          <div class="bg-white border border-slate-200 rounded-2xl p-3 text-center shadow-xs">
+            <span class="text-xs text-slate-400 block font-medium" data-i18n="stat_avg_duration">平均时长</span>
+            <span class="text-lg font-black text-emerald-600 mt-0.5 block" id="stat-avg-hours">0 <span class="text-xs font-normal text-slate-500">h</span></span>
           </div>
         </div>
 
         <!-- Yearly Special View -->
         <div id="yearly-special-panel" class="space-y-3 hidden">
-          <div class="grid grid-cols-2 gap-2">
-            <div class="bg-gradient-to-br from-indigo-50 to-blue-50 border border-blue-200 rounded-2xl p-3 shadow-xs">
-              <span class="text-[11px] font-semibold text-blue-600" data-i18n="yearly_active_days">全年总专注天数</span>
-              <div class="text-2xl font-black text-blue-950 mt-1" id="yearly-active-days-val">0 <span class="text-xs font-medium text-blue-700" data-i18n="unit_days">天</span></div>
+          <div class="grid grid-cols-2 gap-2.5">
+            <div class="bg-gradient-to-br from-indigo-50 to-blue-50 border border-blue-200 rounded-2xl p-3.5 shadow-xs">
+              <span class="text-xs font-bold text-blue-600" data-i18n="yearly_active_days">全年总专注天数</span>
+              <div class="text-2xl font-black text-blue-950 mt-1" id="yearly-active-days-val">0 <span class="text-xs font-bold text-blue-700" data-i18n="unit_days">天</span></div>
             </div>
-            <div class="bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-200 rounded-2xl p-3 shadow-xs">
-              <span class="text-[11px] font-semibold text-amber-700" data-i18n="yearly_max_streak">最高连续打卡</span>
-              <div class="text-2xl font-black text-amber-950 mt-1" id="yearly-max-streak-val">0 <span class="text-xs font-medium text-amber-700" data-i18n="unit_days">天</span></div>
+            <div class="bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-200 rounded-2xl p-3.5 shadow-xs">
+              <span class="text-xs font-bold text-amber-700" data-i18n="yearly_max_streak">最高连续打卡</span>
+              <div class="text-2xl font-black text-amber-950 mt-1" id="yearly-max-streak-val">0 <span class="text-xs font-bold text-amber-700" data-i18n="unit_days">天</span></div>
             </div>
           </div>
 
           <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm">
-            <div class="flex items-center justify-between mb-2">
+            <div class="flex items-center justify-between mb-2.5">
               <h3 class="text-xs font-bold text-slate-800" data-i18n="yearly_trend_title">1-12月 全年专注时长趋势 (小时)</h3>
-              <span class="text-[10px] text-slate-400 font-mono" id="yearly-year-label"></span>
+              <span class="text-xs text-slate-400 font-mono font-semibold" id="yearly-year-label"></span>
             </div>
             <div class="relative h-48">
               <canvas id="yearlyChart"></canvas>
@@ -453,15 +453,15 @@
               <h3 class="text-xs font-bold text-slate-800 flex items-center gap-1.5">
                 <span>🥧</span> <span data-i18n="category_ratio_title">任务分类时长占比</span>
               </h3>
-              <span class="text-[11px] text-slate-400 font-medium" data-i18n="category_ratio_subtitle">投入分布</span>
+              <span class="text-xs text-slate-400 font-medium" data-i18n="category_ratio_subtitle">投入分布</span>
             </div>
-            <div class="relative h-52 flex items-center justify-center">
+            <div class="relative h-56 flex items-center justify-center">
               <canvas id="categoryPieChart"></canvas>
               <div id="chart-empty-hint" class="hidden absolute inset-0 flex items-center justify-center text-xs text-slate-400" data-i18n="chart_empty_hint">
                 暂无实际完成数据，请在第二页点亮完成
               </div>
             </div>
-            <div id="category-legend-list" class="grid grid-cols-2 gap-2 mt-3 pt-3 border-t border-slate-100 text-xs"></div>
+            <div id="category-legend-list" class="grid grid-cols-2 gap-2 mt-3 pt-3 border-t border-slate-100 text-xs font-medium"></div>
           </div>
 
           <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm">
@@ -469,9 +469,9 @@
               <h3 class="text-xs font-bold text-slate-800 flex items-center gap-1.5">
                 <span>📈</span> <span data-i18n="focus_trend_title">专注趋势</span>
               </h3>
-              <span class="text-[11px] text-blue-600 font-semibold" id="trend-peak-label"></span>
+              <span class="text-xs text-blue-600 font-bold" id="trend-peak-label"></span>
             </div>
-            <div class="relative h-40">
+            <div class="relative h-44">
               <canvas id="trendChart"></canvas>
             </div>
           </div>
@@ -482,22 +482,22 @@
   </main>
 
   <!-- Bottom Navigation: 4 Tabs -->
-  <nav class="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-slate-200 z-40 px-2 py-1 flex items-center justify-around text-center safe-area-bottom">
+  <nav class="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-slate-200 z-40 px-3 py-1.5 flex items-center justify-around text-center safe-area-bottom">
     <button onclick="switchView('timetable')" id="nav-timetable" class="nav-tab flex-1 py-1.5 flex flex-col items-center text-blue-600 transition-colors">
-      <span class="text-lg">📅</span>
-      <span class="text-[11px] font-semibold mt-0.5" data-i18n="nav_timetable">周课表</span>
+      <span class="text-xl">📅</span>
+      <span class="text-xs font-bold mt-0.5" data-i18n="nav_timetable">周课表</span>
     </button>
     <button onclick="switchView('plan-actual')" id="nav-plan-actual" class="nav-tab flex-1 py-1.5 flex flex-col items-center text-slate-400 hover:text-slate-600 transition-colors">
-      <span class="text-lg">⚖️</span>
-      <span class="text-[11px] font-semibold mt-0.5" data-i18n="nav_plan_actual">计划/实际</span>
+      <span class="text-xl">⚖️</span>
+      <span class="text-xs font-bold mt-0.5" data-i18n="nav_plan_actual">计划/实际</span>
     </button>
     <button onclick="switchView('timer')" id="nav-timer" class="nav-tab flex-1 py-1.5 flex flex-col items-center text-slate-400 hover:text-slate-600 transition-colors">
-      <span class="text-lg">⏱️</span>
-      <span class="text-[11px] font-semibold mt-0.5" data-i18n="nav_timer">专注计时</span>
+      <span class="text-xl">⏱️</span>
+      <span class="text-xs font-bold mt-0.5" data-i18n="nav_timer">专注计时</span>
     </button>
     <button onclick="switchView('analytics')" id="nav-analytics" class="nav-tab flex-1 py-1.5 flex flex-col items-center text-slate-400 hover:text-slate-600 transition-colors">
-      <span class="text-lg">📊</span>
-      <span class="text-[11px] font-semibold mt-0.5" data-i18n="nav_analytics">统计打卡</span>
+      <span class="text-xl">📊</span>
+      <span class="text-xs font-bold mt-0.5" data-i18n="nav_analytics">统计打卡</span>
     </button>
   </nav>
 
@@ -506,61 +506,142 @@
        ========================================================================== -->
   <div id="modal-plan" class="fixed inset-0 bg-black/50 backdrop-blur-xs z-50 flex items-end sm:items-center justify-center p-3 hidden">
     <div class="bg-white w-full max-w-sm rounded-2xl p-4 shadow-2xl animate-fade-in">
-      <div class="flex items-center justify-between mb-3 border-b border-slate-100 pb-2">
-        <h3 class="text-base font-bold text-slate-800" id="modal-plan-title-head" data-i18n="modal_add_plan_title">规划时间块</h3>
-        <button onclick="closeModal('modal-plan')" class="text-slate-400 hover:text-slate-600 text-lg leading-none">&times;</button>
+      <div class="flex items-center justify-between mb-3 border-b border-slate-100 pb-2.5">
+        <h3 class="text-base font-black text-slate-900" id="modal-plan-title-head" data-i18n="modal_add_plan_title">规划时间块</h3>
+        <button onclick="closeModal('modal-plan')" class="text-slate-400 hover:text-slate-600 text-xl font-bold leading-none p-1">&times;</button>
       </div>
       <input type="hidden" id="modal-edit-plan-id" value="">
-      <div class="space-y-3 text-xs">
+      <div class="space-y-3.5 text-xs">
         <div>
-          <label class="block text-slate-500 font-medium mb-1" data-i18n="modal_field_name">事件名称</label>
-          <input type="text" id="modal-plan-title" placeholder="如: 英语阅读、高等数学、游泳训练" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-800 outline-none focus:border-blue-500">
+          <label class="block text-slate-600 font-bold mb-1" data-i18n="modal_field_name">事件名称</label>
+          <input type="text" id="modal-plan-title" placeholder="如: 英语阅读、高等数学、游泳训练" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-slate-900 text-sm font-medium outline-none focus:border-blue-500 focus:bg-white transition-all">
         </div>
 
-        <div class="grid grid-cols-2 gap-2">
+        <div class="grid grid-cols-2 gap-2.5">
           <div>
-            <label class="block text-slate-500 font-medium mb-1" data-i18n="modal_field_category">分类</label>
-            <select id="modal-plan-category" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-2 text-slate-800 outline-none">
-              <option value="学习">学习</option>
-              <option value="工作">工作</option>
-              <option value="运动">运动</option>
-              <option value="阅读">阅读</option>
-              <option value="日常">日常</option>
+            <label class="block text-slate-600 font-bold mb-1" data-i18n="modal_field_category">分类</label>
+            <select id="modal-plan-category" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-slate-900 text-sm font-medium outline-none focus:border-blue-500 focus:bg-white">
+              <!-- Dynamically populated to support multilingual -->
             </select>
           </div>
           <div>
-            <label class="block text-slate-500 font-medium mb-1" data-i18n="modal_field_date">起始日期</label>
-            <input type="date" id="modal-plan-date" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-2 py-1.5 text-slate-800 outline-none">
+            <label class="block text-slate-600 font-bold mb-1" data-i18n="modal_field_date">起始日期</label>
+            <input type="date" id="modal-plan-date" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-2.5 text-slate-900 text-sm font-medium outline-none focus:border-blue-500 focus:bg-white">
           </div>
         </div>
 
-        <div class="grid grid-cols-2 gap-2">
+        <div class="grid grid-cols-2 gap-2.5">
           <div>
-            <label class="block text-slate-500 font-medium mb-1" data-i18n="modal_field_start">开始时间 (30分)</label>
-            <select id="modal-plan-start" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-2 py-2 text-slate-800 outline-none font-mono"></select>
+            <label class="block text-slate-600 font-bold mb-1" data-i18n="modal_field_start">开始时间 (30分)</label>
+            <select id="modal-plan-start" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-2.5 text-slate-900 text-sm font-mono font-semibold outline-none focus:border-blue-500 focus:bg-white"></select>
           </div>
           <div>
-            <label class="block text-slate-500 font-medium mb-1" data-i18n="modal_field_end">结束时间</label>
-            <select id="modal-plan-end" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-2 py-2 text-slate-800 outline-none font-mono"></select>
+            <label class="block text-slate-600 font-bold mb-1" data-i18n="modal_field_end">结束时间</label>
+            <select id="modal-plan-end" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-2.5 text-slate-900 text-sm font-mono font-semibold outline-none focus:border-blue-500 focus:bg-white"></select>
           </div>
         </div>
 
-        <!-- Weekly Recurrence & Month Selector (默认开启) -->
-        <div id="repeat-settings-box" class="bg-blue-50/60 border border-blue-100 rounded-xl p-2.5 space-y-2">
-          <label class="flex items-center gap-2 cursor-pointer">
+        <!-- Weekly Recurrence & Custom Weekdays (Mon~Sun Checkboxes) & Month Selector -->
+        <div id="repeat-settings-box" class="bg-blue-50/80 border border-blue-100 rounded-xl p-3 space-y-2.5">
+          <label class="flex items-center gap-2.5 cursor-pointer">
             <input type="checkbox" id="modal-repeat-weekly" checked class="w-4 h-4 rounded text-blue-600 focus:ring-blue-500" onchange="toggleRepeatOptions()">
-            <span class="font-semibold text-slate-800" data-i18n="repeat_weekly_label">每周同一时间重复</span>
+            <span class="font-bold text-slate-800 text-xs" data-i18n="repeat_weekly_label">每周重复</span>
           </label>
-          <div id="repeat-until-box" class="flex items-center justify-between text-slate-600 pl-6">
-            <span data-i18n="repeat_until_label">重复截止月份:</span>
-            <input type="month" id="modal-repeat-until" class="bg-white border border-slate-200 rounded-lg px-2 py-1 text-slate-800 font-medium outline-none">
+          <div id="repeat-sub-options" class="space-y-2 pl-6">
+            <div>
+              <span class="text-[11px] font-bold text-slate-600 block mb-1" data-i18n="repeat_days_label">选择重复的星期:</span>
+              <div class="grid grid-cols-7 gap-1" id="repeat-weekday-checkboxes">
+                <!-- Populated dynamically with Mon to Sun checkboxes -->
+              </div>
+            </div>
+            <div id="repeat-until-box" class="flex items-center justify-between text-slate-600 text-xs pt-1.5 border-t border-blue-100">
+              <span class="font-medium" data-i18n="repeat_until_label">重复截止月份:</span>
+              <input type="month" id="modal-repeat-until" class="bg-white border border-slate-200 rounded-lg px-2.5 py-1 text-slate-800 text-xs font-bold outline-none">
+            </div>
           </div>
         </div>
 
-        <div class="pt-2 flex gap-2">
-          <button type="button" id="btn-delete-plan" onclick="deleteCurrentEditPlan()" class="py-2 px-3 rounded-xl bg-rose-50 text-rose-600 font-semibold hover:bg-rose-100 hidden" data-i18n="btn_delete">删除</button>
-          <button type="button" onclick="closeModal('modal-plan')" class="flex-1 py-2 rounded-xl bg-slate-100 text-slate-600 font-semibold" data-i18n="btn_cancel">取消</button>
-          <button type="button" onclick="savePlanBlock()" class="flex-1 py-2 rounded-xl bg-blue-600 text-white font-semibold hover:bg-blue-700 shadow-xs active:scale-95" data-i18n="btn_save">保存计划</button>
+        <div class="pt-2 flex gap-2.5">
+          <button type="button" id="btn-delete-plan" onclick="promptDeletePlan()" class="flex-1 py-2.5 px-3.5 rounded-xl bg-rose-50 text-rose-600 text-xs font-bold hover:bg-rose-100 hidden" data-i18n="btn_delete">删除</button>
+          <button type="button" id="modal-btn-cancel" onclick="closeModal('modal-plan')" class="flex-1 py-2.5 rounded-xl bg-slate-100 text-slate-600 text-xs font-bold" data-i18n="btn_cancel">取消</button>
+          <button type="button" id="modal-btn-save" onclick="savePlanBlock()" class="flex-1 py-2.5 rounded-xl bg-blue-600 text-white text-xs font-bold hover:bg-blue-700 shadow-xs active:scale-95 transition-all" data-i18n="btn_save">保存计划</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       MODAL: Delete Plan Confirmation Modal (含右上角X、三语自适应、批量/单选)
+       ========================================================================== -->
+  <div id="modal-delete-confirm" class="fixed inset-0 bg-black/50 backdrop-blur-xs z-50 flex items-end sm:items-center justify-center p-3 hidden">
+    <div class="bg-white w-full max-w-sm rounded-2xl p-4 shadow-2xl animate-fade-in">
+      <div class="flex items-center justify-between mb-3 border-b border-slate-100 pb-2.5">
+        <h3 class="text-base font-black text-rose-600 flex items-center gap-1.5">
+          <span>⚠️</span> <span data-i18n="delete_modal_title">确认删除时间块</span>
+        </h3>
+        <button onclick="closeModal('modal-delete-confirm')" class="text-slate-400 hover:text-slate-600 text-xl font-bold leading-none p-1">&times;</button>
+      </div>
+      <div class="space-y-3 text-xs">
+        <p class="text-slate-600 leading-relaxed font-medium" id="delete-modal-msg" data-i18n="delete_modal_desc">
+          确定要删除该时间块吗？此操作不可撤销。
+        </p>
+
+        <!-- Repeat Series Options (only shown if plan belongs to a recurring series) -->
+        <div id="delete-series-options" class="bg-rose-50/60 border border-rose-100 rounded-xl p-2.5 space-y-2 hidden">
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input type="radio" name="delete_scope" value="single" id="del-opt-single" checked class="text-rose-600">
+            <span class="font-bold text-slate-800" data-i18n="delete_scope_single">仅删除这一个时间块</span>
+          </label>
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input type="radio" name="delete_scope" value="series" id="del-opt-series" class="text-rose-600">
+            <span class="font-bold text-slate-800" data-i18n="delete_scope_series">删除该周期的所有重复时间块</span>
+          </label>
+        </div>
+
+        <div class="pt-2 flex gap-2.5">
+          <button type="button" onclick="closeModal('modal-delete-confirm')" class="flex-1 py-2.5 rounded-xl bg-slate-100 text-slate-600 text-xs font-bold" data-i18n="btn_cancel">取消</button>
+          <button type="button" onclick="executeDeletePlan()" class="flex-1 py-2.5 rounded-xl bg-rose-600 text-white text-xs font-bold hover:bg-rose-700 shadow-xs active:scale-95 transition-all" data-i18n="btn_confirm_delete">确认删除</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       MODAL: Edit Plan Scope Modal (单次修改 vs 整个周期同步修改)
+       ========================================================================== -->
+  <div id="modal-edit-scope" class="fixed inset-0 bg-black/50 backdrop-blur-xs z-50 flex items-end sm:items-center justify-center p-3 hidden">
+    <div class="bg-white w-full max-w-sm rounded-2xl p-4 shadow-2xl animate-fade-in">
+      <div class="flex items-center justify-between mb-3 border-b border-slate-100 pb-2.5">
+        <h3 class="text-base font-black text-blue-600 flex items-center gap-1.5">
+          <span>🔄</span> <span data-i18n="edit_scope_modal_title">修改范围选择</span>
+        </h3>
+        <button onclick="closeModal('modal-edit-scope')" class="text-slate-400 hover:text-slate-600 text-xl font-bold leading-none p-1">&times;</button>
+      </div>
+      <div class="space-y-3 text-xs">
+        <p class="text-slate-600 leading-relaxed font-medium" data-i18n="edit_scope_modal_desc">
+          该计划属于每周重复周期任务，请选择修改范围：
+        </p>
+
+        <div class="bg-blue-50/60 border border-blue-100 rounded-xl p-3 space-y-2.5">
+          <label class="flex items-start gap-2.5 cursor-pointer">
+            <input type="radio" name="edit_scope" value="single" id="edit-opt-single" checked class="mt-0.5 text-blue-600">
+            <div>
+              <span class="font-bold text-slate-800 block text-xs" data-i18n="edit_scope_single">仅修改这一个时间块</span>
+              <span class="text-[11px] text-slate-400 font-medium" data-i18n="edit_scope_single_hint">仅保存当前选定日期的改动</span>
+            </div>
+          </label>
+          <label class="flex items-start gap-2.5 cursor-pointer pt-1 border-t border-blue-100/70">
+            <input type="radio" name="edit_scope" value="series" id="edit-opt-series" class="mt-0.5 text-blue-600">
+            <div>
+              <span class="font-bold text-slate-800 block text-xs" data-i18n="edit_scope_series">同步修改该周期内的所有重复时间块</span>
+              <span class="text-[11px] text-slate-400 font-medium" data-i18n="edit_scope_series_hint">更新周期内全部相关时间块</span>
+            </div>
+          </label>
+        </div>
+
+        <div class="pt-2 flex gap-2.5">
+          <button type="button" onclick="closeModal('modal-edit-scope')" class="flex-1 py-2.5 rounded-xl bg-slate-100 text-slate-600 text-xs font-bold" data-i18n="btn_cancel">取消</button>
+          <button type="button" onclick="executeSavePlanWithScope()" class="flex-1 py-2.5 rounded-xl bg-blue-600 text-white text-xs font-bold hover:bg-blue-700 shadow-xs active:scale-95 transition-all" data-i18n="btn_confirm_save">确认保存</button>
         </div>
       </div>
     </div>
@@ -571,21 +652,21 @@
        ========================================================================== -->
   <div id="modal-export" class="fixed inset-0 bg-black/50 backdrop-blur-xs z-50 flex items-end sm:items-center justify-center p-3 hidden">
     <div class="bg-white w-full max-w-sm rounded-2xl p-4 shadow-2xl animate-fade-in">
-      <div class="flex items-center justify-between mb-3 border-b border-slate-100 pb-2">
-        <h3 class="text-base font-bold text-slate-800" data-i18n="export_modal_title">备份数据导出</h3>
-        <button onclick="closeModal('modal-export')" class="text-slate-400 hover:text-slate-600 text-lg leading-none">&times;</button>
+      <div class="flex items-center justify-between mb-3 border-b border-slate-100 pb-2.5">
+        <h3 class="text-base font-black text-slate-900" data-i18n="export_modal_title">备份数据导出</h3>
+        <button onclick="closeModal('modal-export')" class="text-slate-400 hover:text-slate-600 text-xl font-bold leading-none p-1">&times;</button>
       </div>
       <div class="space-y-3 text-xs">
-        <p class="text-slate-500" data-i18n="export_modal_desc">可通过以下两种方式备份您的数据，换手机也能轻松恢复：</p>
-        <div class="grid grid-cols-2 gap-2 pt-1">
-          <button onclick="downloadBackupFile()" class="py-2.5 px-3 rounded-xl bg-blue-600 text-white font-semibold flex items-center justify-center gap-1.5 shadow-xs active:scale-95">
+        <p class="text-slate-600 leading-relaxed font-medium" data-i18n="export_modal_desc">可通过以下两种方式备份您的数据，换手机也能轻松恢复：</p>
+        <div class="grid grid-cols-2 gap-2.5 pt-1">
+          <button onclick="downloadBackupFile()" class="py-3 px-3 rounded-xl bg-blue-600 text-white text-xs font-bold flex items-center justify-center gap-1.5 shadow-xs active:scale-95 transition-all">
             <span>💾</span> <span data-i18n="btn_download_file">下载 JSON 文件</span>
           </button>
-          <button onclick="copyBackupToClipboard()" class="py-2.5 px-3 rounded-xl bg-slate-800 text-white font-semibold flex items-center justify-center gap-1.5 shadow-xs active:scale-95">
+          <button onclick="copyBackupToClipboard()" class="py-3 px-3 rounded-xl bg-slate-800 text-white text-xs font-bold flex items-center justify-center gap-1.5 shadow-xs active:scale-95 transition-all">
             <span>📋</span> <span data-i18n="btn_copy_json">复制备份文本</span>
           </button>
         </div>
-        <textarea id="export-json-preview" rows="4" readonly class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2 font-mono text-[10px] text-slate-500 outline-none select-all"></textarea>
+        <textarea id="export-json-preview" rows="4" readonly class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 font-mono text-[11px] text-slate-600 outline-none select-all"></textarea>
       </div>
     </div>
   </div>
@@ -595,29 +676,29 @@
        ========================================================================== -->
   <div id="modal-import" class="fixed inset-0 bg-black/50 backdrop-blur-xs z-50 flex items-end sm:items-center justify-center p-3 hidden">
     <div class="bg-white w-full max-w-sm rounded-2xl p-4 shadow-2xl animate-fade-in">
-      <div class="flex items-center justify-between mb-3 border-b border-slate-100 pb-2">
-        <h3 class="text-base font-bold text-slate-800" data-i18n="import_modal_title">导入恢复备份</h3>
-        <button onclick="closeModal('modal-import')" class="text-slate-400 hover:text-slate-600 text-lg leading-none">&times;</button>
+      <div class="flex items-center justify-between mb-3 border-b border-slate-100 pb-2.5">
+        <h3 class="text-base font-black text-slate-900" data-i18n="import_modal_title">导入恢复备份</h3>
+        <button onclick="closeModal('modal-import')" class="text-slate-400 hover:text-slate-600 text-xl font-bold leading-none p-1">&times;</button>
       </div>
-      <div class="space-y-3 text-xs">
+      <div class="space-y-3.5 text-xs">
         <div>
-          <label class="block text-slate-500 font-medium mb-1" data-i18n="import_file_label">方式一：选择本地 JSON 备份文件</label>
-          <input type="file" id="import-file-input" accept=".json,application/json" class="w-full text-xs text-slate-500 file:mr-2 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+          <label class="block text-slate-600 font-bold mb-1.5" data-i18n="import_file_label">方式一：选择本地 JSON 备份文件</label>
+          <input type="file" id="import-file-input" accept=".json,application/json" class="w-full text-xs text-slate-500 file:mr-2 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
         </div>
         <div>
-          <label class="block text-slate-500 font-medium mb-1" data-i18n="import_text_label">方式二：直接粘贴备份 JSON 文本</label>
-          <textarea id="import-text-input" rows="4" placeholder="在此粘贴导出的备份代码文本..." class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2 font-mono text-[11px] text-slate-700 outline-none"></textarea>
+          <label class="block text-slate-600 font-bold mb-1.5" data-i18n="import_text_label">方式二：直接粘贴备份 JSON 文本</label>
+          <textarea id="import-text-input" rows="4" placeholder="在此粘贴导出的备份代码文本..." class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 font-mono text-xs text-slate-700 outline-none focus:bg-white focus:border-blue-500"></textarea>
         </div>
-        <div class="pt-2 flex gap-2">
-          <button type="button" onclick="closeModal('modal-import')" class="flex-1 py-2 rounded-xl bg-slate-100 text-slate-600 font-semibold" data-i18n="btn_cancel">取消</button>
-          <button type="button" onclick="executeImportBackup()" class="flex-1 py-2 rounded-xl bg-blue-600 text-white font-semibold hover:bg-blue-700 shadow-xs active:scale-95" data-i18n="btn_confirm_import">确认恢复</button>
+        <div class="pt-2 flex gap-2.5">
+          <button type="button" onclick="closeModal('modal-import')" class="flex-1 py-2.5 rounded-xl bg-slate-100 text-slate-600 text-xs font-bold" data-i18n="btn_cancel">取消</button>
+          <button type="button" onclick="executeImportBackup()" class="flex-1 py-2.5 rounded-xl bg-blue-600 text-white text-xs font-bold hover:bg-blue-700 shadow-xs active:scale-95 transition-all" data-i18n="btn_confirm_import">确认恢复</button>
         </div>
       </div>
     </div>
   </div>
 
   <!-- Toast Notification Message -->
-  <div id="toast-msg" class="fixed top-12 left-1/2 bg-slate-900/90 text-white text-xs px-4 py-2 rounded-full shadow-xl z-50 flex items-center gap-2 border border-slate-700">
+  <div id="toast-msg" class="fixed top-12 left-1/2 bg-slate-900/90 text-white text-xs font-bold px-4 py-2.5 rounded-full shadow-2xl z-50 flex items-center gap-2 border border-slate-700">
     <span id="toast-text"></span>
   </div>
 
@@ -626,19 +707,31 @@
        ========================================================================== -->
   <script>
     /* --------------------------------------------------------------------------
-       1. Multilingual Dictionary
+       1. Multilingual Dictionary & Category Mappings
        -------------------------------------------------------------------------- */
+    const CATEGORIES = {
+      "学习": { zh: "学习", ko: "공부", en: "Study", color: "#3B82F6", bg: "#EFF6FF", border: "#BFDBFE", text: "#1D4ED8" },
+      "工作": { zh: "工作", ko: "업무", en: "Work", color: "#F59E0B", bg: "#FFFBEB", border: "#FDE68A", text: "#B45309" },
+      "运动": { zh: "运动", ko: "운동", en: "Exercise", color: "#10B981", bg: "#ECFDF5", border: "#A7F3D0", text: "#047857" },
+      "阅读": { zh: "阅读", ko: "독서", en: "Reading", color: "#8B5CF6", bg: "#F5F3FF", border: "#DDD6FE", text: "#6D28D9" },
+      "日常": { zh: "日常", ko: "일상", en: "Daily", color: "#06B6D4", bg: "#ECFEFF", border: "#A5F3FC", text: "#0E7490" }
+    };
+
     const I18N = {
       zh: {
+        app_title: "Planner",
+        timetable_badge: "周课表",
         timetable_title: "每周时间表",
         this_week: "本周",
         btn_add_plan: "规划时间块",
         pa_subtitle: "点击右栏直接点亮完成状态",
         planned_total_hours: "计划总时长",
-        actual_completed_hours: "实际已执行 (已点亮)",
+        actual_completed_hours: "实际已执行",
         col_planned: "原本计划",
-        col_time: "时间",
-        col_actual: "实际执行 (点击点亮)",
+        col_time: "时",
+        col_actual: "实际执行",
+        status_lit_up: "已点亮",
+        status_click_to_light: "点击点亮完成",
         unit_hour: "小时",
         unit_times: "次",
         unit_days: "天",
@@ -680,8 +773,24 @@
         modal_field_date: "起始日期",
         modal_field_start: "开始时间 (30分)",
         modal_field_end: "结束时间",
-        repeat_weekly_label: "每周同一时间重复",
+        repeat_weekly_label: "每周重复",
+        repeat_days_label: "选择重复的星期:",
         repeat_until_label: "重复截止月份:",
+        delete_modal_title: "确认删除时间块",
+        delete_modal_desc: "确定要删除该时间块吗？此操作不可撤销。",
+        delete_scope_single: "仅删除这一个时间块",
+        delete_scope_series: "删除该周期的所有重复时间块",
+        edit_scope_modal_title: "修改范围选择",
+        edit_scope_modal_desc: "该计划属于每周重复周期任务，请选择修改范围：",
+        edit_scope_single: "仅修改这一个时间块",
+        edit_scope_single_hint: "仅保存当前选定日期的改动",
+        edit_scope_series: "同步修改该周期内的所有重复时间块",
+        edit_scope_series_hint: "更新周期内全部相关时间块",
+        btn_confirm_save: "确认保存",
+        btn_confirm_delete: "确认删除",
+        btn_custom_timer: "自定义",
+        prompt_custom_minutes: "请输入倒计时分钟数 (1-180):",
+        current_month_btn: "本月",
         btn_cancel: "取消",
         btn_save: "保存计划",
         btn_delete: "删除",
@@ -707,15 +816,19 @@
         days_short: ["一", "二", "三", "四", "五", "六", "日"]
       },
       ko: {
+        app_title: "Planner",
+        timetable_badge: "주간 시간표",
         timetable_title: "주간 시간표",
         this_week: "이번 주",
         btn_add_plan: "시간 블록 추가",
         pa_subtitle: "오른쪽 열을 탭하여 완료 상태 켜기",
         planned_total_hours: "계획 총 시간",
-        actual_completed_hours: "실제 실행 (활성화됨)",
+        actual_completed_hours: "실제 실행",
         col_planned: "원래 계획",
-        col_time: "시간",
-        col_actual: "실제 실행 (탭하여 켜기)",
+        col_time: "시",
+        col_actual: "실제 실행",
+        status_lit_up: "완료됨",
+        status_click_to_light: "탭하여 완료",
         unit_hour: "시간",
         unit_times: "회",
         unit_days: "일",
@@ -757,13 +870,29 @@
         modal_field_date: "시작 날짜",
         modal_field_start: "시작 시간 (30분)",
         modal_field_end: "종료 시간",
-        repeat_weekly_label: "매주 같은 시간 반복",
+        repeat_weekly_label: "매주 반복",
+        repeat_days_label: "반복할 요일 선택:",
         repeat_until_label: "반복 종료 월:",
+        delete_modal_title: "시간 블록 삭제 확인",
+        delete_modal_desc: "이 시간 블록을 삭제하시겠습니까? 이 작업은 취소할 수 없습니다.",
+        delete_scope_single: "이 시간 블록만 삭제",
+        delete_scope_series: "반복 주기의 모든 블록 삭제",
+        edit_scope_modal_title: "수정 범위 선택",
+        edit_scope_modal_desc: "이 시간 블록은 반복 주기 항목입니다. 적용 범위를 선택하세요:",
+        edit_scope_single: "이 시간 블록만 수정",
+        edit_scope_single_hint: "선택한 날짜의 블록만 변경됩니다",
+        edit_scope_series: "이 주기의 모든 반복 시간 블록 동시 수정",
+        edit_scope_series_hint: "주기 내 모든 관련 시간 블록이 업데이트됩니다",
+        btn_confirm_save: "저장 확인",
+        btn_confirm_delete: "삭제 확인",
+        btn_custom_timer: "직접 설정",
+        prompt_custom_minutes: "타이머 시간(분)을 입력하세요 (1-180):",
+        current_month_btn: "이번 달",
         btn_cancel: "취소",
         btn_save: "계획 저장",
         btn_delete: "삭제",
-        btn_export: "백업 내보내기",
-        btn_import: "백업 복원",
+        btn_export: "백업",
+        btn_import: "복원",
         export_modal_title: "데이터 백업 내보내기",
         export_modal_desc: "두 가지 방법으로 데이터를 안전하게 백업할 수 있습니다:",
         btn_download_file: "JSON 파일 다운로드",
@@ -784,20 +913,24 @@
         days_short: ["월", "화", "수", "목", "금", "토", "일"]
       },
       en: {
+        app_title: "Planner",
+        timetable_badge: "Timetable",
         timetable_title: "Weekly Timetable",
         this_week: "This Week",
         btn_add_plan: "Plan Block",
         pa_subtitle: "Tap right column to light up & complete",
         planned_total_hours: "Planned Total",
-        actual_completed_hours: "Actual Executed (Lit up)",
+        actual_completed_hours: "Actual Executed",
         col_planned: "Planned",
-        col_time: "Time",
-        col_actual: "Actual (Tap to toggle)",
+        col_time: "Hr",
+        col_actual: "Actual",
+        status_lit_up: "Completed",
+        status_click_to_light: "Tap to complete",
         unit_hour: "hrs",
         unit_times: "times",
         unit_days: "days",
         nav_timetable: "Timetable",
-        nav_plan_actual: "Plan vs Actual",
+        nav_plan_actual: "Plan/Actual",
         nav_timer: "Focus Timer",
         nav_analytics: "Analytics",
         timer_mode_countup: "Count Up",
@@ -834,8 +967,24 @@
         modal_field_date: "Start Date",
         modal_field_start: "Start Time (30m)",
         modal_field_end: "End Time",
-        repeat_weekly_label: "Repeat weekly at same time",
+        repeat_weekly_label: "Repeat weekly",
+        repeat_days_label: "Repeat days:",
         repeat_until_label: "Repeat until month:",
+        delete_modal_title: "Delete Block",
+        delete_modal_desc: "Are you sure you want to delete this block? This cannot be undone.",
+        delete_scope_single: "Delete this block only",
+        delete_scope_series: "Delete all recurring blocks",
+        edit_scope_modal_title: "Edit Scope",
+        edit_scope_modal_desc: "This task belongs to a recurring series. Choose the update scope:",
+        edit_scope_single: "Edit this block only",
+        edit_scope_single_hint: "Only updates the currently selected date",
+        edit_scope_series: "Update all recurring blocks in this series",
+        edit_scope_series_hint: "Applies changes to all recurring blocks",
+        btn_confirm_save: "Confirm Save",
+        btn_confirm_delete: "Confirm Delete",
+        btn_custom_timer: "Custom",
+        prompt_custom_minutes: "Enter countdown minutes (1-180):",
+        current_month_btn: "This Month",
         btn_cancel: "Cancel",
         btn_save: "Save Plan",
         btn_delete: "Delete",
@@ -862,8 +1011,20 @@
       }
     };
 
+    function t(key) {
+      const dict = I18N[appState.lang] || I18N.zh;
+      return dict[key] || key;
+    }
+
+    function getCategoryName(catKey) {
+      const cat = CATEGORIES[catKey];
+      if (!cat) return catKey;
+      return cat[appState.lang] || catKey;
+    }
+
     /* --------------------------------------------------------------------------
-       2. Dynamic Date Calculation (No Hardcoding)
+       2. Dynamic Date Calculation & Time Scale (09:00 ~ 次日 03:00)
+          精准本地时间解析，严禁使用 new Date('YYYY-MM-DD') 产生 UTC 时区错位
        -------------------------------------------------------------------------- */
     function formatDateYMD(d) {
       const year = d.getFullYear();
@@ -872,35 +1033,63 @@
       return `${year}-${month}-${day}`;
     }
 
-    function getMonday(d) {
-      const date = new Date(d);
-      const day = date.getDay();
-      const diff = date.getDate() - day + (day === 0 ? -6 : 1);
-      return new Date(date.setDate(diff));
+    function parseDateYMD(dateStr) {
+      if (!dateStr) return new Date();
+      const parts = dateStr.split('-');
+      const y = parseInt(parts[0], 10);
+      const m = parseInt(parts[1], 10) - 1;
+      const d = parseInt(parts[2], 10);
+      return new Date(y, m, d, 12, 0, 0); // 设定为本地中午12点，彻底避免夏令时或时区跨天
     }
 
-    const TODAY_DATE = new Date();
-    const TODAY_STR = formatDateYMD(TODAY_DATE);
-    const CURRENT_MONDAY_STR = formatDateYMD(getMonday(TODAY_DATE));
+    function getMonday(d) {
+      const date = new Date(d.getFullYear(), d.getMonth(), d.getDate(), 12, 0, 0);
+      const day = date.getDay(); // 0 是周日, 1 是周一...
+      const diff = day === 0 ? -6 : 1 - day;
+      date.setDate(date.getDate() + diff);
+      return date;
+    }
+
+    // 动态实时获取当前日期，彻底废除静态写死变量
+    function getTodayDate() {
+      return new Date();
+    }
+
+    function getTodayStr() {
+      return formatDateYMD(new Date());
+    }
+
+    function getCurrentMondayStr() {
+      return formatDateYMD(getMonday(new Date()));
+    }
+
+    // Time scale config: 09:00 to 27:00 (Next day 03:00)
+    // 18 hours total. 44px per hour.
+    const START_HOUR = 9;
+    const END_HOUR_EXTENDED = 27; // 27 = 24 + 3 (03:00)
+    const TOTAL_HOURS = END_HOUR_EXTENDED - START_HOUR; // 18 hours
+    const HOUR_HEIGHT = 44; // 44px per 60min, 22px per 30min
+    const BASE_MINUTES = START_HOUR * 60; // 540 min
+
+    function timeToScaledMinutes(timeStr) {
+      const [h, m] = timeStr.split(':').map(Number);
+      const adjustedH = h < START_HOUR ? h + 24 : h;
+      return adjustedH * 60 + m;
+    }
 
     /* --------------------------------------------------------------------------
        3. LocalStorage State Management (Zero Mock Data)
        -------------------------------------------------------------------------- */
-    const STORAGE_KEY = "planflow_clean_v4";
-
-    const CATEGORY_COLORS = {
-      "学习": { color: "#3B82F6", bg: "#EFF6FF", border: "#BFDBFE", text: "#1D4ED8" },
-      "工作": { color: "#F59E0B", bg: "#FFFBEB", border: "#FDE68A", text: "#B45309" },
-      "运动": { color: "#10B981", bg: "#ECFDF5", border: "#A7F3D0", text: "#047857" },
-      "阅读": { color: "#8B5CF6", bg: "#F5F3FF", border: "#DDD6FE", text: "#6D28D9" },
-      "日常": { color: "#06B6D4", bg: "#ECFEFF", border: "#A5F3FC", text: "#0E7490" }
-    };
+    const STORAGE_KEY = "planner_clean_v5";
 
     let appState = {
       lang: 'zh',
       currentView: 'timetable',
-      activeDateStr: TODAY_STR,
-      currentWeekStart: CURRENT_MONDAY_STR,
+      activeDateStr: getTodayStr(),
+      currentWeekStart: getCurrentMondayStr(),
+      habitYear: new Date().getFullYear(),
+      habitMonth: new Date().getMonth() + 1,
+      pendingDeletePlanId: null,
       plans: [],             // All planned blocks created in Timetable
       activatedBlockIds: [], // IDs of planned blocks that are lit up / completed
       chartDimension: 'week',
@@ -912,7 +1101,6 @@
         accumulatedMs: 0,       // Milliseconds accumulated before current pause
         countdownTargetSec: 25 * 60,
         taskName: '深度专注',
-        taskCategory: '学习',
         intervalId: null
       }
     };
@@ -942,11 +1130,6 @@
     /* --------------------------------------------------------------------------
        4. Multilingual Switching (Only in View 1 Header)
        -------------------------------------------------------------------------- */
-    function t(key) {
-      const dict = I18N[appState.lang] || I18N.zh;
-      return dict[key] || key;
-    }
-
     function changeLanguage(lang) {
       appState.lang = lang;
       saveState();
@@ -955,9 +1138,9 @@
         const btn = document.getElementById(`lang-btn-${l}`);
         if (btn) {
           if (l === lang) {
-            btn.className = 'px-2 py-0.5 text-xs font-semibold rounded transition-all bg-blue-600 text-white shadow-xs';
+            btn.className = 'px-2.5 py-1 text-xs font-bold rounded-lg transition-all bg-blue-600 text-white shadow-xs';
           } else {
-            btn.className = 'px-2 py-0.5 text-xs font-semibold rounded transition-all text-slate-500 hover:text-slate-800';
+            btn.className = 'px-2.5 py-1 text-xs font-bold rounded-lg transition-all text-slate-500 hover:text-slate-800';
           }
         }
       });
@@ -967,10 +1150,25 @@
         el.innerText = t(k);
       });
 
+      populateCategoryOptions();
       renderTimetable();
       renderPlanActual();
       renderSubjectHeatmaps();
       renderCharts();
+    }
+
+    function populateCategoryOptions() {
+      const select = document.getElementById('modal-plan-category');
+      if (!select) return;
+      const currentVal = select.value || "学习";
+      select.innerHTML = '';
+      Object.keys(CATEGORIES).forEach(k => {
+        const opt = document.createElement('option');
+        opt.value = k;
+        opt.innerText = getCategoryName(k);
+        select.appendChild(opt);
+      });
+      select.value = currentVal;
     }
 
     /* --------------------------------------------------------------------------
@@ -1004,21 +1202,15 @@
     }
 
     /* --------------------------------------------------------------------------
-       6. 30-Minute Math & Date Helpers
+       6. Date & Week Helpers (精准本地时区无漂移)
        -------------------------------------------------------------------------- */
-    function timeToMinutes(tStr) {
-      const [h, m] = tStr.split(':').map(Number);
-      return h * 60 + m;
-    }
-
     function getWeekDays(startMondayStr) {
-      const start = new Date(startMondayStr);
+      const start = parseDateYMD(startMondayStr);
       const days = [];
       const dayNames = I18N[appState.lang].days_names;
       const dayShort = I18N[appState.lang].days_short;
       for (let i = 0; i < 7; i++) {
-        const d = new Date(start);
-        d.setDate(start.getDate() + i);
+        const d = new Date(start.getFullYear(), start.getMonth(), start.getDate() + i, 12, 0, 0);
         days.push({
           dateStr: formatDateYMD(d),
           name: dayNames[i],
@@ -1030,47 +1222,55 @@
     }
 
     /* --------------------------------------------------------------------------
-       7. VIEW 1: 每周时间表 (7天自适应全屏并排，取消横向滚动，一目了然)
+       7. VIEW 1: 每周时间表 (7天自适应全屏并排，取消横向滚动，09:00 ~ 次日 03:00)
        -------------------------------------------------------------------------- */
     function renderTimetable() {
       const days = getWeekDays(appState.currentWeekStart);
 
       // Week label
-      const startD = new Date(appState.currentWeekStart);
-      const endD = new Date(days[6].dateStr);
+      const startD = parseDateYMD(appState.currentWeekStart);
+      const endD = parseDateYMD(days[6].dateStr);
       document.getElementById('timetable-week-label').innerText = `${startD.getFullYear()}.${startD.getMonth()+1}.${startD.getDate()} - ${endD.getMonth()+1}.${endD.getDate()}`;
 
       // 1. Render 7-Day Headers (Mon-Sun)
       const headerContainer = document.getElementById('timetable-header-days');
       headerContainer.innerHTML = '';
+      const currentTodayStr = getTodayStr();
       days.forEach((d, idx) => {
-        const isToday = d.dateStr === TODAY_STR;
+        const isToday = d.dateStr === currentTodayStr;
+        const isSelected = d.dateStr === appState.activeDateStr;
         const col = document.createElement('div');
-        col.className = `py-1.5 flex flex-col items-center justify-center ${idx < 6 ? 'border-r border-slate-100' : ''}`;
+        col.className = `py-2 flex flex-col items-center justify-center cursor-pointer hover:bg-slate-100/70 transition-colors ${isSelected ? 'bg-blue-50/60' : ''} ${idx < 6 ? 'border-r border-slate-100' : ''}`;
+        col.onclick = () => {
+          appState.activeDateStr = d.dateStr;
+          renderTimetable();
+          renderPlanActual();
+        };
         col.innerHTML = `
-          <span class="text-[10px] text-slate-400 block">${d.shortName}</span>
-          <span class="text-xs font-bold ${isToday ? 'w-5 h-5 rounded-full bg-blue-600 text-white flex items-center justify-center mt-0.5' : 'text-slate-700 mt-0.5'}">${d.dayNumber}</span>
+          <span class="text-xs text-slate-400 font-bold block">${d.shortName}</span>
+          <span class="text-xs font-black ${isToday ? 'w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center mt-0.5 shadow-xs' : (isSelected ? 'w-6 h-6 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center mt-0.5' : 'text-slate-800 mt-0.5')}">${d.dayNumber}</span>
         `;
         headerContainer.appendChild(col);
       });
 
-      // 2. Render Left Compact Time Ruler (06 to 24, 40px per hour)
+      // 2. Render Left Compact Time Ruler (09 to 03, 44px per hour)
       const timeAxis = document.getElementById('timetable-time-axis');
       timeAxis.innerHTML = '';
-      for (let h = 6; h <= 24; h++) {
+      for (let h = START_HOUR; h <= END_HOUR_EXTENDED; h++) {
+        const displayH = h >= 24 ? String(h - 24).padStart(2, '0') : String(h).padStart(2, '0');
         const row = document.createElement('div');
-        row.className = 'h-10 flex items-start justify-center pt-0.5 border-b border-slate-100';
-        row.innerHTML = `<span>${h}</span>`;
+        row.className = 'h-11 flex items-start justify-center pt-1 border-b border-slate-100';
+        row.innerHTML = `<span class="leading-none">${displayH}</span>`;
         timeAxis.appendChild(row);
       }
 
-      // 3. Render Background Grid Lines (40px per hour, 20px per 30m)
+      // 3. Render Background Grid Lines (44px per hour, 22px per 30m)
       const bgGrid = document.getElementById('timetable-bg-grid');
       bgGrid.innerHTML = '';
-      for (let h = 6; h <= 24; h++) {
+      for (let h = START_HOUR; h <= END_HOUR_EXTENDED; h++) {
         const slot = document.createElement('div');
-        slot.className = 'time-slot-row-compact';
-        slot.innerHTML = `<div class="time-slot-sub-compact"></div>`;
+        slot.className = 'time-slot-row';
+        slot.innerHTML = `<div class="time-slot-sub"></div>`;
         bgGrid.appendChild(slot);
       }
 
@@ -1082,17 +1282,16 @@
         const plansForDay = appState.plans.filter(p => p.date === targetDate);
 
         plansForDay.forEach(plan => {
-          const cat = CATEGORY_COLORS[plan.category] || CATEGORY_COLORS['学习'];
-          const startMin = timeToMinutes(plan.start);
-          const endMin = timeToMinutes(plan.end);
+          const cat = CATEGORIES[plan.category] || CATEGORIES['学习'];
+          const startMin = timeToScaledMinutes(plan.start);
+          const endMin = timeToScaledMinutes(plan.end);
 
-          // 06:00 = 360 mins. Height = 40px per 60min (0.6667 px/min)
-          const topPx = (startMin - 360) * (40 / 60);
-          const heightPx = Math.max(18, (endMin - startMin) * (40 / 60));
+          const topPx = (startMin - BASE_MINUTES) * (HOUR_HEIGHT / 60);
+          const heightPx = Math.max(22, (endMin - startMin) * (HOUR_HEIGHT / 60));
 
           if (topPx >= 0) {
             const blockEl = document.createElement('div');
-            blockEl.className = 'absolute left-0.5 right-0.5 rounded-md p-1 shadow-xs border transition-all cursor-pointer hover:shadow-md animate-fade-in overflow-hidden';
+            blockEl.className = 'absolute left-0.5 right-0.5 rounded-lg p-1.5 shadow-xs border transition-all cursor-pointer hover:shadow-md active:scale-98 animate-fade-in overflow-hidden select-none';
             blockEl.style.top = `${topPx}px`;
             blockEl.style.height = `${heightPx - 2}px`;
             blockEl.style.backgroundColor = cat.bg;
@@ -1100,8 +1299,8 @@
             blockEl.style.color = cat.text;
 
             blockEl.innerHTML = `
-              <div class="font-bold text-[9px] leading-tight truncate">${plan.title}</div>
-              <div class="text-[8px] font-mono opacity-80 leading-none mt-0.5">${plan.start}</div>
+              <div class="font-bold text-xs leading-tight truncate">${plan.title}</div>
+              <div class="text-[10px] font-mono font-semibold opacity-85 leading-none mt-1 truncate">${plan.start}-${plan.end}</div>
             `;
 
             // Click to Edit / Modify Modal
@@ -1117,7 +1316,7 @@
     }
 
     function changeWeek(offset) {
-      const d = new Date(appState.currentWeekStart);
+      const d = parseDateYMD(appState.currentWeekStart);
       d.setDate(d.getDate() + offset * 7);
       appState.currentWeekStart = formatDateYMD(d);
       appState.activeDateStr = appState.currentWeekStart;
@@ -1126,8 +1325,8 @@
     }
 
     function goToCurrentWeek() {
-      appState.currentWeekStart = CURRENT_MONDAY_STR;
-      appState.activeDateStr = TODAY_STR;
+      appState.currentWeekStart = getCurrentMondayStr();
+      appState.activeDateStr = getTodayStr();
       renderTimetable();
       renderPlanActual();
     }
@@ -1136,14 +1335,14 @@
        8. VIEW 2: 计划 vs 实际对比页 (Plan vs Actual)
        -------------------------------------------------------------------------- */
     function renderPlanActual() {
-      const activeD = new Date(appState.activeDateStr);
+      const activeD = parseDateYMD(appState.activeDateStr);
       const m = String(activeD.getMonth() + 1).padStart(2, '0');
       const d = String(activeD.getDate()).padStart(2, '0');
       const dayIdx = (activeD.getDay() + 6) % 7; // Monday = 0
       document.getElementById('pa-date-display').innerText = `${m}.${d} ${I18N[appState.lang].days_names[dayIdx]}`;
 
       const todayBadge = document.getElementById('pa-today-badge');
-      if (appState.activeDateStr === TODAY_STR) todayBadge.classList.remove('hidden');
+      if (appState.activeDateStr === getTodayStr()) todayBadge.classList.remove('hidden');
       else todayBadge.classList.add('hidden');
 
       // Weekday strip
@@ -1153,26 +1352,27 @@
       days.forEach(day => {
         const isSelected = day.dateStr === appState.activeDateStr;
         const btn = document.createElement('button');
-        btn.className = `py-1 rounded-lg text-center transition-all ${isSelected ? 'bg-blue-600 text-white font-bold' : 'text-slate-600 hover:bg-slate-100'}`;
+        btn.className = `py-1.5 rounded-xl text-center transition-all ${isSelected ? 'bg-blue-600 text-white font-black shadow-xs' : 'text-slate-600 hover:bg-slate-100 font-bold'}`;
         btn.onclick = () => {
           appState.activeDateStr = day.dateStr;
           renderPlanActual();
           renderTimetable();
         };
         btn.innerHTML = `
-          <span class="text-[10px] block opacity-80">${day.shortName}</span>
-          <span class="text-xs font-semibold">${day.dayNumber}</span>
+          <span class="text-xs block opacity-80">${day.shortName}</span>
+          <span class="text-xs font-black mt-0.5">${day.dayNumber}</span>
         `;
         strip.appendChild(btn);
       });
 
-      // Center Time Ruler
+      // Center Time Ruler (09 to 03)
       const ruler = document.getElementById('pa-time-ruler');
       ruler.innerHTML = '';
-      for (let h = 6; h <= 24; h++) {
+      for (let h = START_HOUR; h <= END_HOUR_EXTENDED; h++) {
+        const displayH = h >= 24 ? String(h - 24).padStart(2, '0') : String(h).padStart(2, '0');
         const div = document.createElement('div');
-        div.className = 'h-10 flex items-start justify-center pt-0.5 border-b border-slate-100';
-        div.innerHTML = `<span>${h}</span>`;
+        div.className = 'h-11 flex items-start justify-center pt-1 border-b border-slate-100';
+        div.innerHTML = `<span>${displayH}</span>`;
         ruler.appendChild(div);
       }
 
@@ -1188,23 +1388,24 @@
       const dayPlans = appState.plans.filter(p => p.date === appState.activeDateStr);
 
       dayPlans.forEach(plan => {
-        const startMin = timeToMinutes(plan.start);
-        const endMin = timeToMinutes(plan.end);
+        const startMin = timeToScaledMinutes(plan.start);
+        const endMin = timeToScaledMinutes(plan.end);
         const dur = endMin - startMin;
-        const topPx = (startMin - 360) * (40 / 60);
-        const heightPx = Math.max(20, dur * (40 / 60));
-        const cat = CATEGORY_COLORS[plan.category] || CATEGORY_COLORS['学习'];
+        const topPx = (startMin - BASE_MINUTES) * (HOUR_HEIGHT / 60);
+        const heightPx = Math.max(24, dur * (HOUR_HEIGHT / 60));
+        const cat = CATEGORIES[plan.category] || CATEGORIES['学习'];
+        const translatedCat = getCategoryName(plan.category);
 
         plannedMinutes += dur;
 
         // 1. Left Plan Block
         const leftBlock = document.createElement('div');
-        leftBlock.className = 'absolute left-1 right-1 rounded-xl p-1.5 border border-slate-300/80 bg-white shadow-xs transition-all';
+        leftBlock.className = 'absolute left-1.5 right-1.5 rounded-xl p-2 border border-slate-300/80 bg-white shadow-xs transition-all overflow-hidden flex flex-col justify-center';
         leftBlock.style.top = `${topPx}px`;
         leftBlock.style.height = `${heightPx - 3}px`;
         leftBlock.innerHTML = `
-          <div class="font-bold text-[10px] text-slate-800 truncate">${plan.title}</div>
-          <div class="text-[9px] text-slate-400 font-mono">${plan.start}-${plan.end}</div>
+          <div class="font-bold text-xs text-slate-900 truncate">${plan.title}</div>
+          <div class="text-[11px] text-slate-400 font-mono font-medium mt-0.5">${plan.start}-${plan.end}</div>
         `;
         planCol.appendChild(leftBlock);
 
@@ -1215,7 +1416,7 @@
         }
 
         const rightBlock = document.createElement('div');
-        rightBlock.className = `absolute left-1 right-1 rounded-xl p-1.5 cursor-pointer transition-all duration-300 select-none ${
+        rightBlock.className = `absolute left-1.5 right-1.5 rounded-xl p-2 cursor-pointer transition-all duration-300 select-none overflow-hidden ${
           isActivated
             ? 'shadow-md ring-1 ring-emerald-500/30'
             : 'bg-slate-100/80 border border-dashed border-slate-300 text-slate-400 hover:border-slate-400'
@@ -1229,18 +1430,18 @@
           rightBlock.style.color = cat.text;
           rightBlock.innerHTML = `
             <div class="flex items-center justify-between">
-              <span class="font-bold text-[10px] truncate">${plan.title}</span>
-              <span class="w-3.5 h-3.5 rounded-full bg-emerald-500 text-white flex items-center justify-center text-[8px] font-bold">✓</span>
+              <span class="font-bold text-xs truncate">${plan.title}</span>
+              <span class="w-4 h-4 rounded-full bg-emerald-500 text-white flex items-center justify-center text-[10px] font-black">✓</span>
             </div>
-            <div class="text-[9px] font-mono opacity-90">${plan.start}-${plan.end} · 已点亮</div>
+            <div class="text-[10px] font-mono font-bold opacity-90 mt-0.5">${plan.start}-${plan.end} · ${t('status_lit_up')}</div>
           `;
         } else {
           rightBlock.innerHTML = `
             <div class="flex items-center justify-between">
-              <span class="font-medium text-[10px] truncate">${plan.title}</span>
-              <span class="text-[9px] text-slate-400">○</span>
+              <span class="font-bold text-xs truncate">${plan.title}</span>
+              <span class="text-xs text-slate-400">○</span>
             </div>
-            <div class="text-[8px] font-mono text-slate-400">点击点亮完成</div>
+            <div class="text-[10px] font-medium text-slate-400 mt-0.5">${t('status_click_to_light')}</div>
           `;
         }
 
@@ -1278,12 +1479,12 @@
       const presets = document.getElementById('countdown-presets');
 
       if (mode === 'countup') {
-        btnUp.className = 'px-3.5 py-1 rounded-lg text-xs font-bold bg-zinc-700 text-white transition-all';
-        btnDown.className = 'px-3.5 py-1 rounded-lg text-xs font-bold text-zinc-400 hover:text-white transition-all';
+        btnUp.className = 'px-4 py-1.5 rounded-xl text-xs font-bold bg-zinc-700 text-white transition-all';
+        btnDown.className = 'px-4 py-1.5 rounded-xl text-xs font-bold text-zinc-400 hover:text-white transition-all';
         presets.classList.add('hidden');
       } else {
-        btnDown.className = 'px-3.5 py-1 rounded-lg text-xs font-bold bg-zinc-700 text-white transition-all';
-        btnUp.className = 'px-3.5 py-1 rounded-lg text-xs font-bold text-zinc-400 hover:text-white transition-all';
+        btnDown.className = 'px-4 py-1.5 rounded-xl text-xs font-bold bg-zinc-700 text-white transition-all';
+        btnUp.className = 'px-4 py-1.5 rounded-xl text-xs font-bold text-zinc-400 hover:text-white transition-all';
         presets.classList.remove('hidden');
       }
       updateTimerDisplay(0);
@@ -1359,7 +1560,7 @@
             document.getElementById('timer-status-hint').innerText = '🎉 倒计时已完成！';
             if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
           }
-        }, 200); // 200ms tick to ensure prompt update without CPU waste
+        }, 200);
       }
     }
 
@@ -1375,6 +1576,16 @@
       document.getElementById('timer-play-text').innerText = t('btn_start_focus');
       document.getElementById('timer-status-hint').innerText = t('timer_hint_ready');
       updateTimerDisplay(0);
+    }
+
+    function promptCustomCountdown() {
+      const val = prompt(t('prompt_custom_minutes'), "30");
+      if (val) {
+        const mins = parseInt(val.trim(), 10);
+        if (!isNaN(mins) && mins > 0) {
+          setCountdownMinutes(Math.min(180, mins));
+        }
+      }
     }
 
     function openTimerTaskModal() {
@@ -1395,32 +1606,53 @@
       const panelCharts = document.getElementById('analytics-charts-panel');
 
       if (tab === 'heatmap') {
-        btnHeatmap.className = 'flex-1 py-1.5 text-xs font-semibold rounded-lg bg-blue-600 text-white transition-all';
-        btnCharts.className = 'flex-1 py-1.5 text-xs font-semibold rounded-lg text-slate-600 hover:text-slate-900 transition-all';
+        btnHeatmap.className = 'flex-1 py-2 text-xs font-bold rounded-xl bg-blue-600 text-white transition-all';
+        btnCharts.className = 'flex-1 py-2 text-xs font-bold rounded-xl text-slate-600 hover:text-slate-900 transition-all';
         panelHeatmap.classList.remove('hidden');
         panelCharts.classList.add('hidden');
         renderSubjectHeatmaps();
       } else {
-        btnCharts.className = 'flex-1 py-1.5 text-xs font-semibold rounded-lg bg-blue-600 text-white transition-all';
-        btnHeatmap.className = 'flex-1 py-1.5 text-xs font-semibold rounded-lg text-slate-600 hover:text-slate-900 transition-all';
+        btnCharts.className = 'flex-1 py-2 text-xs font-bold rounded-xl bg-blue-600 text-white transition-all';
+        btnHeatmap.className = 'flex-1 py-2 text-xs font-bold rounded-xl text-slate-600 hover:text-slate-900 transition-all';
         panelCharts.classList.remove('hidden');
         panelHeatmap.classList.add('hidden');
         renderCharts();
       }
     }
 
-    // A. 科目月度打卡方格矩阵 (自动提取首页创建的全部科目)
+    function changeHabitMonth(delta) {
+      appState.habitMonth += delta;
+      if (appState.habitMonth > 12) {
+        appState.habitMonth = 1;
+        appState.habitYear++;
+      } else if (appState.habitMonth < 1) {
+        appState.habitMonth = 12;
+        appState.habitYear--;
+      }
+      renderSubjectHeatmaps();
+    }
+
+    function goToCurrentHabitMonth() {
+      const now = new Date();
+      appState.habitYear = now.getFullYear();
+      appState.habitMonth = now.getMonth() + 1;
+      renderSubjectHeatmaps();
+    }
+
+    // A. 科目月度打卡方格矩阵 (自动提取首页创建的全部科目，支持历史/未来月份切换)
     function renderSubjectHeatmaps() {
       const list = document.getElementById('subject-heatmap-list');
       list.innerHTML = '';
 
-      const now = new Date();
-      const currentYear = now.getFullYear();
-      const currentMonth = now.getMonth() + 1;
+      const currentYear = appState.habitYear;
+      const currentMonth = appState.habitMonth;
       const daysInMonth = new Date(currentYear, currentMonth, 0).getDate();
-      const currentDay = now.getDate();
+      
+      const realNow = new Date();
+      const isViewingCurrentMonth = (realNow.getFullYear() === currentYear && (realNow.getMonth() + 1) === currentMonth);
+      const currentDay = isViewingCurrentMonth ? realNow.getDate() : -1;
 
-      document.getElementById('habit-month-label').innerText = `${currentYear} · ${currentMonth}${appState.lang === 'zh' ? '月' : ''}`;
+      document.getElementById('habit-month-label').innerText = `${currentYear} · ${String(currentMonth).padStart(2, '0')}${appState.lang === 'zh' ? '月' : ''}`;
 
       // Extract unique subject names from plans
       const uniqueSubjects = Array.from(new Set(appState.plans.map(p => p.title.trim()))).filter(Boolean);
@@ -1428,7 +1660,7 @@
       if (uniqueSubjects.length === 0) {
         list.innerHTML = `
           <div class="bg-white rounded-2xl border border-dashed border-slate-300 p-8 text-center text-xs text-slate-400">
-            <p class="mb-2">🌱 ${t('empty_subjects_hint')}</p>
+            <p class="mb-2 font-medium">🌱 ${t('empty_subjects_hint')}</p>
           </div>
         `;
         return;
@@ -1438,7 +1670,8 @@
         // Find all plans for this subject
         const subjectPlans = appState.plans.filter(p => p.title.trim() === subjectName);
         const firstPlan = subjectPlans[0];
-        const cat = CATEGORY_COLORS[firstPlan.category] || CATEGORY_COLORS['学习'];
+        const cat = CATEGORIES[firstPlan.category] || CATEGORIES['学习'];
+        const translatedCat = getCategoryName(firstPlan.category);
 
         // Days in current month where this subject was activated/completed
         const monthPrefix = `${currentYear}-${String(currentMonth).padStart(2, '0')}`;
@@ -1452,23 +1685,23 @@
         });
 
         const card = document.createElement('div');
-        card.className = 'bg-white rounded-2xl border border-slate-200 p-3 shadow-xs';
+        card.className = 'bg-white rounded-2xl border border-slate-200 p-3.5 shadow-xs';
 
         let squaresHtml = '';
         for (let d = 1; d <= 31; d++) {
           if (d > daysInMonth) {
-            squaresHtml += `<div class="aspect-square rounded-md bg-slate-50 opacity-20"></div>`;
+            squaresHtml += `<div class="aspect-square rounded-lg bg-slate-50 opacity-20"></div>`;
             continue;
           }
           const isDone = completedDays.has(d);
           const isToday = d === currentDay;
 
           squaresHtml += `
-            <div class="aspect-square rounded-md flex items-center justify-center text-[10px] font-semibold transition-all ${
+            <div class="aspect-square rounded-lg flex items-center justify-center text-xs font-bold transition-all ${
               isDone
                 ? 'text-white shadow-xs scale-95'
                 : 'bg-slate-100 text-slate-400'
-            } ${isToday && !isDone ? 'ring-1.5 ring-blue-400' : ''}" style="${isDone ? `background-color: ${cat.color}` : ''}">
+            } ${isToday && !isDone ? 'ring-2 ring-blue-500/80 font-black text-blue-600' : ''}" style="${isDone ? `background-color: ${cat.color}` : ''}">
               ${d}
             </div>
           `;
@@ -1477,13 +1710,13 @@
         const pct = Math.round((completedDays.size / daysInMonth) * 100);
 
         card.innerHTML = `
-          <div class="flex items-center justify-between mb-2">
+          <div class="flex items-center justify-between mb-2.5">
             <div class="flex items-center gap-2">
-              <span class="w-2.5 h-2.5 rounded-full" style="background:${cat.color}"></span>
-              <span class="text-xs font-bold text-slate-800">${subjectName}</span>
-              <span class="text-[9px] px-1.5 py-0.5 rounded-full font-medium" style="background:${cat.bg}; color:${cat.text}">${firstPlan.category}</span>
+              <span class="w-3 h-3 rounded-full shadow-xs" style="background:${cat.color}"></span>
+              <span class="text-sm font-black text-slate-900">${subjectName}</span>
+              <span class="text-xs px-2 py-0.5 rounded-full font-bold" style="background:${cat.bg}; color:${cat.text}">${translatedCat}</span>
             </div>
-            <span class="text-[11px] font-semibold text-slate-500">${completedDays.size}/${daysInMonth}天 (${pct}%)</span>
+            <span class="text-xs font-bold text-slate-500">${completedDays.size}/${daysInMonth} ${t('unit_days')} (${pct}%)</span>
           </div>
           <div class="grid grid-cols-7 sm:grid-cols-11 gap-1.5 pt-1">
             ${squaresHtml}
@@ -1504,9 +1737,9 @@
       ['day', 'week', 'month', 'year'].forEach(d => {
         const btn = document.getElementById(`chart-dim-${d}`);
         if (d === dim) {
-          btn.className = 'flex-1 py-1.5 rounded-lg bg-blue-600 text-white shadow-xs transition-all';
+          btn.className = 'flex-1 py-2 rounded-xl bg-blue-600 text-white shadow-xs transition-all';
         } else {
-          btn.className = 'flex-1 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 transition-all';
+          btn.className = 'flex-1 py-2 rounded-xl text-slate-600 hover:text-slate-900 transition-all';
         }
       });
       renderCharts();
@@ -1543,7 +1776,7 @@
         const pDate = new Date(plan.date);
         if (pDate.getFullYear() === currentYear) {
           const mIndex = pDate.getMonth();
-          const dur = timeToMinutes(plan.end) - timeToMinutes(plan.start);
+          const dur = timeToScaledMinutes(plan.end) - timeToScaledMinutes(plan.start);
           monthlyHours[mIndex] += (dur / 60);
           totalYearMinutes += dur;
           activeDaysSet.add(plan.date);
@@ -1568,13 +1801,13 @@
         prevTimestamp = ts;
       });
 
-      document.getElementById('yearly-active-days-val').innerHTML = `${activeDaysSet.size} <span class="text-xs font-medium text-blue-700">${t('unit_days')}</span>`;
-      document.getElementById('yearly-max-streak-val').innerHTML = `${maxStreak} <span class="text-xs font-medium text-amber-700">${t('unit_days')}</span>`;
+      document.getElementById('yearly-active-days-val').innerHTML = `${activeDaysSet.size} <span class="text-xs font-bold text-blue-700">${t('unit_days')}</span>`;
+      document.getElementById('yearly-max-streak-val').innerHTML = `${maxStreak} <span class="text-xs font-bold text-amber-700">${t('unit_days')}</span>`;
 
       const totalYearHours = (totalYearMinutes / 60).toFixed(1);
       document.getElementById('stat-sessions-count').innerText = activatedPlans.length;
-      document.getElementById('stat-total-hours').innerHTML = `${totalYearHours} <span class="text-[10px] font-normal text-slate-500">h</span>`;
-      document.getElementById('stat-avg-hours').innerHTML = `${(totalYearHours / 12).toFixed(1)} <span class="text-[10px] font-normal text-slate-500">h/m</span>`;
+      document.getElementById('stat-total-hours').innerHTML = `${totalYearHours} <span class="text-xs font-normal text-slate-500">h</span>`;
+      document.getElementById('stat-avg-hours').innerHTML = `${(totalYearHours / 12).toFixed(1)} <span class="text-xs font-normal text-slate-500">h/m</span>`;
 
       const monthLabels = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'];
       if (typeof Chart !== 'undefined') {
@@ -1620,33 +1853,34 @@
       let totalMinutes = 0;
 
       filtered.forEach(p => {
-        const dur = timeToMinutes(p.end) - timeToMinutes(p.start);
+        const dur = timeToScaledMinutes(p.end) - timeToScaledMinutes(p.start);
         catMinutes[p.category] = (catMinutes[p.category] || 0) + dur;
         totalMinutes += dur;
       });
 
       const totalHours = (totalMinutes / 60).toFixed(1);
       document.getElementById('stat-sessions-count').innerText = filtered.length;
-      document.getElementById('stat-total-hours').innerHTML = `${totalHours} <span class="text-[10px] font-normal text-slate-500">h</span>`;
+      document.getElementById('stat-total-hours').innerHTML = `${totalHours} <span class="text-xs font-normal text-slate-500">h</span>`;
       const divisor = dim === 'day' ? 1 : (dim === 'week' ? 7 : 30);
-      document.getElementById('stat-avg-hours').innerHTML = `${(totalHours / divisor).toFixed(1)} <span class="text-[10px] font-normal text-slate-500">h</span>`;
+      document.getElementById('stat-avg-hours').innerHTML = `${(totalHours / divisor).toFixed(1)} <span class="text-xs font-normal text-slate-500">h</span>`;
 
       const legendList = document.getElementById('category-legend-list');
       legendList.innerHTML = '';
-      const labels = Object.keys(catMinutes);
-      const dataHours = labels.map(k => (catMinutes[k] / 60).toFixed(1));
-      const colors = labels.map(k => CATEGORY_COLORS[k].color);
+      const rawKeys = Object.keys(catMinutes);
+      const translatedLabels = rawKeys.map(k => getCategoryName(k));
+      const dataHours = rawKeys.map(k => (catMinutes[k] / 60).toFixed(1));
+      const colors = rawKeys.map(k => CATEGORIES[k].color);
 
-      labels.forEach((label, idx) => {
+      rawKeys.forEach((key, idx) => {
         const hrs = dataHours[idx];
-        const pct = totalMinutes > 0 ? Math.round((catMinutes[label] / totalMinutes) * 100) : 0;
+        const pct = totalMinutes > 0 ? Math.round((catMinutes[key] / totalMinutes) * 100) : 0;
         legendList.innerHTML += `
-          <div class="flex items-center justify-between p-1.5 bg-slate-50 rounded-lg">
-            <div class="flex items-center gap-1.5">
-              <span class="w-2 h-2 rounded-full" style="background:${colors[idx]}"></span>
-              <span class="font-medium text-slate-700">${label}</span>
+          <div class="flex items-center justify-between p-2 bg-slate-50 rounded-xl">
+            <div class="flex items-center gap-2">
+              <span class="w-2.5 h-2.5 rounded-full" style="background:${colors[idx]}"></span>
+              <span class="font-bold text-slate-700 text-xs">${translatedLabels[idx]}</span>
             </div>
-            <div class="font-semibold text-slate-800">${hrs}h <span class="text-[10px] text-slate-400 font-normal">(${pct}%)</span></div>
+            <div class="font-bold text-slate-900 text-xs">${hrs}h <span class="text-[10px] text-slate-400 font-normal">(${pct}%)</span></div>
           </div>
         `;
       });
@@ -1661,7 +1895,7 @@
         pieChartInstance = new Chart(pCtx, {
           type: 'doughnut',
           data: {
-            labels: labels,
+            labels: translatedLabels,
             datasets: [{
               data: totalMinutes > 0 ? dataHours : [1, 1, 1, 1, 1],
               backgroundColor: totalMinutes > 0 ? colors : ['#E2E8F0', '#E2E8F0', '#E2E8F0', '#E2E8F0', '#E2E8F0'],
@@ -1684,7 +1918,7 @@
         const dayHoursData = weekDays.map(d => {
           const dPlans = filtered.filter(p => p.date === d.dateStr);
           let m = 0;
-          dPlans.forEach(p => m += (timeToMinutes(p.end) - timeToMinutes(p.start)));
+          dPlans.forEach(p => m += (timeToScaledMinutes(p.end) - timeToScaledMinutes(p.start)));
           return parseFloat((m / 60).toFixed(1));
         });
 
@@ -1717,20 +1951,44 @@
     }
 
     /* --------------------------------------------------------------------------
-       11. MODAL: Add / Edit Plan Block (含周重复与截止月份)
+       11. MODAL: Add / Edit Plan Block (09:00 ~ 03:00)
        -------------------------------------------------------------------------- */
+    function populateRepeatWeekdayCheckboxes(checkedIndices = [0]) {
+      const container = document.getElementById('repeat-weekday-checkboxes');
+      if (!container) return;
+      container.innerHTML = '';
+      const dayShort = I18N[appState.lang].days_short;
+      for (let i = 0; i < 7; i++) {
+        const isChecked = checkedIndices.includes(i);
+        const col = document.createElement('label');
+        col.className = 'flex flex-col items-center justify-center p-1 rounded-lg bg-white border border-slate-200 cursor-pointer hover:bg-slate-50 text-center select-none';
+        col.innerHTML = `
+          <span class="text-[11px] font-bold text-slate-700 mb-1">${dayShort[i]}</span>
+          <input type="checkbox" value="${i}" class="repeat-day-chk w-3.5 h-3.5 text-blue-600 rounded" ${isChecked ? 'checked' : ''}>
+        `;
+        container.appendChild(col);
+      }
+    }
+
     function openAddPlanModal() {
       document.getElementById('modal-edit-plan-id').value = '';
       document.getElementById('modal-plan-title-head').innerText = t('modal_add_plan_title');
       document.getElementById('modal-plan-title').value = '';
       document.getElementById('modal-plan-date').value = appState.activeDateStr;
+      
+      // 新建模式：保留“取消”和“保存计划”，隐藏“删除”
       document.getElementById('btn-delete-plan').classList.add('hidden');
+      document.getElementById('modal-btn-cancel').classList.remove('hidden');
       document.getElementById('repeat-settings-box').classList.remove('hidden');
 
-      // Populate Start and End Selectors (06:00 to 24:00 by 30 mins)
+      populateCategoryOptions();
       populateTimeSelects('09:00', '10:30');
 
-      // Set default repeat until end of current year
+      // 默认勾选当前选中日期的星期
+      const selDate = parseDateYMD(appState.activeDateStr);
+      const selDayIdx = (selDate.getDay() + 6) % 7;
+      populateRepeatWeekdayCheckboxes([selDayIdx]);
+
       const now = new Date();
       const defaultUntil = `${now.getFullYear()}-12`;
       document.getElementById('modal-repeat-until').value = defaultUntil;
@@ -1744,11 +2002,42 @@
       document.getElementById('modal-edit-plan-id').value = plan.id;
       document.getElementById('modal-plan-title-head').innerText = t('modal_edit_plan_title');
       document.getElementById('modal-plan-title').value = plan.title;
+      populateCategoryOptions();
       document.getElementById('modal-plan-category').value = plan.category;
       document.getElementById('modal-plan-date').value = plan.date;
+
+      // 编辑模式：底部仅保留“删除”和“保存计划”，删除底部的“取消”按钮（右上角X保留）
       document.getElementById('btn-delete-plan').classList.remove('hidden');
-      // In single-edit mode, hide batch repeat box for cleaner UX
-      document.getElementById('repeat-settings-box').classList.add('hidden');
+      document.getElementById('modal-btn-cancel').classList.add('hidden');
+      
+      // 【修改需求2】：取消对 repeat-settings-box 的隐藏限制，允许用户重新选择或修改重复星期与截止月份
+      document.getElementById('repeat-settings-box').classList.remove('hidden');
+
+      if (plan.groupId) {
+        // 提取该周期内的所有重复星期与最大截止月份
+        const groupPlans = appState.plans.filter(p => p.groupId === plan.groupId);
+        const checkedIndices = new Set();
+        let maxYearMonth = '';
+        groupPlans.forEach(p => {
+          const d = parseDateYMD(p.date);
+          const dayIdx = (d.getDay() + 6) % 7;
+          checkedIndices.add(dayIdx);
+          const ym = p.date.substring(0, 7);
+          if (ym > maxYearMonth) maxYearMonth = ym;
+        });
+
+        document.getElementById('modal-repeat-weekly').checked = true;
+        populateRepeatWeekdayCheckboxes(Array.from(checkedIndices));
+        document.getElementById('modal-repeat-until').value = maxYearMonth || `${new Date().getFullYear()}-12`;
+      } else {
+        // 单个独立时间块：默认关闭重复，允许用户自主开启每周重复
+        const d = parseDateYMD(plan.date);
+        const dayIdx = (d.getDay() + 6) % 7;
+        document.getElementById('modal-repeat-weekly').checked = false;
+        populateRepeatWeekdayCheckboxes([dayIdx]);
+        document.getElementById('modal-repeat-until').value = `${new Date().getFullYear()}-12`;
+      }
+      toggleRepeatOptions();
 
       populateTimeSelects(plan.start, plan.end);
       document.getElementById('modal-plan').classList.remove('hidden');
@@ -1760,35 +2049,42 @@
       startSelect.innerHTML = '';
       endSelect.innerHTML = '';
 
-      for (let h = 6; h <= 23; h++) {
-        ['00', '30'].forEach(m => {
-          const tStr = `${String(h).padStart(2, '0')}:${m}`;
-          startSelect.innerHTML += `<option value="${tStr}">${tStr}</option>`;
-        });
+      // Sequence of hours: 09, 10, ..., 23, 00, 01, 02, 03
+      const allSlots = [];
+      for (let h = START_HOUR; h <= END_HOUR_EXTENDED; h++) {
+        const displayH = h >= 24 ? String(h - 24).padStart(2, '0') : String(h).padStart(2, '0');
+        allSlots.push(`${displayH}:00`);
+        if (h < END_HOUR_EXTENDED) {
+          allSlots.push(`${displayH}:30`);
+        }
       }
-      for (let h = 6; h <= 24; h++) {
-        ['00', '30'].forEach(m => {
-          if (h === 24 && m === '30') return;
-          const tStr = `${String(h).padStart(2, '0')}:${m}`;
-          endSelect.innerHTML += `<option value="${tStr}">${tStr}</option>`;
-        });
-      }
-      startSelect.value = selectedStart;
-      endSelect.value = selectedEnd;
+
+      // Start select: up to 02:30
+      allSlots.slice(0, allSlots.length - 1).forEach(slot => {
+        startSelect.innerHTML += `<option value="${slot}">${slot}</option>`;
+      });
+
+      // End select: from 09:30 to 03:00
+      allSlots.slice(1).forEach(slot => {
+        endSelect.innerHTML += `<option value="${slot}">${slot}</option>`;
+      });
+
+      startSelect.value = selectedStart || '09:00';
+      endSelect.value = selectedEnd || '10:30';
     }
 
     function toggleRepeatOptions() {
       const isChecked = document.getElementById('modal-repeat-weekly').checked;
-      const untilBox = document.getElementById('repeat-until-box');
-      if (isChecked) untilBox.classList.remove('opacity-40', 'pointer-events-none');
-      else untilBox.classList.add('opacity-40', 'pointer-events-none');
+      const subOptions = document.getElementById('repeat-sub-options');
+      if (isChecked) subOptions.classList.remove('opacity-40', 'pointer-events-none');
+      else subOptions.classList.add('opacity-40', 'pointer-events-none');
     }
 
     function savePlanBlock() {
       const editId = document.getElementById('modal-edit-plan-id').value;
       const title = document.getElementById('modal-plan-title').value.trim();
       if (!title) {
-        showToast("请输入事件名称");
+        showToast("请输入事件名称 / Please enter task name");
         return;
       }
       const category = document.getElementById('modal-plan-category').value;
@@ -1796,15 +2092,55 @@
       const start = document.getElementById('modal-plan-start').value;
       const end = document.getElementById('modal-plan-end').value;
 
-      if (timeToMinutes(end) <= timeToMinutes(start)) {
-        showToast("结束时间必须晚于开始时间");
+      if (timeToScaledMinutes(end) <= timeToScaledMinutes(start)) {
+        showToast("结束时间必须晚于开始时间 / End time must be after start time");
         return;
       }
 
       if (editId) {
-        // Edit Existing Single Block
         const existing = appState.plans.find(p => p.id === editId);
-        if (existing) {
+        if (!existing) return;
+
+        // 【修改需求3】：若该计划属于重复周期任务（含 groupId），弹出范围选择提示
+        if (existing.groupId) {
+          document.getElementById('edit-opt-single').checked = true;
+          document.getElementById('modal-edit-scope').classList.remove('hidden');
+          return;
+        }
+
+        // 若原计划无 groupId，检查用户是否在本次编辑中开启了“每周重复”
+        const isRepeat = document.getElementById('modal-repeat-weekly').checked;
+        const repeatUntilMonth = document.getElementById('modal-repeat-until').value;
+        const checkedDayNodes = document.querySelectorAll('.repeat-day-chk:checked');
+        const checkedDays = Array.from(checkedDayNodes).map(el => parseInt(el.value, 10));
+
+        if (isRepeat && repeatUntilMonth && checkedDays.length > 0) {
+          const groupId = 'grp_' + Date.now();
+          appState.plans = appState.plans.filter(p => p.id !== editId);
+          appState.activatedBlockIds = appState.activatedBlockIds.filter(id => id !== editId);
+
+          const [uYear, uMonth] = repeatUntilMonth.split('-').map(Number);
+          const endOfMonthDate = new Date(uYear, uMonth, 0, 23, 59, 59);
+
+          let currDate = parseDateYMD(startDateStr);
+          while (currDate <= endOfMonthDate) {
+            const dayIdx = (currDate.getDay() + 6) % 7;
+            if (checkedDays.includes(dayIdx)) {
+              const dateStr = formatDateYMD(currDate);
+              appState.plans.push({
+                id: 'plan_' + Date.now() + Math.random().toString(36).substring(2, 7),
+                groupId: groupId,
+                date: dateStr,
+                title: title,
+                category: category,
+                start: start,
+                end: end
+              });
+            }
+            currDate.setDate(currDate.getDate() + 1);
+          }
+        } else {
+          // 单个独立时间块更新
           existing.title = title;
           existing.category = category;
           existing.date = startDateStr;
@@ -1812,30 +2148,34 @@
           existing.end = end;
         }
       } else {
-        // Create New Block (With Weekly Recurrence Engine)
+        // Create New Block (With Weekly Recurrence Engine by Weekdays)
         const isRepeat = document.getElementById('modal-repeat-weekly').checked;
         const repeatUntilMonth = document.getElementById('modal-repeat-until').value; // YYYY-MM
         const groupId = 'grp_' + Date.now();
 
-        if (isRepeat && repeatUntilMonth) {
-          // Calculate all recurring weekly dates until end of specified month
-          const [uYear, uMonth] = repeatUntilMonth.split('-').map(Number);
-          const endOfMonthDate = new Date(uYear, uMonth, 0, 23, 59, 59); // Last day of month
+        const checkedDayNodes = document.querySelectorAll('.repeat-day-chk:checked');
+        const checkedDays = Array.from(checkedDayNodes).map(el => parseInt(el.value, 10));
 
-          let currDate = new Date(startDateStr);
+        if (isRepeat && repeatUntilMonth && checkedDays.length > 0) {
+          const [uYear, uMonth] = repeatUntilMonth.split('-').map(Number);
+          const endOfMonthDate = new Date(uYear, uMonth, 0, 23, 59, 59);
+
+          let currDate = parseDateYMD(startDateStr);
           while (currDate <= endOfMonthDate) {
-            const dateStr = formatDateYMD(currDate);
-            appState.plans.push({
-              id: 'plan_' + Date.now() + Math.random().toString(36).substring(2, 7),
-              groupId: groupId,
-              date: dateStr,
-              title: title,
-              category: category,
-              start: start,
-              end: end
-            });
-            // Advance by 7 days
-            currDate.setDate(currDate.getDate() + 7);
+            const dayIdx = (currDate.getDay() + 6) % 7;
+            if (checkedDays.includes(dayIdx)) {
+              const dateStr = formatDateYMD(currDate);
+              appState.plans.push({
+                id: 'plan_' + Date.now() + Math.random().toString(36).substring(2, 7),
+                groupId: groupId,
+                date: dateStr,
+                title: title,
+                category: category,
+                start: start,
+                end: end
+              });
+            }
+            currDate.setDate(currDate.getDate() + 1);
           }
         } else {
           // Single Date Block
@@ -1859,26 +2199,147 @@
       showToast(t('toast_plan_saved'));
     }
 
-    function deleteCurrentEditPlan() {
+    // 【修改需求3】：处理带范围选择（仅单块 vs 整个周期）的保存操作
+    function executeSavePlanWithScope() {
+      const editId = document.getElementById('modal-edit-plan-id').value;
+      if (!editId) return;
+
+      const existing = appState.plans.find(p => p.id === editId);
+      if (!existing) return;
+
+      const title = document.getElementById('modal-plan-title').value.trim();
+      const category = document.getElementById('modal-plan-category').value;
+      const startDateStr = document.getElementById('modal-plan-date').value;
+      const start = document.getElementById('modal-plan-start').value;
+      const end = document.getElementById('modal-plan-end').value;
+
+      const scope = document.querySelector('input[name="edit_scope"]:checked')?.value || 'single';
+
+      if (scope === 'single') {
+        // 选项一：仅修改这一个时间块（脱离原 groupId，避免后续被批量周期影响）
+        existing.groupId = null;
+        existing.title = title;
+        existing.category = category;
+        existing.date = startDateStr;
+        existing.start = start;
+        existing.end = end;
+      } else {
+        // 选项二：同步修改该周期内的所有重复时间块
+        const targetGroupId = existing.groupId;
+        const isRepeat = document.getElementById('modal-repeat-weekly').checked;
+        const repeatUntilMonth = document.getElementById('modal-repeat-until').value;
+        const checkedDayNodes = document.querySelectorAll('.repeat-day-chk:checked');
+        const checkedDays = Array.from(checkedDayNodes).map(el => parseInt(el.value, 10));
+
+        if (isRepeat && repeatUntilMonth && checkedDays.length > 0) {
+          // 保留已打卡记录关联的日期
+          const completedDates = new Set();
+          appState.plans.forEach(p => {
+            if (p.groupId === targetGroupId && appState.activatedBlockIds.includes(p.id)) {
+              completedDates.add(p.date);
+            }
+          });
+
+          // 寻找该周期的最早起始日期
+          const groupPlans = appState.plans.filter(p => p.groupId === targetGroupId);
+          let earliestDateStr = startDateStr;
+          groupPlans.forEach(p => {
+            if (p.date < earliestDateStr) earliestDateStr = p.date;
+          });
+
+          // 移除旧周期块与对应打卡记录
+          const oldGroupPlanIds = groupPlans.map(p => p.id);
+          appState.plans = appState.plans.filter(p => p.groupId !== targetGroupId);
+          appState.activatedBlockIds = appState.activatedBlockIds.filter(id => !oldGroupPlanIds.includes(id));
+
+          // 重新生成新周期计划
+          const [uYear, uMonth] = repeatUntilMonth.split('-').map(Number);
+          const endOfMonthDate = new Date(uYear, uMonth, 0, 23, 59, 59);
+
+          let currDate = parseDateYMD(earliestDateStr);
+          while (currDate <= endOfMonthDate) {
+            const dayIdx = (currDate.getDay() + 6) % 7;
+            if (checkedDays.includes(dayIdx)) {
+              const dateStr = formatDateYMD(currDate);
+              const newPlanId = 'plan_' + Date.now() + Math.random().toString(36).substring(2, 7);
+              appState.plans.push({
+                id: newPlanId,
+                groupId: targetGroupId,
+                date: dateStr,
+                title: title,
+                category: category,
+                start: start,
+                end: end
+              });
+              if (completedDates.has(dateStr)) {
+                appState.activatedBlockIds.push(newPlanId);
+              }
+            }
+            currDate.setDate(currDate.getDate() + 1);
+          }
+        } else {
+          // 若取消了每周重复，则更新同组所有时间块的文本与时间段
+          appState.plans.forEach(p => {
+            if (p.groupId === targetGroupId) {
+              p.title = title;
+              p.category = category;
+              p.start = start;
+              p.end = end;
+            }
+          });
+        }
+      }
+
+      saveState();
+      closeModal('modal-edit-scope');
+      closeModal('modal-plan');
+      renderTimetable();
+      renderPlanActual();
+      renderSubjectHeatmaps();
+      renderCharts();
+      showToast(t('toast_plan_saved'));
+    }
+
+    function promptDeletePlan() {
       const editId = document.getElementById('modal-edit-plan-id').value;
       if (!editId) return;
 
       const plan = appState.plans.find(p => p.id === editId);
-      if (plan && plan.groupId) {
-        const choice = confirm("该时间块属于每周重复系列。\n点击【确定】删除此周期的所有时间块；\n点击【取消】仅删除当前这一个。");
-        if (choice) {
+      if (!plan) return;
+
+      appState.pendingDeletePlanId = editId;
+
+      const seriesBox = document.getElementById('delete-series-options');
+      if (plan.groupId) {
+        seriesBox.classList.remove('hidden');
+        document.getElementById('del-opt-single').checked = true;
+      } else {
+        seriesBox.classList.add('hidden');
+      }
+
+      document.getElementById('modal-delete-confirm').classList.remove('hidden');
+    }
+
+    function executeDeletePlan() {
+      const editId = appState.pendingDeletePlanId;
+      if (!editId) return;
+
+      const plan = appState.plans.find(p => p.id === editId);
+      if (plan) {
+        const scope = document.querySelector('input[name="delete_scope"]:checked')?.value || 'single';
+        if (scope === 'series' && plan.groupId) {
+          const groupPlans = appState.plans.filter(p => p.groupId === plan.groupId);
+          const groupIds = groupPlans.map(p => p.id);
           appState.plans = appState.plans.filter(p => p.groupId !== plan.groupId);
-          appState.activatedBlockIds = appState.activatedBlockIds.filter(id => !id.startsWith(plan.groupId));
+          appState.activatedBlockIds = appState.activatedBlockIds.filter(id => !groupIds.includes(id));
         } else {
           appState.plans = appState.plans.filter(p => p.id !== editId);
           appState.activatedBlockIds = appState.activatedBlockIds.filter(id => id !== editId);
         }
-      } else {
-        appState.plans = appState.plans.filter(p => p.id !== editId);
-        appState.activatedBlockIds = appState.activatedBlockIds.filter(id => id !== editId);
       }
 
       saveState();
+      closeModal('modal-delete-confirm');
       closeModal('modal-plan');
       renderTimetable();
       renderPlanActual();
@@ -1892,7 +2353,7 @@
        -------------------------------------------------------------------------- */
     function openExportModal() {
       const exportData = {
-        version: "PlanFlow_v4",
+        version: "Planner_v5",
         exportAt: new Date().toISOString(),
         lang: appState.lang,
         plans: appState.plans,
@@ -1909,7 +2370,7 @@
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `planflow_backup_${TODAY_STR}.json`;
+      a.download = `planner_backup_${getTodayStr()}.json`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
@@ -1975,10 +2436,7 @@
 
           saveState();
           closeModal('modal-import');
-          renderTimetable();
-          renderPlanActual();
-          renderSubjectHeatmaps();
-          renderCharts();
+          changeLanguage(appState.lang);
           showToast(t('toast_backup_imported'));
         } else {
           showToast("备份格式无效，未找到计划数据！");
@@ -2015,6 +2473,13 @@
        -------------------------------------------------------------------------- */
     window.addEventListener('DOMContentLoaded', () => {
       loadState();
+      // 实时获取手机当天真实日期，彻底避免停留于过期日期
+      const now = new Date();
+      appState.activeDateStr = formatDateYMD(now);
+      appState.currentWeekStart = formatDateYMD(getMonday(now));
+      appState.habitYear = now.getFullYear();
+      appState.habitMonth = now.getMonth() + 1;
+
       changeLanguage(appState.lang);
       renderTimetable();
       renderPlanActual();
