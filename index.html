@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>Planner</title>
-  <link rel="manifest" href="manifest.json">
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Chart.js CDN -->
@@ -122,6 +121,153 @@
     }
     .animate-fade-in {
       animation: fadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    /* Mobile Landscape Mode Optimization for Focus Timer (Reference Desktop Flip Clock) */
+    @media (orientation: landscape) {
+      html, body {
+        background: #000000 !important;
+        background-color: #000000 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        overflow: hidden !important;
+        width: 100vw !important;
+        height: 100vh !important;
+      }
+      body #app-container,
+      body nav {
+        display: none !important;
+      }
+      #view-timer {
+        position: fixed !important;
+        inset: 0 !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        width: 100vw !important;
+        height: 100vh !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        background: #000000 !important;
+        background-color: #000000 !important;
+        z-index: 99999 !important;
+        border: none !important;
+        outline: none !important;
+        box-shadow: none !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+      }
+      #view-timer .timer-hide-in-landscape {
+        display: none !important;
+      }
+      #view-timer .timer-center-core {
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100vw !important;
+        height: 100vh !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+      }
+      #view-timer .timer-digits-container {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        width: 100vw !important;
+        height: 100vh !important;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+      #view-timer .timer-pair {
+        display: flex !important;
+        margin: 0 1.2vw !important;
+      }
+      #view-timer .timer-digit-card {
+        width: 13.8vw !important;
+        height: 76vh !important;
+        font-size: 16.5vw !important;
+        line-height: 1 !important;
+        border-radius: 1.8vw !important;
+        box-shadow: 0 16px 40px rgba(0, 0, 0, 0.95), inset 0 2px 2px rgba(255, 255, 255, 0.12) !important;
+        margin: 0 0.35vw !important;
+        background: #1C1C1E !important;
+        color: #FFFFFF !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+      }
+      #view-timer .timer-digit-card::after {
+        content: '' !important;
+        position: absolute !important;
+        top: calc(50% - 1.5px) !important;
+        left: 0 !important;
+        right: 0 !important;
+        height: 3px !important;
+        background: rgba(0, 0, 0, 0.95) !important;
+        box-shadow: 0 1px 0 rgba(255, 255, 255, 0.15) !important;
+        z-index: 2 !important;
+      }
+      #view-timer .timer-colon {
+        display: none !important;
+      }
+    }
+
+    /* Study Buddy Keyframe Animations (Reference Images 2 & 3) */
+    @keyframes buddyBreath {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(2px); }
+    }
+    @keyframes buddyNod {
+      0%, 100% { transform: rotate(0deg) translateY(0); }
+      50% { transform: rotate(-2deg) translateY(1.5px); }
+    }
+    @keyframes pencilScribble {
+      0%, 100% { transform: translate(0, 0) rotate(0deg); }
+      25% { transform: translate(1.5px, -1px) rotate(-3deg); }
+      75% { transform: translate(-1px, 1px) rotate(2deg); }
+    }
+    @keyframes floatZ {
+      0% { opacity: 0; transform: translate(0, 0) scale(0.7); }
+      40% { opacity: 0.9; }
+      100% { opacity: 0; transform: translate(10px, -20px) scale(1.15); }
+    }
+    @keyframes lanternGlow {
+      0%, 100% { opacity: 0.85; filter: drop-shadow(0 0 6px rgba(254, 240, 138, 0.7)); }
+      50% { opacity: 1; filter: drop-shadow(0 0 10px rgba(254, 240, 138, 0.95)); }
+    }
+    @keyframes twinkleSparkle {
+      0%, 100% { opacity: 0.2; transform: scale(0.8); }
+      50% { opacity: 1; transform: scale(1.2); }
+    }
+
+    .anim-buddy-sleep {
+      animation: buddyBreath 3s ease-in-out infinite;
+    }
+    .anim-buddy-study {
+      animation: buddyNod 2.2s ease-in-out infinite;
+      transform-origin: 50% 90%;
+    }
+    .anim-pencil {
+      animation: pencilScribble 0.8s ease-in-out infinite;
+      transform-origin: center bottom;
+    }
+    .anim-float-z1 {
+      animation: floatZ 2.4s ease-out infinite;
+    }
+    .anim-float-z2 {
+      animation: floatZ 2.4s ease-out 0.8s infinite;
+    }
+    .anim-float-z3 {
+      animation: floatZ 2.4s ease-out 1.6s infinite;
+    }
+    .anim-lantern {
+      animation: lanternGlow 2.5s ease-in-out infinite;
+    }
+    .anim-sparkle {
+      animation: twinkleSparkle 1.6s ease-in-out infinite;
     }
   </style>
 </head>
@@ -273,82 +419,6 @@
     </section>
 
     <!-- ==========================================================================
-         VIEW 3: 第三页：专注计时器 (Timer Screen · 还原翻页钟黑底白字视觉)
-         1. 绝对时间戳计算防锁屏假死！
-         2. 全屏纯黑背景 (#000000) + 深灰圆角底牌 (#1C1C1E) + 大号纯白粗体！
-         ========================================================================== -->
-    <section id="view-timer" class="view-panel fixed inset-0 bg-[#000000] text-white z-50 flex flex-col items-center justify-between p-6 pb-24 select-none hidden">
-      <!-- Top Mode Switcher -->
-      <div class="w-full flex items-center justify-between text-slate-400">
-        <button onclick="switchView('timetable')" class="w-10 h-10 flex items-center justify-center rounded-full bg-zinc-800/90 text-zinc-200 hover:text-white active:scale-95 text-base">
-          ←
-        </button>
-
-        <div class="flex bg-zinc-900 rounded-2xl p-1 border border-zinc-800">
-          <button id="btn-mode-countup" onclick="setTimerMode('countup')" class="px-4 py-1.5 rounded-xl text-xs font-bold bg-zinc-700 text-white transition-all" data-i18n="timer_mode_countup">正计时</button>
-          <button id="btn-mode-countdown" onclick="setTimerMode('countdown')" class="px-4 py-1.5 rounded-xl text-xs font-bold text-zinc-400 hover:text-white transition-all" data-i18n="timer_mode_countdown">倒计时</button>
-        </div>
-
-        <div class="w-10"></div>
-      </div>
-
-      <!-- Current Focus Subject -->
-      <div class="flex flex-col items-center mt-2">
-        <div onclick="openTimerTaskModal()" class="flex items-center gap-2.5 bg-zinc-900/90 border border-zinc-800 rounded-full px-5 py-2 cursor-pointer hover:bg-zinc-800 transition-all active:scale-95">
-          <span class="w-3 h-3 rounded-full bg-blue-500 shadow-xs"></span>
-          <span id="timer-task-name" class="text-base font-bold text-zinc-100">深度专注</span>
-          <span class="text-xs text-zinc-500">▼</span>
-        </div>
-        <span class="text-xs text-zinc-500 mt-1.5" data-i18n="timer_hint_switch">点击自定义当前专注事项</span>
-      </div>
-
-      <!-- Classic Flip-Clock Style Centerpiece (HH : MM : SS) -->
-      <div class="my-auto flex flex-col items-center">
-        <div class="flex items-center gap-2 sm:gap-3">
-          <!-- Hours -->
-          <div class="flex">
-            <div class="timer-digit-card" id="time-h1">0</div>
-            <div class="timer-digit-card" id="time-h2">0</div>
-          </div>
-          <span class="text-zinc-600 font-bold text-2xl mb-1 animate-pulse">:</span>
-          <!-- Minutes -->
-          <div class="flex">
-            <div class="timer-digit-card" id="time-m1">0</div>
-            <div class="timer-digit-card" id="time-m2">0</div>
-          </div>
-          <span class="text-zinc-600 font-bold text-2xl mb-1 animate-pulse">:</span>
-          <!-- Seconds -->
-          <div class="flex">
-            <div class="timer-digit-card" id="time-s1">0</div>
-            <div class="timer-digit-card" id="time-s2">0</div>
-          </div>
-        </div>
-
-        <!-- Presets for Countdown (15m, 25m, 45m, 60m, Custom) -->
-        <div id="countdown-presets" class="flex items-center gap-1.5 sm:gap-2 mt-6 hidden">
-          <button onclick="setCountdownMinutes(15)" class="px-3 py-1.5 rounded-full bg-zinc-900 text-xs font-bold text-zinc-300 border border-zinc-800 hover:bg-zinc-800 active:scale-95">15m</button>
-          <button onclick="setCountdownMinutes(25)" class="px-3 py-1.5 rounded-full bg-zinc-700 text-xs font-bold text-white border border-zinc-600 hover:bg-zinc-600 active:scale-95">25m</button>
-          <button onclick="setCountdownMinutes(45)" class="px-3 py-1.5 rounded-full bg-zinc-900 text-xs font-bold text-zinc-300 border border-zinc-800 hover:bg-zinc-800 active:scale-95">45m</button>
-          <button onclick="setCountdownMinutes(60)" class="px-3 py-1.5 rounded-full bg-zinc-900 text-xs font-bold text-zinc-300 border border-zinc-800 hover:bg-zinc-800 active:scale-95">60m</button>
-          <button onclick="promptCustomCountdown()" class="px-3 py-1.5 rounded-full bg-blue-900/40 text-xs font-bold text-blue-300 border border-blue-700/60 hover:bg-blue-800/50 active:scale-95" data-i18n="btn_custom_timer">自定义</button>
-        </div>
-
-        <p id="timer-status-hint" class="text-xs text-zinc-400 mt-6 tracking-widest uppercase font-semibold" data-i18n="timer_hint_ready">准备就绪 · 保持专注</p>
-      </div>
-
-      <!-- Pure Focus Controls -->
-      <div class="w-full max-w-xs flex items-center gap-3 mb-2">
-        <button id="btn-timer-toggle" onclick="toggleTimer()" class="flex-1 py-4 rounded-2xl bg-white text-zinc-950 font-black text-base hover:bg-zinc-200 active:scale-95 shadow-xl transition-all flex items-center justify-center gap-2">
-          <span id="timer-play-icon">▶</span>
-          <span id="timer-play-text" data-i18n="btn_start_focus">开始专注</span>
-        </button>
-        <button onclick="resetTimer()" class="w-14 h-14 rounded-2xl bg-zinc-900 text-zinc-300 hover:text-white hover:bg-zinc-800 active:scale-95 text-lg border border-zinc-800 flex items-center justify-center font-bold" title="重置">
-          ↺
-        </button>
-      </div>
-    </section>
-
-    <!-- ==========================================================================
          VIEW 4: 第四页：统计打卡与趋势 (Analytics & Habit Tracker)
          1. 右上角设置“导出备份”与“导入恢复”按钮 (双重保障)
             韩文简化缩短为：백업 与 복원
@@ -362,13 +432,11 @@
           <h1 class="text-lg font-black text-slate-900 tracking-tight" data-i18n="analytics_title">数据统计与打卡</h1>
         </div>
 
-        <!-- Export & Import Buttons (Dual-protection) -->
-        <div class="flex items-center gap-2">
-          <button onclick="openExportModal()" class="px-3 py-1.5 text-xs font-bold bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 rounded-xl shadow-xs active:scale-95 flex items-center gap-1.5 transition-all" title="导出备份">
-            <span>💾</span> <span data-i18n="btn_export">导出备份</span>
-          </button>
-          <button onclick="openImportModal()" class="px-3 py-1.5 text-xs font-bold bg-blue-50 border border-blue-200 hover:bg-blue-100 text-blue-700 rounded-xl shadow-xs active:scale-95 flex items-center gap-1.5 transition-all" title="导入恢复">
-            <span>📂</span> <span data-i18n="btn_import">导入恢复</span>
+        <!-- Unified Backup Button (Requirement 1) -->
+        <div class="flex items-center gap-1.5 sm:gap-2">
+          <!-- Unified Backup Button (Combines Export & Import into one modal) -->
+          <button onclick="openBackupModal()" class="px-2.5 sm:px-3 py-1.5 text-xs font-bold bg-blue-50 border border-blue-200 hover:bg-blue-100 text-blue-700 rounded-xl shadow-xs active:scale-95 flex items-center gap-1.5 transition-all" title="数据备份">
+            <span>💾</span> <span data-i18n="btn_backup_unified">备份</span>
           </button>
         </div>
       </div>
@@ -464,6 +532,23 @@
             <div id="category-legend-list" class="grid grid-cols-2 gap-2 mt-3 pt-3 border-t border-slate-100 text-xs font-medium"></div>
           </div>
 
+          <!-- Detailed Tasks Visual Chart (Requirement 2) -->
+          <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="text-xs font-bold text-slate-800 flex items-center gap-1.5">
+                <span>📊</span> <span data-i18n="detailed_tasks_title">具体任务时长分布</span>
+              </h3>
+              <span class="text-xs text-slate-400 font-medium" id="tasks-table-count">0 项</span>
+            </div>
+            <div class="relative h-56 flex items-center justify-center">
+              <canvas id="tasksDoughnutChart"></canvas>
+              <div id="tasks-chart-empty-hint" class="hidden absolute inset-0 flex items-center justify-center text-xs text-slate-400" data-i18n="chart_empty_hint">
+                暂无实际完成数据，请在第二页点亮完成
+              </div>
+            </div>
+            <div id="tasks-legend-list" class="grid grid-cols-2 gap-2 mt-3 pt-3 border-t border-slate-100 text-xs font-medium"></div>
+          </div>
+
           <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm">
             <div class="flex items-center justify-between mb-2">
               <h3 class="text-xs font-bold text-slate-800 flex items-center gap-1.5">
@@ -480,6 +565,88 @@
     </section>
 
   </main>
+
+  <!-- ==========================================================================
+       VIEW 3: 第三页：专注计时器 (Timer Screen · 还原翻页钟大字视觉与角落小角色)
+       ========================================================================== -->
+  <section id="view-timer" class="view-panel fixed inset-0 bg-[#000000] text-white z-50 flex flex-col justify-between p-5 pb-24 select-none hidden" onclick="handleTimerBgClick(event)">
+    <!-- Top Mode Switcher -->
+    <div class="timer-hide-in-landscape w-full flex items-center justify-between text-slate-400">
+      <button onclick="switchView('timetable')" class="w-10 h-10 flex items-center justify-center rounded-full bg-zinc-800/90 text-zinc-200 hover:text-white active:scale-95 text-base">
+        ←
+      </button>
+
+      <div class="flex bg-zinc-900 rounded-2xl p-1 border border-zinc-800">
+        <button id="btn-mode-countup" onclick="setTimerMode('countup')" class="px-4 py-1.5 rounded-xl text-xs font-bold bg-zinc-700 text-white transition-all" data-i18n="timer_mode_countup">正计时</button>
+        <button id="btn-mode-countdown" onclick="setTimerMode('countdown')" class="px-4 py-1.5 rounded-xl text-xs font-bold text-zinc-400 hover:text-white transition-all" data-i18n="timer_mode_countdown">倒计时</button>
+      </div>
+
+      <div class="w-10"></div>
+    </div>
+
+    <!-- Central Visual Core: Focus Subject + Massive Centerpiece Flip Clock + Presets -->
+    <div class="timer-center-core flex-1 flex flex-col items-center justify-center my-auto -mt-6">
+      <!-- Current Focus Subject -->
+      <div id="timer-task-selector-box" onclick="openTimerTaskModal()" class="timer-hide-in-landscape flex items-center gap-2 bg-zinc-900/90 border border-zinc-800 rounded-full px-4 py-1.5 cursor-pointer hover:bg-zinc-800 transition-all active:scale-95 shadow-sm mb-6">
+        <span class="w-2.5 h-2.5 rounded-full bg-blue-500 shadow-xs"></span>
+        <span id="timer-task-name" class="text-sm font-bold text-zinc-100">深度专注</span>
+        <span class="text-[10px] text-zinc-500">▼</span>
+      </div>
+
+      <!-- Classic Flip-Clock Style Centerpiece (HH : MM : SS) -->
+      <div class="timer-digits-container flex items-center gap-1.5 sm:gap-2.5 cursor-pointer" onclick="handleTimerClick()" title="点击开始/暂停">
+        <!-- Hours -->
+        <div class="flex">
+          <div class="timer-digit-card" id="time-h1">0</div>
+          <div class="timer-digit-card" id="time-h2">0</div>
+        </div>
+        <span class="timer-colon text-zinc-600 font-bold text-2xl mb-1 animate-pulse">:</span>
+        <!-- Minutes -->
+        <div class="flex">
+          <div class="timer-digit-card" id="time-m1">0</div>
+          <div class="timer-digit-card" id="time-m2">0</div>
+        </div>
+        <span class="timer-colon text-zinc-600 font-bold text-2xl mb-1 animate-pulse">:</span>
+        <!-- Seconds -->
+        <div class="flex">
+          <div class="timer-digit-card" id="time-s1">0</div>
+          <div class="timer-digit-card" id="time-s2">0</div>
+        </div>
+      </div>
+
+      <!-- Presets for Countdown (15m, 25m, 45m, 60m, Custom) -->
+      <div id="countdown-presets" class="timer-hide-in-landscape flex items-center gap-1.5 sm:gap-2 mt-6 hidden">
+        <button onclick="setCountdownMinutes(15)" class="px-3 py-1.5 rounded-full bg-zinc-900 text-xs font-bold text-zinc-300 border border-zinc-800 hover:bg-zinc-800 active:scale-95">15m</button>
+        <button onclick="setCountdownMinutes(25)" class="px-3 py-1.5 rounded-full bg-zinc-700 text-xs font-bold text-white border border-zinc-600 hover:bg-zinc-600 active:scale-95">25m</button>
+        <button onclick="setCountdownMinutes(45)" class="px-3 py-1.5 rounded-full bg-zinc-900 text-xs font-bold text-zinc-300 border border-zinc-800 hover:bg-zinc-800 active:scale-95">45m</button>
+        <button onclick="setCountdownMinutes(60)" class="px-3 py-1.5 rounded-full bg-zinc-900 text-xs font-bold text-zinc-300 border border-zinc-800 hover:bg-zinc-800 active:scale-95">60m</button>
+        <button onclick="promptCustomCountdown()" class="px-3 py-1.5 rounded-full bg-blue-900/40 text-xs font-bold text-blue-300 border border-blue-700/60 hover:bg-blue-800/50 active:scale-95" data-i18n="btn_custom_timer">自定义</button>
+      </div>
+
+      <p id="timer-status-hint" class="timer-hide-in-landscape text-xs text-zinc-500 mt-5 tracking-widest uppercase font-semibold" data-i18n="timer_hint_ready">准备就绪 · 保持专注</p>
+    </div>
+
+    <!-- Bottom Area: Corner Fruit Buddy (No text badges) + Controls -->
+    <div class="timer-hide-in-landscape w-full max-w-sm mx-auto flex flex-col items-center">
+      <!-- Corner Desk Buddy (Reference Image 1 & 2, strictly without surrounding text labels) -->
+      <div class="w-full flex justify-end px-2 mb-1.5">
+        <div id="buddy-svg-box" class="w-32 h-20 relative flex items-center justify-end">
+          <!-- Dynamically populated with Vector SVG character based on weekday & state -->
+        </div>
+      </div>
+
+      <!-- Pure Focus Controls -->
+      <div class="w-full flex items-center gap-3">
+        <button id="btn-timer-toggle" onclick="toggleTimer()" class="flex-1 py-3.5 rounded-2xl bg-white text-zinc-950 font-black text-base hover:bg-zinc-200 active:scale-95 shadow-xl transition-all flex items-center justify-center gap-2">
+          <span id="timer-play-icon">▶</span>
+          <span id="timer-play-text" data-i18n="btn_start_focus">开始专注</span>
+        </button>
+        <button onclick="resetTimer()" class="w-13 h-13 py-3.5 px-4 rounded-2xl bg-zinc-900 text-zinc-300 hover:text-white hover:bg-zinc-800 active:scale-95 text-lg border border-zinc-800 flex items-center justify-center font-bold" title="重置">
+          ↺
+        </button>
+      </div>
+    </div>
+  </section>
 
   <!-- Bottom Navigation: 4 Tabs -->
   <nav class="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-slate-200 z-40 px-3 py-1.5 flex items-center justify-around text-center safe-area-bottom">
@@ -502,69 +669,74 @@
   </nav>
 
   <!-- ==========================================================================
-       MODAL: Add / Edit Plan Block (含每周重复与截止月份选择)
+       MODAL: Add / Edit Plan Block (极致紧凑化，一屏展示无滚动)
        ========================================================================== -->
-  <div id="modal-plan" class="fixed inset-0 bg-black/50 backdrop-blur-xs z-50 flex items-end sm:items-center justify-center p-3 hidden">
-    <div class="bg-white w-full max-w-sm rounded-2xl p-4 shadow-2xl animate-fade-in">
-      <div class="flex items-center justify-between mb-3 border-b border-slate-100 pb-2.5">
-        <h3 class="text-base font-black text-slate-900" id="modal-plan-title-head" data-i18n="modal_add_plan_title">规划时间块</h3>
-        <button onclick="closeModal('modal-plan')" class="text-slate-400 hover:text-slate-600 text-xl font-bold leading-none p-1">&times;</button>
+  <div id="modal-plan" class="fixed inset-0 bg-black/50 backdrop-blur-xs z-50 flex items-end sm:items-center justify-center p-2.5 hidden">
+    <div class="bg-white w-full max-w-sm rounded-2xl p-3 shadow-2xl animate-fade-in">
+      <div class="flex items-center justify-between mb-2 border-b border-slate-100 pb-1.5">
+        <h3 class="text-sm font-black text-slate-900" id="modal-plan-title-head" data-i18n="modal_add_plan_title">规划时间块</h3>
+        <button onclick="closeModal('modal-plan')" class="text-slate-400 hover:text-slate-600 text-lg font-bold leading-none p-1">&times;</button>
       </div>
       <input type="hidden" id="modal-edit-plan-id" value="">
-      <div class="space-y-3.5 text-xs">
+      <div class="space-y-2 text-xs">
         <div>
-          <label class="block text-slate-600 font-bold mb-1" data-i18n="modal_field_name">事件名称</label>
-          <input type="text" id="modal-plan-title" placeholder="如: 英语阅读、高等数学、游泳训练" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-slate-900 text-sm font-medium outline-none focus:border-blue-500 focus:bg-white transition-all">
+          <label class="block text-[11px] font-bold text-slate-600 mb-0.5" data-i18n="modal_field_name">事件名称</label>
+          <input type="text" id="modal-plan-title" placeholder="如: 英语阅读、高等数学、游泳训练" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1.5 text-slate-900 text-xs font-medium outline-none focus:border-blue-500 focus:bg-white transition-all">
         </div>
 
-        <div class="grid grid-cols-2 gap-2.5">
+        <div class="grid grid-cols-2 gap-2">
           <div>
-            <label class="block text-slate-600 font-bold mb-1" data-i18n="modal_field_category">分类</label>
-            <select id="modal-plan-category" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-slate-900 text-sm font-medium outline-none focus:border-blue-500 focus:bg-white">
+            <label class="block text-[11px] font-bold text-slate-600 mb-0.5" data-i18n="modal_field_category">分类</label>
+            <select id="modal-plan-category" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-2 py-1.5 text-slate-900 text-xs font-medium outline-none focus:border-blue-500 focus:bg-white">
               <!-- Dynamically populated to support multilingual -->
             </select>
           </div>
           <div>
-            <label class="block text-slate-600 font-bold mb-1" data-i18n="modal_field_date">起始日期</label>
-            <input type="date" id="modal-plan-date" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-2.5 text-slate-900 text-sm font-medium outline-none focus:border-blue-500 focus:bg-white">
+            <label class="block text-[11px] font-bold text-slate-600 mb-0.5" data-i18n="modal_field_date">起始日期</label>
+            <input type="date" id="modal-plan-date" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-2 py-1.5 text-slate-900 text-xs font-medium outline-none focus:border-blue-500 focus:bg-white">
           </div>
         </div>
 
-        <div class="grid grid-cols-2 gap-2.5">
+        <div class="grid grid-cols-2 gap-2">
           <div>
-            <label class="block text-slate-600 font-bold mb-1" data-i18n="modal_field_start">开始时间 (30分)</label>
-            <select id="modal-plan-start" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-2.5 text-slate-900 text-sm font-mono font-semibold outline-none focus:border-blue-500 focus:bg-white"></select>
+            <label class="block text-[11px] font-bold text-slate-600 mb-0.5" data-i18n="modal_field_start">开始时间 (30分)</label>
+            <select id="modal-plan-start" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-2 py-1.5 text-slate-900 text-xs font-mono font-semibold outline-none focus:border-blue-500 focus:bg-white"></select>
           </div>
           <div>
-            <label class="block text-slate-600 font-bold mb-1" data-i18n="modal_field_end">结束时间</label>
-            <select id="modal-plan-end" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-2.5 text-slate-900 text-sm font-mono font-semibold outline-none focus:border-blue-500 focus:bg-white"></select>
+            <label class="block text-[11px] font-bold text-slate-600 mb-0.5" data-i18n="modal_field_end">结束时间</label>
+            <select id="modal-plan-end" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-2 py-1.5 text-slate-900 text-xs font-mono font-semibold outline-none focus:border-blue-500 focus:bg-white"></select>
           </div>
         </div>
 
         <!-- Weekly Recurrence & Custom Weekdays (Mon~Sun Checkboxes) & Month Selector -->
-        <div id="repeat-settings-box" class="bg-blue-50/80 border border-blue-100 rounded-xl p-3 space-y-2.5">
-          <label class="flex items-center gap-2.5 cursor-pointer">
-            <input type="checkbox" id="modal-repeat-weekly" checked class="w-4 h-4 rounded text-blue-600 focus:ring-blue-500" onchange="toggleRepeatOptions()">
-            <span class="font-bold text-slate-800 text-xs" data-i18n="repeat_weekly_label">每周重复</span>
-          </label>
-          <div id="repeat-sub-options" class="space-y-2 pl-6">
-            <div>
-              <span class="text-[11px] font-bold text-slate-600 block mb-1" data-i18n="repeat_days_label">选择重复的星期:</span>
-              <div class="grid grid-cols-7 gap-1" id="repeat-weekday-checkboxes">
-                <!-- Populated dynamically with Mon to Sun checkboxes -->
-              </div>
+        <div id="repeat-settings-box" class="bg-blue-50/70 border border-blue-100 rounded-xl p-2 space-y-1.5">
+          <div class="flex items-center justify-between">
+            <label class="flex items-center gap-1.5 cursor-pointer">
+              <input type="checkbox" id="modal-repeat-weekly" checked class="w-3.5 h-3.5 rounded text-blue-600 focus:ring-blue-500" onchange="toggleRepeatOptions()">
+              <span class="font-bold text-slate-800 text-[11px]" data-i18n="repeat_weekly_label">每周重复</span>
+            </label>
+            <div id="repeat-until-box" class="flex items-center gap-1 text-slate-600 text-[11px]">
+              <span class="font-medium" data-i18n="repeat_until_label">截止:</span>
+              <input type="month" id="modal-repeat-until" class="bg-white border border-slate-200 rounded-md px-1.5 py-0.5 text-slate-800 text-xs font-bold outline-none">
             </div>
-            <div id="repeat-until-box" class="flex items-center justify-between text-slate-600 text-xs pt-1.5 border-t border-blue-100">
-              <span class="font-medium" data-i18n="repeat_until_label">重复截止月份:</span>
-              <input type="month" id="modal-repeat-until" class="bg-white border border-slate-200 rounded-lg px-2.5 py-1 text-slate-800 text-xs font-bold outline-none">
+          </div>
+          <div id="repeat-sub-options">
+            <div class="grid grid-cols-7 gap-1" id="repeat-weekday-checkboxes">
+              <!-- Populated dynamically with Mon to Sun checkboxes -->
             </div>
           </div>
         </div>
 
-        <div class="pt-2 flex gap-2.5">
-          <button type="button" id="btn-delete-plan" onclick="promptDeletePlan()" class="flex-1 py-2.5 px-3.5 rounded-xl bg-rose-50 text-rose-600 text-xs font-bold hover:bg-rose-100 hidden" data-i18n="btn_delete">删除</button>
-          <button type="button" id="modal-btn-cancel" onclick="closeModal('modal-plan')" class="flex-1 py-2.5 rounded-xl bg-slate-100 text-slate-600 text-xs font-bold" data-i18n="btn_cancel">取消</button>
-          <button type="button" id="modal-btn-save" onclick="savePlanBlock()" class="flex-1 py-2.5 rounded-xl bg-blue-600 text-white text-xs font-bold hover:bg-blue-700 shadow-xs active:scale-95 transition-all" data-i18n="btn_save">保存计划</button>
+        <!-- Include in stats & habit tracker switch (Requirement 1 & 3) -->
+        <div class="flex items-center justify-between p-2 bg-slate-50 border border-slate-200/80 rounded-xl">
+          <span class="font-bold text-slate-800 text-[11px]" data-i18n="field_include_stats">纳入统计与打卡</span>
+          <input type="checkbox" id="modal-plan-include-stats" checked class="w-4 h-4 text-blue-600 rounded cursor-pointer">
+        </div>
+
+        <div class="pt-1 flex gap-2">
+          <button type="button" id="btn-delete-plan" onclick="promptDeletePlan()" class="flex-1 py-2 px-2.5 rounded-xl bg-rose-50 text-rose-600 text-xs font-bold hover:bg-rose-100 hidden" data-i18n="btn_delete">删除</button>
+          <button type="button" id="modal-btn-cancel" onclick="closeModal('modal-plan')" class="flex-1 py-2 rounded-xl bg-slate-100 text-slate-600 text-xs font-bold" data-i18n="btn_cancel">取消</button>
+          <button type="button" id="modal-btn-save" onclick="savePlanBlock()" class="flex-1 py-2 rounded-xl bg-blue-600 text-white text-xs font-bold hover:bg-blue-700 shadow-xs active:scale-95 transition-all" data-i18n="btn_save">保存计划</button>
         </div>
       </div>
     </div>
@@ -648,39 +820,39 @@
   </div>
 
   <!-- ==========================================================================
-       MODAL: Export Backup Modal (下载文件 + 一键复制双重保障)
+       MODAL: Unified Backup & Restore Modal (导出与恢复双重保障合一, Requirement 5)
        ========================================================================== -->
-  <div id="modal-export" class="fixed inset-0 bg-black/50 backdrop-blur-xs z-50 flex items-end sm:items-center justify-center p-3 hidden">
+  <div id="modal-backup" class="fixed inset-0 bg-black/50 backdrop-blur-xs z-50 flex items-end sm:items-center justify-center p-3 hidden">
     <div class="bg-white w-full max-w-sm rounded-2xl p-4 shadow-2xl animate-fade-in">
       <div class="flex items-center justify-between mb-3 border-b border-slate-100 pb-2.5">
-        <h3 class="text-base font-black text-slate-900" data-i18n="export_modal_title">备份数据导出</h3>
-        <button onclick="closeModal('modal-export')" class="text-slate-400 hover:text-slate-600 text-xl font-bold leading-none p-1">&times;</button>
+        <h3 class="text-base font-black text-slate-900 flex items-center gap-1.5">
+          <span>💾</span> <span data-i18n="backup_modal_title">数据备份与恢复</span>
+        </h3>
+        <button onclick="closeModal('modal-backup')" class="text-slate-400 hover:text-slate-600 text-xl font-bold leading-none p-1">&times;</button>
       </div>
-      <div class="space-y-3 text-xs">
+
+      <!-- Sub-tabs: 导出数据 vs 导入恢复 -->
+      <div class="flex items-center bg-slate-100 p-1 rounded-xl mb-3 text-xs font-bold">
+        <button id="btn-backup-tab-export" onclick="switchBackupSubTab('export')" class="flex-1 py-1.5 rounded-lg bg-white text-slate-900 shadow-xs transition-all" data-i18n="backup_tab_export">导出数据</button>
+        <button id="btn-backup-tab-import" onclick="switchBackupSubTab('import')" class="flex-1 py-1.5 rounded-lg text-slate-500 hover:text-slate-800 transition-all" data-i18n="backup_tab_import">导入恢复</button>
+      </div>
+
+      <!-- Tab 1: Export -->
+      <div id="backup-panel-export" class="space-y-3 text-xs">
         <p class="text-slate-600 leading-relaxed font-medium" data-i18n="export_modal_desc">可通过以下两种方式备份您的数据，换手机也能轻松恢复：</p>
         <div class="grid grid-cols-2 gap-2.5 pt-1">
-          <button onclick="downloadBackupFile()" class="py-3 px-3 rounded-xl bg-blue-600 text-white text-xs font-bold flex items-center justify-center gap-1.5 shadow-xs active:scale-95 transition-all">
+          <button onclick="downloadBackupFile()" class="py-2.5 px-3 rounded-xl bg-blue-600 text-white text-xs font-bold flex items-center justify-center gap-1.5 shadow-xs active:scale-95 transition-all">
             <span>💾</span> <span data-i18n="btn_download_file">下载 JSON 文件</span>
           </button>
-          <button onclick="copyBackupToClipboard()" class="py-3 px-3 rounded-xl bg-slate-800 text-white text-xs font-bold flex items-center justify-center gap-1.5 shadow-xs active:scale-95 transition-all">
+          <button onclick="copyBackupToClipboard()" class="py-2.5 px-3 rounded-xl bg-slate-800 text-white text-xs font-bold flex items-center justify-center gap-1.5 shadow-xs active:scale-95 transition-all">
             <span>📋</span> <span data-i18n="btn_copy_json">复制备份文本</span>
           </button>
         </div>
         <textarea id="export-json-preview" rows="4" readonly class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 font-mono text-[11px] text-slate-600 outline-none select-all"></textarea>
       </div>
-    </div>
-  </div>
 
-  <!-- ==========================================================================
-       MODAL: Import Backup Modal (文件上传 + 文本粘贴双重保障)
-       ========================================================================== -->
-  <div id="modal-import" class="fixed inset-0 bg-black/50 backdrop-blur-xs z-50 flex items-end sm:items-center justify-center p-3 hidden">
-    <div class="bg-white w-full max-w-sm rounded-2xl p-4 shadow-2xl animate-fade-in">
-      <div class="flex items-center justify-between mb-3 border-b border-slate-100 pb-2.5">
-        <h3 class="text-base font-black text-slate-900" data-i18n="import_modal_title">导入恢复备份</h3>
-        <button onclick="closeModal('modal-import')" class="text-slate-400 hover:text-slate-600 text-xl font-bold leading-none p-1">&times;</button>
-      </div>
-      <div class="space-y-3.5 text-xs">
+      <!-- Tab 2: Import -->
+      <div id="backup-panel-import" class="space-y-3.5 text-xs hidden">
         <div>
           <label class="block text-slate-600 font-bold mb-1.5" data-i18n="import_file_label">方式一：选择本地 JSON 备份文件</label>
           <input type="file" id="import-file-input" accept=".json,application/json" class="w-full text-xs text-slate-500 file:mr-2 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
@@ -689,15 +861,14 @@
           <label class="block text-slate-600 font-bold mb-1.5" data-i18n="import_text_label">方式二：直接粘贴备份 JSON 文本</label>
           <textarea id="import-text-input" rows="4" placeholder="在此粘贴导出的备份代码文本..." class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 font-mono text-xs text-slate-700 outline-none focus:bg-white focus:border-blue-500"></textarea>
         </div>
-        <div class="pt-2 flex gap-2.5">
-          <button type="button" onclick="closeModal('modal-import')" class="flex-1 py-2.5 rounded-xl bg-slate-100 text-slate-600 text-xs font-bold" data-i18n="btn_cancel">取消</button>
+        <div class="pt-1 flex gap-2.5">
+          <button type="button" onclick="closeModal('modal-backup')" class="flex-1 py-2.5 rounded-xl bg-slate-100 text-slate-600 text-xs font-bold" data-i18n="btn_cancel">取消</button>
           <button type="button" onclick="executeImportBackup()" class="flex-1 py-2.5 rounded-xl bg-blue-600 text-white text-xs font-bold hover:bg-blue-700 shadow-xs active:scale-95 transition-all" data-i18n="btn_confirm_import">确认恢复</button>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Toast Notification Message -->
   <div id="toast-msg" class="fixed top-12 left-1/2 bg-slate-900/90 text-white text-xs font-bold px-4 py-2.5 rounded-full shadow-2xl z-50 flex items-center gap-2 border border-slate-700">
     <span id="toast-text"></span>
   </div>
@@ -804,6 +975,17 @@
         import_file_label: "方式一：选择本地 JSON 备份文件",
         import_text_label: "方式二：直接粘贴备份 JSON 文本",
         btn_confirm_import: "确认恢复",
+        btn_backup_unified: "备份",
+        backup_modal_title: "数据备份与恢复",
+        backup_tab_export: "导出数据",
+        backup_tab_import: "导入恢复",
+        field_include_stats: "纳入统计与打卡",
+        field_include_stats_hint: "取消后仅在周课表与对比页显示，不计入打卡与图表",
+        detailed_tasks_title: "具体任务时长分布",
+        badge_checked_in: "已打卡",
+        badge_pending: "待打卡",
+        buddy_state_resting: "休息中 · 养精蓄锐",
+        buddy_state_focusing: "用功学习中 · 专注冲刺",
         toast_plan_saved: "时间块已保存！",
         toast_plan_deleted: "时间块已删除！",
         toast_block_activated: "已点亮并计入实际执行！",
@@ -901,6 +1083,17 @@
         import_file_label: "방법 1: 로컬 JSON 파일 선택",
         import_text_label: "방법 2: 백업 JSON 텍스트 직접 입력",
         btn_confirm_import: "복원 확인",
+        btn_backup_unified: "백업",
+        backup_modal_title: "데이터 백업 및 복원",
+        backup_tab_export: "데이터 내보내기",
+        backup_tab_import: "백업 복원",
+        field_include_stats: "통계 및 체크에 포함",
+        field_include_stats_hint: "체크 해제 시 시간표에만 표시되고 통계/체크에서 제외됩니다",
+        detailed_tasks_title: "세부 항목 시간 분포",
+        badge_checked_in: "체크완료",
+        badge_pending: "미완료",
+        buddy_state_resting: "휴식 중 · 충전 중",
+        buddy_state_focusing: "열공 중 · 집중 스퍼트",
         toast_plan_saved: "시간 블록이 저장되었습니다!",
         toast_plan_deleted: "시간 블록이 삭제되었습니다!",
         toast_block_activated: "완료 처리 및 통계에 반영되었습니다!",
@@ -998,6 +1191,17 @@
         import_file_label: "Option 1: Select local JSON file",
         import_text_label: "Option 2: Paste JSON text directly",
         btn_confirm_import: "Confirm Restore",
+        btn_backup_unified: "Backup",
+        backup_modal_title: "Backup & Restore",
+        backup_tab_export: "Export Data",
+        backup_tab_import: "Restore Backup",
+        field_include_stats: "Include in stats & habit",
+        field_include_stats_hint: "If unchecked, shown in timetable only and excluded from stats",
+        detailed_tasks_title: "Detailed Tasks Distribution",
+        badge_checked_in: "Done",
+        badge_pending: "Pending",
+        buddy_state_resting: "Resting · Recharging",
+        buddy_state_focusing: "Studying Hard · In Focus",
         toast_plan_saved: "Time block saved!",
         toast_plan_deleted: "Time block deleted!",
         toast_block_activated: "Lit up & recorded to actual execution!",
@@ -1084,6 +1288,7 @@
 
     let appState = {
       lang: 'zh',
+      theme: 'default',
       currentView: 'timetable',
       activeDateStr: getTodayStr(),
       currentWeekStart: getCurrentMondayStr(),
@@ -1113,6 +1318,7 @@
           if (parsed.plans) appState.plans = parsed.plans;
           if (parsed.activatedBlockIds) appState.activatedBlockIds = parsed.activatedBlockIds;
           if (parsed.lang) appState.lang = parsed.lang;
+          if (parsed.theme) appState.theme = parsed.theme;
         } catch (e) {
           console.error("Failed to parse state", e);
         }
@@ -1122,9 +1328,63 @@
     function saveState() {
       localStorage.setItem(STORAGE_KEY, JSON.stringify({
         lang: appState.lang,
+        theme: appState.theme,
         plans: appState.plans,
         activatedBlockIds: appState.activatedBlockIds
       }));
+    }
+
+    /* --------------------------------------------------------------------------
+       Theme Style Switching Engine (Default Minimalist vs Dreamy Y2K Pastel Glow)
+       -------------------------------------------------------------------------- */
+    function openStyleModal() {
+      updateStyleModalUI();
+      document.getElementById('modal-style').classList.remove('hidden');
+    }
+
+    function selectThemeStyle(theme) {
+      applyTheme(theme);
+      updateStyleModalUI();
+      showToast(theme === 'y2k' 
+        ? (appState.lang === 'zh' ? '已切换至 梦幻 Y2K 风格' : appState.lang === 'ko' ? '드림 Y2K 스타일로 변경되었습니다' : 'Switched to Dreamy Y2K style')
+        : (appState.lang === 'zh' ? '已切换至 默认极简 风格' : appState.lang === 'ko' ? '기본 미니멀 스타일로 변경되었습니다' : 'Switched to Default Minimal style')
+      );
+    }
+
+    function updateStyleModalUI() {
+      const isY2K = appState.theme === 'y2k';
+      const optDef = document.getElementById('theme-opt-default');
+      const optY2k = document.getElementById('theme-opt-y2k');
+      const chkDef = document.getElementById('theme-check-default');
+      const chkY2k = document.getElementById('theme-check-y2k');
+
+      if (optDef && optY2k && chkDef && chkY2k) {
+        if (isY2K) {
+          optDef.className = 'p-3 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 cursor-pointer transition-all flex items-center justify-between';
+          chkDef.className = 'w-5 h-5 rounded-full border border-slate-300 text-transparent flex items-center justify-center text-xs font-bold';
+          optY2k.className = 'p-3 rounded-xl border-2 border-purple-500 bg-purple-50/50 cursor-pointer transition-all flex items-center justify-between shadow-xs';
+          chkY2k.className = 'w-5 h-5 rounded-full bg-purple-600 text-white flex items-center justify-center text-xs font-bold';
+        } else {
+          optDef.className = 'p-3 rounded-xl border-2 border-blue-500 bg-blue-50/40 cursor-pointer transition-all flex items-center justify-between shadow-xs';
+          chkDef.className = 'w-5 h-5 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-bold';
+          optY2k.className = 'p-3 rounded-xl border border-slate-200 bg-white hover:bg-purple-50/30 cursor-pointer transition-all flex items-center justify-between';
+          chkY2k.className = 'w-5 h-5 rounded-full border border-slate-300 text-transparent flex items-center justify-center text-xs font-bold';
+        }
+      }
+    }
+
+    function applyTheme(optionalTheme) {
+      if (optionalTheme) appState.theme = optionalTheme;
+      const isY2k = appState.theme === 'y2k';
+      if (isY2k) {
+        document.body.classList.add('theme-y2k');
+      } else {
+        document.body.classList.remove('theme-y2k');
+      }
+      saveState();
+      if (appState.currentView === 'analytics' && appState.analyticsSubTab === 'charts') {
+        renderCharts();
+      }
     }
 
     /* --------------------------------------------------------------------------
@@ -1150,9 +1410,11 @@
         el.innerText = t(k);
       });
 
+      applyTheme();
       populateCategoryOptions();
       renderTimetable();
       renderPlanActual();
+      updateStudyBuddy();
       renderSubjectHeatmaps();
       renderCharts();
     }
@@ -1172,10 +1434,32 @@
     }
 
     /* --------------------------------------------------------------------------
-       5. View Routing (4 Tabs Only)
+       5. View Routing (4 Tabs Only & Android Back Button Interception on Timer)
        -------------------------------------------------------------------------- */
-    function switchView(viewName) {
+    let isPopStateNav = false;
+
+    window.addEventListener('popstate', (e) => {
+      if (appState.currentView === 'timer') {
+        isPopStateNav = true;
+        switchView('timetable', false);
+        isPopStateNav = false;
+      }
+    });
+
+    function switchView(viewName, pushHistory = true) {
+      if (viewName === 'timer' && pushHistory && !isPopStateNav) {
+        try {
+          history.pushState({ view: 'timer' }, '');
+        } catch (err) {}
+      }
+
       appState.currentView = viewName;
+      if (viewName === 'timer') {
+        document.body.classList.add('timer-view-active');
+      } else {
+        document.body.classList.remove('timer-view-active');
+      }
+
       document.querySelectorAll('.view-panel').forEach(el => el.classList.add('hidden'));
       document.querySelectorAll('.nav-tab').forEach(el => {
         el.classList.remove('text-blue-600');
@@ -1195,6 +1479,10 @@
 
       if (viewName === 'timetable') renderTimetable();
       else if (viewName === 'plan-actual') renderPlanActual();
+      else if (viewName === 'timer') {
+        updateTimerDisplay();
+        updateStudyBuddy();
+      }
       else if (viewName === 'analytics') {
         renderSubjectHeatmaps();
         renderCharts();
@@ -1488,11 +1776,315 @@
         presets.classList.remove('hidden');
       }
       updateTimerDisplay(0);
+      updateStudyBuddy();
     }
 
     function setCountdownMinutes(mins) {
       appState.timer.countdownTargetSec = mins * 60;
       resetTimer();
+    }
+
+    /* --------------------------------------------------------------------------
+       Weekly Fruit Hood Study Buddy Engine (요일별 과일후드 공부 짝꿍 캐릭터 - 参考图一)
+       7 Hoods: Mon Apple, Tue Orange, Wed Mango, Thu Watermelon, Fri Grape, Sat Eggplant, Sun Peach
+       2 States: 动作1 (用功中 · 认真学习看书画笔) vs 动作2 (不学习 · 趴桌睡觉盖书休眠)
+       -------------------------------------------------------------------------- */
+    const BUDDY_CONFIGS = [
+      { day: 0, fruit: "apple", icon: "🍎", zh: "周一 苹果搭子", ko: "월요일 사과 짝꿍", en: "Mon Apple Buddy", hoodColor: "#EF4444", hoodDark: "#DC2626", leafColor: "#22C55E" },
+      { day: 1, fruit: "orange", icon: "🍊", zh: "周二 香橙搭子", ko: "화요일 오렌지 짝꿍", en: "Tue Orange Buddy", hoodColor: "#F97316", hoodDark: "#EA580C", leafColor: "#16A34A" },
+      { day: 2, fruit: "mango", icon: "🥭", zh: "周三 芒果搭子", ko: "수요일 망고 짝꿍", en: "Wed Mango Buddy", hoodColor: "#EAB308", hoodDark: "#CA8A04", leafColor: "#65A30D" },
+      { day: 3, fruit: "watermelon", icon: "🍉", zh: "周四 西瓜搭子", ko: "목요일 수박 짝꿍", en: "Thu Watermelon Buddy", hoodColor: "#22C55E", hoodDark: "#15803D", leafColor: "#166534" },
+      { day: 4, fruit: "grape", icon: "🍇", zh: "周五 葡萄搭子", ko: "금요일 포도 짝꿍", en: "Fri Grape Buddy", hoodColor: "#3B82F6", hoodDark: "#1D4ED8", leafColor: "#10B981" },
+      { day: 5, fruit: "eggplant", icon: "🍆", zh: "周六 茄子搭子", ko: "토요일 가지 짝꿍", en: "Sat Eggplant Buddy", hoodColor: "#8B5CF6", hoodDark: "#6D28D9", leafColor: "#059669" },
+      { day: 6, fruit: "peach", icon: "🍑", zh: "周日 桃子搭子", ko: "일요일 복숭아 짝꿍", en: "Sun Peach Buddy", hoodColor: "#F472B6", hoodDark: "#EC4899", leafColor: "#10B981" }
+    ];
+
+    function generateBuddySVG(cfg, isRunning) {
+      let fruitHeadExtra = '';
+      let hairAndGlasses = '';
+
+      if (cfg.fruit === 'apple') {
+        fruitHeadExtra = `
+          <rect x="86" y="15" width="4" height="9" rx="1.5" fill="#78350F"/>
+          <path d="M89 19 Q98 13 96 22 Q90 24 89 19" fill="${cfg.leafColor}"/>
+        `;
+        hairAndGlasses = `
+          <path d="M72 45 Q80 43 88 47 Q96 43 104 45 Q98 52 88 50 Q78 52 72 45 Z" fill="#451A03"/>
+        `;
+      } else if (cfg.fruit === 'orange') {
+        fruitHeadExtra = `
+          <circle cx="88" cy="21" r="3.2" fill="#EA580C"/>
+          <path d="M88 20 Q98 14 95 23 Z" fill="${cfg.leafColor}"/>
+        `;
+        hairAndGlasses = `
+          <path d="M73 45 Q81 42 88 46 Q95 42 103 45 Q97 52 88 49 Q79 52 73 45 Z" fill="#451A03"/>
+        `;
+      } else if (cfg.fruit === 'mango') {
+        fruitHeadExtra = `
+          <path d="M83 16 Q88 9 95 13 Q96 20 87 22 Z" fill="#CA8A04"/>
+          <path d="M87 17 Q97 11 94 21 Z" fill="${cfg.leafColor}"/>
+        `;
+        // Round glasses from Image 1!
+        hairAndGlasses = `
+          <circle cx="80" cy="52" r="5.5" fill="none" stroke="#0F172A" stroke-width="1.4"/>
+          <circle cx="96" cy="52" r="5.5" fill="none" stroke="#0F172A" stroke-width="1.4"/>
+          <line x1="85.5" y1="52" x2="90.5" y2="52" stroke="#0F172A" stroke-width="1.4"/>
+        `;
+      } else if (cfg.fruit === 'watermelon') {
+        // Watermelon hood with dark green curved stripes from Image 1!
+        fruitHeadExtra = `
+          <path d="M70 34 Q88 30 106 34" fill="none" stroke="#14532D" stroke-width="2.5" stroke-linecap="round"/>
+          <path d="M66 50 Q88 46 110 50" fill="none" stroke="#14532D" stroke-width="2.5" stroke-linecap="round"/>
+          <path d="M88 22 Q84 14 88 12 Q92 10 90 18" fill="none" stroke="#14532D" stroke-width="3" stroke-linecap="round"/>
+          <circle cx="90" cy="18" r="2.5" fill="#15803D"/>
+        `;
+        hairAndGlasses = `
+          <path d="M74 46 Q88 43 102 46 Q96 51 88 49 Q80 51 74 46 Z" fill="#451A03"/>
+        `;
+      } else if (cfg.fruit === 'grape') {
+        fruitHeadExtra = `
+          <circle cx="82" cy="21" r="3.8" fill="#1E40AF"/>
+          <circle cx="94" cy="21" r="3.8" fill="#1E40AF"/>
+          <circle cx="88" cy="17" r="3.5" fill="#1D4ED8"/>
+          <path d="M88 15 Q95 8 94 17" fill="none" stroke="${cfg.leafColor}" stroke-width="1.8"/>
+        `;
+        hairAndGlasses = `
+          <path d="M73 45 Q81 42 88 46 Q95 42 103 45 Q97 52 88 49 Q79 52 73 45 Z" fill="#1E293B"/>
+        `;
+      } else if (cfg.fruit === 'eggplant') {
+        // Purple eggplant with green 5-point calyx & blonde hair with glasses from Image 1!
+        fruitHeadExtra = `
+          <path d="M80 22 L88 13 L96 22 L88 19 Z" fill="${cfg.leafColor}"/>
+          <rect x="86.5" y="10" width="3" height="6" rx="1" fill="#047857"/>
+        `;
+        hairAndGlasses = `
+          <path d="M72 45 Q80 41 88 45 Q96 41 104 45 Q97 52 88 50 Q79 52 72 45 Z" fill="#FDE047"/>
+          <circle cx="80" cy="52" r="5.5" fill="none" stroke="#0F172A" stroke-width="1.4"/>
+          <circle cx="96" cy="52" r="5.5" fill="none" stroke="#0F172A" stroke-width="1.4"/>
+          <line x1="85.5" y1="52" x2="90.5" y2="52" stroke="#0F172A" stroke-width="1.4"/>
+        `;
+      } else if (cfg.fruit === 'peach') {
+        // Peach heart pointy tip
+        fruitHeadExtra = `
+          <path d="M82 22 Q88 14 94 22 Z" fill="#FB7185"/>
+          <path d="M88 19 Q96 13 95 22 Z" fill="${cfg.leafColor}"/>
+        `;
+        hairAndGlasses = `
+          <path d="M74 46 Q88 43 102 46 Q96 52 88 50 Q80 52 74 46 Z" fill="#451A03"/>
+        `;
+      }
+
+      if (!isRunning) {
+        // ---------------------------------------------------------
+        // 动作 2: 不学习/暂停 (趴桌打瞌睡睡觉、盖着书本休眠)
+        // ---------------------------------------------------------
+
+        // Special pose for Saturday Eggplant: Open book tented over head like a roof!
+        if (cfg.fruit === 'eggplant') {
+          return `
+          <svg viewBox="0 0 176 128" class="w-full h-full drop-shadow-md select-none overflow-visible">
+            <text x="120" y="65" class="anim-float-z1 text-amber-300 font-black text-xs font-mono" fill="#FDE047">z</text>
+            <text x="130" y="50" class="anim-float-z2 text-amber-300 font-black text-sm font-mono" fill="#FDE047">Z</text>
+            <text x="142" y="35" class="anim-float-z3 text-amber-400 font-black text-base font-mono" fill="#FACC15">Z</text>
+
+            <rect x="12" y="93" width="152" height="14" rx="3" fill="#854D0E" stroke="#713F12" stroke-width="1.2"/>
+            <rect x="20" y="107" width="8" height="15" fill="#713F12" rx="1"/>
+            <rect x="148" y="107" width="8" height="15" fill="#713F12" rx="1"/>
+
+            <g class="anim-buddy-sleep" style="transform-origin: 88px 94px;">
+              <ellipse cx="88" cy="86" rx="28" ry="16" fill="${cfg.hoodColor}"/>
+              <circle cx="88" cy="68" r="24" fill="${cfg.hoodColor}" stroke="${cfg.hoodDark}" stroke-width="1.2"/>
+              ${fruitHeadExtra}
+              <!-- Book tented over head from Image 1! -->
+              <polygon points="88,38 56,70 72,70 88,49 104,70 120,70" fill="#15803D" stroke="#14532D" stroke-width="1.5"/>
+              <polygon points="88,42 62,69 72,69 88,51 104,69 114,69" fill="#F8FAFC"/>
+              <line x1="88" y1="42" x2="88" y2="70" stroke="#CBD5E1" stroke-width="1"/>
+              <ellipse cx="70" cy="90" rx="7" ry="5" fill="#FFF5EB" stroke="#FED7AA" stroke-width="1"/>
+              <ellipse cx="106" cy="90" rx="7" ry="5" fill="#FFF5EB" stroke="#FED7AA" stroke-width="1"/>
+            </g>
+          </svg>`;
+        }
+
+        // Special pose for Wednesday Mango: Covered in plaid blanket!
+        if (cfg.fruit === 'mango') {
+          return `
+          <svg viewBox="0 0 176 128" class="w-full h-full drop-shadow-md select-none overflow-visible">
+            <text x="120" y="65" class="anim-float-z1 text-amber-300 font-black text-xs font-mono" fill="#FDE047">z</text>
+            <text x="130" y="50" class="anim-float-z2 text-amber-300 font-black text-sm font-mono" fill="#FDE047">Z</text>
+            <text x="142" y="35" class="anim-float-z3 text-amber-400 font-black text-base font-mono" fill="#FACC15">Z</text>
+
+            <rect x="12" y="93" width="152" height="14" rx="3" fill="#854D0E" stroke="#713F12" stroke-width="1.2"/>
+            <rect x="20" y="107" width="8" height="15" fill="#713F12" rx="1"/>
+            <rect x="148" y="107" width="8" height="15" fill="#713F12" rx="1"/>
+
+            <g class="anim-buddy-sleep" style="transform-origin: 88px 94px;">
+              <!-- Sleeping head with glasses -->
+              <ellipse cx="72" cy="74" rx="20" ry="16" fill="${cfg.hoodColor}" stroke="${cfg.hoodDark}" stroke-width="1.2"/>
+              ${fruitHeadExtra}
+              <ellipse cx="74" cy="78" rx="12" ry="9" fill="#FFF5EB"/>
+              <circle cx="70" cy="78" r="4" fill="none" stroke="#0F172A" stroke-width="1.2"/>
+              <circle cx="80" cy="78" r="4" fill="none" stroke="#0F172A" stroke-width="1.2"/>
+              <path d="M68 78 Q70 80 72 78" fill="none" stroke="#475569" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M78 78 Q80 80 82 78" fill="none" stroke="#475569" stroke-width="1.5" stroke-linecap="round"/>
+              <!-- Plaid cozy blanket from Image 1 -->
+              <path d="M78 72 Q105 68 132 76 L130 94 L76 94 Z" fill="#FDE047" stroke="#CA8A04" stroke-width="1.5"/>
+              <line x1="90" y1="72" x2="88" y2="94" stroke="#F59E0B" stroke-width="1.2" stroke-dasharray="3,2"/>
+              <line x1="106" y1="71" x2="104" y2="94" stroke="#F59E0B" stroke-width="1.2" stroke-dasharray="3,2"/>
+              <line x1="120" y1="73" x2="118" y2="94" stroke="#F59E0B" stroke-width="1.2" stroke-dasharray="3,2"/>
+              <line x1="77" y1="80" x2="131" y2="84" stroke="#F59E0B" stroke-width="1.2" stroke-dasharray="3,2"/>
+              <line x1="76" y1="88" x2="130" y2="90" stroke="#F59E0B" stroke-width="1.2" stroke-dasharray="3,2"/>
+            </g>
+          </svg>`;
+        }
+
+        // General resting / sleeping pose on open book or desk
+        const hasAlarmClock = (cfg.fruit === 'apple' || cfg.fruit === 'orange');
+        const clockSvg = hasAlarmClock ? `
+          <circle cx="28" cy="85" r="7.5" fill="#FFFFFF" stroke="#B45309" stroke-width="1.4"/>
+          <circle cx="23" cy="78" r="2.2" fill="#B45309"/><circle cx="33" cy="78" r="2.2" fill="#B45309"/>
+          <line x1="28" y1="85" x2="28" y2="80" stroke="#1E293B" stroke-width="1"/><line x1="28" y1="85" x2="31" y2="85" stroke="#1E293B" stroke-width="1"/>
+          <line x1="24" y1="92" x2="22" y2="94" stroke="#B45309" stroke-width="1.2"/><line x1="32" y1="92" x2="34" y2="94" stroke="#B45309" stroke-width="1.2"/>
+        ` : `
+          <rect x="24" y="80" width="13" height="13" rx="2.5" fill="#F1F5F9" stroke="#CBD5E1" stroke-width="1"/>
+          <path d="M37 83 Q42 85 37 88" fill="none" stroke="#CBD5E1" stroke-width="1.5" stroke-linecap="round"/>
+        `;
+
+        return `
+        <svg viewBox="0 0 176 128" class="w-full h-full drop-shadow-md select-none overflow-visible">
+          <text x="120" y="70" class="anim-float-z1 text-amber-300 font-black text-xs font-mono" fill="#FDE047">z</text>
+          <text x="130" y="55" class="anim-float-z2 text-amber-300 font-black text-sm font-mono" fill="#FDE047">Z</text>
+          <text x="142" y="38" class="anim-float-z3 text-amber-400 font-black text-base font-mono" fill="#FACC15">Z</text>
+
+          <rect x="12" y="93" width="152" height="14" rx="3" fill="#854D0E" stroke="#713F12" stroke-width="1.2"/>
+          <rect x="20" y="107" width="8" height="15" fill="#713F12" rx="1"/>
+          <rect x="148" y="107" width="8" height="15" fill="#713F12" rx="1"/>
+
+          ${clockSvg}
+
+          <!-- Open resting book on desk -->
+          <path d="M68 94 L88 91 L108 94 L106 98 L88 96 L66 98 Z" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="1.2"/>
+
+          <g class="anim-buddy-sleep" style="transform-origin: 88px 94px;">
+            <ellipse cx="88" cy="85" rx="30" ry="18" fill="${cfg.hoodColor}"/>
+            <circle cx="88" cy="65" r="26" fill="${cfg.hoodColor}" stroke="${cfg.hoodDark}" stroke-width="1.2"/>
+            ${fruitHeadExtra}
+            <ellipse cx="88" cy="70" rx="18" ry="14" fill="#FFF5EB"/>
+            <path d="M77 69 Q82 72 87 69" fill="none" stroke="#475569" stroke-width="2" stroke-linecap="round"/>
+            <path d="M89 69 Q94 72 99 69" fill="none" stroke="#475569" stroke-width="2" stroke-linecap="round"/>
+            <ellipse cx="74" cy="73" rx="3" ry="1.8" fill="#FB7185" opacity="0.75"/>
+            <ellipse cx="102" cy="73" rx="3" ry="1.8" fill="#FB7185" opacity="0.75"/>
+            <ellipse cx="74" cy="88" rx="7" ry="5" fill="#FFF5EB" stroke="#FED7AA" stroke-width="1"/>
+            <ellipse cx="102" cy="88" rx="7" ry="5" fill="#FFF5EB" stroke="#FED7AA" stroke-width="1"/>
+          </g>
+        </svg>`;
+      } else {
+        // ---------------------------------------------------------
+        // 动作 1: 用功中 (书桌前拿着笔看书、开着台灯认真学习)
+        // ---------------------------------------------------------
+        const hasAlarmClock = (cfg.fruit === 'apple' || cfg.fruit === 'orange');
+        const lampOnRight = (cfg.fruit === 'apple' || cfg.fruit === 'orange');
+
+        let deskLeftItems = '';
+        let deskRightItems = '';
+
+        if (lampOnRight) {
+          deskLeftItems = `
+            <!-- Alarm clock on left -->
+            <circle cx="28" cy="85" r="7.5" fill="#FFFFFF" stroke="#B45309" stroke-width="1.4"/>
+            <circle cx="23" cy="78" r="2.2" fill="#B45309"/><circle cx="33" cy="78" r="2.2" fill="#B45309"/>
+            <line x1="28" y1="85" x2="28" y2="80" stroke="#1E293B" stroke-width="1"/><line x1="28" y1="85" x2="31" y2="85" stroke="#1E293B" stroke-width="1"/>
+            <line x1="24" y1="92" x2="22" y2="94" stroke="#B45309" stroke-width="1.2"/><line x1="32" y1="92" x2="34" y2="94" stroke="#B45309" stroke-width="1.2"/>
+          `;
+          deskRightItems = `
+            <!-- Desk Lamp on Right with light cone from Image 1 -->
+            <path d="M148 94 L148 64 L138 56" fill="none" stroke="#94A3B8" stroke-width="2.5" stroke-linecap="round"/>
+            <path d="M144 52 L130 61 L138 67 Z" fill="#F59E0B" stroke="#D97706" stroke-width="1"/>
+            <polygon points="136,64 82,95 146,95" fill="url(#lampGlow)" class="anim-lantern"/>
+          `;
+        } else {
+          deskLeftItems = `
+            <!-- Lantern / Lamp on Left with light cone from Image 1 -->
+            <path d="M24 94 L24 64 L36 56" fill="none" stroke="#94A3B8" stroke-width="2.5" stroke-linecap="round"/>
+            <path d="M30 52 L44 61 L36 67 Z" fill="#F59E0B" stroke="#D97706" stroke-width="1"/>
+            <polygon points="38,64 92,95 28,95" fill="url(#lampGlow)" class="anim-lantern"/>
+          `;
+        }
+
+        return `
+        <svg viewBox="0 0 176 128" class="w-full h-full drop-shadow-md select-none overflow-visible">
+          <defs>
+            <linearGradient id="lampGlow" x1="0%" y1="0%" x2="50%" y2="100%">
+              <stop offset="0%" stop-color="#FEF08A" stop-opacity="0.85"/>
+              <stop offset="100%" stop-color="#FEF08A" stop-opacity="0.05"/>
+            </linearGradient>
+          </defs>
+
+          <g class="anim-sparkle">
+            <path d="M136 28 L138 23 L140 28 L145 30 L140 32 L138 37 L136 32 L131 30 Z" fill="#FDE047" opacity="0.9"/>
+            <path d="M48 34 L49 30 L50 34 L54 35 L50 36 L49 40 L48 36 L44 35 Z" fill="#FDE047" opacity="0.75"/>
+          </g>
+
+          <!-- Desk -->
+          <rect x="12" y="93" width="152" height="14" rx="3" fill="#854D0E" stroke="#713F12" stroke-width="1.2"/>
+          <rect x="20" y="107" width="8" height="15" fill="#713F12" rx="1"/>
+          <rect x="148" y="107" width="8" height="15" fill="#713F12" rx="1"/>
+
+          ${deskLeftItems}
+          ${deskRightItems}
+
+          <!-- Open notebook with lines from Image 1 -->
+          <path d="M68 95 L88 92 L108 95 L106 101 L88 98 L66 101 Z" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="1.2"/>
+          <line x1="72" y1="95.5" x2="84" y2="94" stroke="#94A3B8" stroke-width="1"/>
+          <line x1="72" y1="97.5" x2="84" y2="96" stroke="#94A3B8" stroke-width="1"/>
+          <line x1="90" y1="94" x2="102" y2="95.5" stroke="#94A3B8" stroke-width="1"/>
+          <line x1="90" y1="96" x2="102" y2="97.5" stroke="#94A3B8" stroke-width="1"/>
+
+          <!-- Character Studying -->
+          <g class="anim-buddy-study">
+            <ellipse cx="88" cy="85" rx="26" ry="16" fill="${cfg.hoodColor}"/>
+            <circle cx="88" cy="50" r="28" fill="${cfg.hoodColor}" stroke="${cfg.hoodDark}" stroke-width="1.2"/>
+            ${fruitHeadExtra}
+            <ellipse cx="88" cy="54" rx="19" ry="16" fill="#FFF5EB"/>
+            ${hairAndGlasses}
+            <!-- Sparkling focused eyes -->
+            <circle cx="81" cy="52" r="3.2" fill="#0F172A"/>
+            <circle cx="82" cy="50.8" r="1.1" fill="#FFFFFF"/>
+            <circle cx="95" cy="52" r="3.2" fill="#0F172A"/>
+            <circle cx="96" cy="50.8" r="1.1" fill="#FFFFFF"/>
+            <!-- Happy smiling mouth & blush -->
+            <path d="M85 60 Q88 63 91 60" fill="none" stroke="#E11D48" stroke-width="1.8" stroke-linecap="round"/>
+            <circle cx="75" cy="57" r="3" fill="#FDA4AF" opacity="0.85"/>
+            <circle cx="101" cy="57" r="3" fill="#FDA4AF" opacity="0.85"/>
+            <!-- Left paw resting on book -->
+            <circle cx="73" cy="92" r="5" fill="#FFF5EB" stroke="#FED7AA" stroke-width="1"/>
+            <!-- Right paw holding pencil with scribble animation from Image 1 -->
+            <g class="anim-pencil">
+              <line x1="97" y1="88" x2="108" y2="74" stroke="#F59E0B" stroke-width="3" stroke-linecap="round"/>
+              <polygon points="97,88 95,91 100,90" fill="#1E293B"/>
+              <circle cx="101" cy="83" r="5" fill="#FFF5EB" stroke="#FED7AA" stroke-width="1"/>
+            </g>
+          </g>
+        </svg>`;
+      }
+    }
+
+    function updateStudyBuddy() {
+      const now = new Date();
+      const dayIdx = (now.getDay() + 6) % 7; // Mon = 0 ... Sun = 6
+      const cfg = BUDDY_CONFIGS[dayIdx] || BUDDY_CONFIGS[0];
+      const isRunning = appState.timer.isRunning;
+
+      const svgBox = document.getElementById('buddy-svg-box');
+      if (svgBox) {
+        svgBox.innerHTML = generateBuddySVG(cfg, isRunning);
+      }
+    }
+
+    function handleTimerClick() {
+      // In landscape mode, tapping clock toggles start/pause smoothly
+      if (window.matchMedia("(orientation: landscape)").matches) {
+        toggleTimer();
+      }
     }
 
     // High Precision Timestamp Calculation Engine (防锁屏休眠与时间丢失)
@@ -1539,6 +2131,7 @@
         document.getElementById('timer-play-icon').innerText = '▶';
         document.getElementById('timer-play-text').innerText = t('btn_continue_focus');
         document.getElementById('timer-status-hint').innerText = t('btn_pause_focus');
+        updateStudyBuddy();
       } else {
         // Start timer: store absolute start timestamp
         appState.timer.isRunning = true;
@@ -1547,6 +2140,7 @@
         document.getElementById('timer-play-icon').innerText = '⏸';
         document.getElementById('timer-play-text').innerText = t('btn_pause_focus');
         document.getElementById('timer-status-hint').innerText = `${appState.timer.taskName}`;
+        updateStudyBuddy();
 
         appState.timer.intervalId = setInterval(() => {
           const totalSec = getElapsedSeconds();
@@ -1558,6 +2152,7 @@
             document.getElementById('timer-play-icon').innerText = '▶';
             document.getElementById('timer-play-text').innerText = t('btn_start_focus');
             document.getElementById('timer-status-hint').innerText = '🎉 倒计时已完成！';
+            updateStudyBuddy();
             if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
           }
         }, 200);
@@ -1576,6 +2171,7 @@
       document.getElementById('timer-play-text').innerText = t('btn_start_focus');
       document.getElementById('timer-status-hint').innerText = t('timer_hint_ready');
       updateTimerDisplay(0);
+      updateStudyBuddy();
     }
 
     function promptCustomCountdown() {
@@ -1654,10 +2250,30 @@
 
       document.getElementById('habit-month-label').innerText = `${currentYear} · ${String(currentMonth).padStart(2, '0')}${appState.lang === 'zh' ? '月' : ''}`;
 
-      // Extract unique subject names from plans
-      const uniqueSubjects = Array.from(new Set(appState.plans.map(p => p.title.trim()))).filter(Boolean);
+      // 1. Filter out plans that have includeInStats === false (Requirement 1)
+      const statsPlans = appState.plans.filter(p => p.includeInStats !== false);
 
-      if (uniqueSubjects.length === 0) {
+      // 2. Extract unique subject names from plans (Merge same titles, Requirement 2)
+      const uniqueSubjects = Array.from(new Set(statsPlans.map(p => p.title.trim()))).filter(Boolean);
+
+      const currentYearMonth = `${currentYear}-${String(currentMonth).padStart(2, '0')}`;
+
+      // 3. Strict Date Range Filtering: only show if current month is in [startMonth ~ endMonth] (Requirement 4)
+      const validSubjects = uniqueSubjects.filter(subjectName => {
+        const subjectPlans = statsPlans.filter(p => p.title.trim() === subjectName);
+        if (subjectPlans.length === 0) return false;
+        let minDate = subjectPlans[0].date;
+        let maxDate = subjectPlans[0].date;
+        subjectPlans.forEach(p => {
+          if (p.date < minDate) minDate = p.date;
+          if (p.date > maxDate) maxDate = p.date;
+        });
+        const startYM = minDate.substring(0, 7);
+        const endYM = maxDate.substring(0, 7);
+        return currentYearMonth >= startYM && currentYearMonth <= endYM;
+      });
+
+      if (validSubjects.length === 0) {
         list.innerHTML = `
           <div class="bg-white rounded-2xl border border-dashed border-slate-300 p-8 text-center text-xs text-slate-400">
             <p class="mb-2 font-medium">🌱 ${t('empty_subjects_hint')}</p>
@@ -1666,9 +2282,9 @@
         return;
       }
 
-      uniqueSubjects.forEach(subjectName => {
+      validSubjects.forEach(subjectName => {
         // Find all plans for this subject
-        const subjectPlans = appState.plans.filter(p => p.title.trim() === subjectName);
+        const subjectPlans = statsPlans.filter(p => p.title.trim() === subjectName);
         const firstPlan = subjectPlans[0];
         const cat = CATEGORIES[firstPlan.category] || CATEGORIES['学习'];
         const translatedCat = getCategoryName(firstPlan.category);
@@ -1685,7 +2301,7 @@
         });
 
         const card = document.createElement('div');
-        card.className = 'bg-white rounded-2xl border border-slate-200 p-3.5 shadow-xs';
+        card.className = 'bg-white rounded-2xl border border-slate-200 p-3.5 shadow-xs habit-grid-card relative overflow-hidden transition-all';
 
         let squaresHtml = '';
         for (let d = 1; d <= 31; d++) {
@@ -1708,6 +2324,10 @@
         }
 
         const pct = Math.round((completedDays.size / daysInMonth) * 100);
+        const isDoneToday = completedDays.has(currentDay);
+        const heartBadge = isDoneToday
+          ? `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-bold bg-pink-100/90 text-pink-700 border border-pink-200 shadow-xs"><span>💙</span><span>${t('badge_checked_in')}</span></span>`
+          : `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-bold bg-slate-100 text-slate-500 border border-slate-200"><span>🤍</span><span>${t('badge_pending')}</span></span>`;
 
         card.innerHTML = `
           <div class="flex items-center justify-between mb-2.5">
@@ -1715,6 +2335,7 @@
               <span class="w-3 h-3 rounded-full shadow-xs" style="background:${cat.color}"></span>
               <span class="text-sm font-black text-slate-900">${subjectName}</span>
               <span class="text-xs px-2 py-0.5 rounded-full font-bold" style="background:${cat.bg}; color:${cat.text}">${translatedCat}</span>
+              ${heartBadge}
             </div>
             <span class="text-xs font-bold text-slate-500">${completedDays.size}/${daysInMonth} ${t('unit_days')} (${pct}%)</span>
           </div>
@@ -1729,6 +2350,7 @@
 
     // B. Multi-Dimension Charts (Day, Week, Month, Year)
     let pieChartInstance = null;
+    let tasksChartInstance = null;
     let trendChartInstance = null;
     let yearlyChartInstance = null;
 
@@ -1752,7 +2374,8 @@
       const now = new Date();
       const currentYear = now.getFullYear();
 
-      const activatedPlans = appState.plans.filter(p => appState.activatedBlockIds.includes(p.id));
+      // Only include plans with includeInStats !== false (Requirement 1)
+      const activatedPlans = appState.plans.filter(p => (p.includeInStats !== false) && appState.activatedBlockIds.includes(p.id));
 
       if (dim === 'year') {
         yearlyPanel.classList.remove('hidden');
@@ -1889,6 +2512,59 @@
       if (totalMinutes === 0) emptyHint.classList.remove('hidden');
       else emptyHint.classList.add('hidden');
 
+      // Detailed tasks breakdown table (Requirement 7)
+      const taskMap = {};
+      filtered.forEach(p => {
+        const title = p.title.trim();
+        const dur = timeToScaledMinutes(p.end) - timeToScaledMinutes(p.start);
+        if (!taskMap[title]) {
+          taskMap[title] = {
+            title: title,
+            category: p.category,
+            minutes: 0,
+            count: 0
+          };
+        }
+        taskMap[title].minutes += dur;
+        taskMap[title].count += 1;
+      });
+
+      const taskList = Object.values(taskMap).sort((a, b) => b.minutes - a.minutes);
+      const countEl = document.getElementById('tasks-table-count');
+      if (countEl) countEl.innerText = `${taskList.length} ${appState.lang === 'ko' ? '개' : (appState.lang === 'en' ? 'tasks' : '项')}`;
+
+      // Detailed Tasks visual chart & colored legend (Requirement 2)
+      const tasksLegendList = document.getElementById('tasks-legend-list');
+      const tasksEmptyHint = document.getElementById('tasks-chart-empty-hint');
+      const TASK_PALETTE = [
+        '#6366F1', '#EC4899', '#10B981', '#F59E0B', '#8B5CF6',
+        '#06B6D4', '#F97316', '#14B8A6', '#E11D48', '#3B82F6',
+        '#84CC16', '#D946EF', '#64748B'
+      ];
+
+      if (tasksLegendList) {
+        tasksLegendList.innerHTML = '';
+        if (taskList.length === 0) {
+          if (tasksEmptyHint) tasksEmptyHint.classList.remove('hidden');
+        } else {
+          if (tasksEmptyHint) tasksEmptyHint.classList.add('hidden');
+          taskList.forEach((task, idx) => {
+            const color = TASK_PALETTE[idx % TASK_PALETTE.length];
+            const hrs = (task.minutes / 60).toFixed(1);
+            const pct = totalMinutes > 0 ? Math.round((task.minutes / totalMinutes) * 100) : 0;
+            tasksLegendList.innerHTML += `
+              <div class="flex items-center justify-between p-2 bg-slate-50 rounded-xl">
+                <div class="flex items-center gap-1.5 min-w-0 pr-1">
+                  <span class="w-2.5 h-2.5 rounded-full shrink-0" style="background:${color}"></span>
+                  <span class="font-bold text-slate-700 text-xs truncate" title="${task.title}">${task.title}</span>
+                </div>
+                <div class="font-bold text-slate-900 text-xs shrink-0">${hrs}h <span class="text-[10px] text-slate-400 font-normal">(${pct}%)</span></div>
+              </div>
+            `;
+          });
+        }
+      }
+
       if (typeof Chart !== 'undefined') {
         const pCtx = document.getElementById('categoryPieChart').getContext('2d');
         if (pieChartInstance) pieChartInstance.destroy();
@@ -1910,6 +2586,35 @@
             cutout: '70%'
           }
         });
+
+        // Tasks Doughnut Chart (Requirement 2)
+        const tCanvas = document.getElementById('tasksDoughnutChart');
+        if (tCanvas) {
+          const tcCtx = tCanvas.getContext('2d');
+          if (tasksChartInstance) tasksChartInstance.destroy();
+          const taskLabels = taskList.map(t => t.title);
+          const taskData = taskList.map(t => +(t.minutes / 60).toFixed(1));
+          const taskColors = taskList.map((_, i) => TASK_PALETTE[i % TASK_PALETTE.length]);
+
+          tasksChartInstance = new Chart(tcCtx, {
+            type: 'doughnut',
+            data: {
+              labels: taskList.length > 0 ? taskLabels : [t('chart_empty_hint')],
+              datasets: [{
+                data: taskList.length > 0 ? taskData : [1],
+                backgroundColor: taskList.length > 0 ? taskColors : ['#E2E8F0'],
+                borderWidth: 2,
+                borderColor: '#ffffff'
+              }]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: { legend: { display: false } },
+              cutout: '70%'
+            }
+          });
+        }
 
         const tCtx = document.getElementById('trendChart').getContext('2d');
         if (trendChartInstance) trendChartInstance.destroy();
@@ -1975,6 +2680,7 @@
       document.getElementById('modal-plan-title-head').innerText = t('modal_add_plan_title');
       document.getElementById('modal-plan-title').value = '';
       document.getElementById('modal-plan-date').value = appState.activeDateStr;
+      document.getElementById('modal-plan-include-stats').checked = true;
       
       // 新建模式：保留“取消”和“保存计划”，隐藏“删除”
       document.getElementById('btn-delete-plan').classList.add('hidden');
@@ -2005,6 +2711,7 @@
       populateCategoryOptions();
       document.getElementById('modal-plan-category').value = plan.category;
       document.getElementById('modal-plan-date').value = plan.date;
+      document.getElementById('modal-plan-include-stats').checked = (plan.includeInStats !== false);
 
       // 编辑模式：底部仅保留“删除”和“保存计划”，删除底部的“取消”按钮（右上角X保留）
       document.getElementById('btn-delete-plan').classList.remove('hidden');
@@ -2091,6 +2798,7 @@
       const startDateStr = document.getElementById('modal-plan-date').value;
       const start = document.getElementById('modal-plan-start').value;
       const end = document.getElementById('modal-plan-end').value;
+      const includeInStats = document.getElementById('modal-plan-include-stats').checked;
 
       if (timeToScaledMinutes(end) <= timeToScaledMinutes(start)) {
         showToast("结束时间必须晚于开始时间 / End time must be after start time");
@@ -2134,7 +2842,8 @@
                 title: title,
                 category: category,
                 start: start,
-                end: end
+                end: end,
+                includeInStats: includeInStats
               });
             }
             currDate.setDate(currDate.getDate() + 1);
@@ -2146,6 +2855,7 @@
           existing.date = startDateStr;
           existing.start = start;
           existing.end = end;
+          existing.includeInStats = includeInStats;
         }
       } else {
         // Create New Block (With Weekly Recurrence Engine by Weekdays)
@@ -2172,7 +2882,8 @@
                 title: title,
                 category: category,
                 start: start,
-                end: end
+                end: end,
+                includeInStats: includeInStats
               });
             }
             currDate.setDate(currDate.getDate() + 1);
@@ -2185,7 +2896,8 @@
             title: title,
             category: category,
             start: start,
-            end: end
+            end: end,
+            includeInStats: includeInStats
           });
         }
       }
@@ -2212,6 +2924,7 @@
       const startDateStr = document.getElementById('modal-plan-date').value;
       const start = document.getElementById('modal-plan-start').value;
       const end = document.getElementById('modal-plan-end').value;
+      const includeInStats = document.getElementById('modal-plan-include-stats').checked;
 
       const scope = document.querySelector('input[name="edit_scope"]:checked')?.value || 'single';
 
@@ -2223,6 +2936,7 @@
         existing.date = startDateStr;
         existing.start = start;
         existing.end = end;
+        existing.includeInStats = includeInStats;
       } else {
         // 选项二：同步修改该周期内的所有重复时间块
         const targetGroupId = existing.groupId;
@@ -2269,7 +2983,8 @@
                 title: title,
                 category: category,
                 start: start,
-                end: end
+                end: end,
+                includeInStats: includeInStats
               });
               if (completedDates.has(dateStr)) {
                 appState.activatedBlockIds.push(newPlanId);
@@ -2285,6 +3000,7 @@
               p.category = category;
               p.start = start;
               p.end = end;
+              p.includeInStats = includeInStats;
             }
           });
         }
@@ -2349,19 +3065,42 @@
     }
 
     /* --------------------------------------------------------------------------
-       12. BACKUP ENGINE: Export & Import Dual Guarantee (下载 + 剪贴板 / 上传 + 粘贴)
+       12. BACKUP ENGINE: Unified Backup & Restore (Requirement 5)
        -------------------------------------------------------------------------- */
-    function openExportModal() {
+    function openBackupModal() {
       const exportData = {
         version: "Planner_v5",
         exportAt: new Date().toISOString(),
         lang: appState.lang,
+        theme: appState.theme,
         plans: appState.plans,
         activatedBlockIds: appState.activatedBlockIds
       };
       const jsonStr = JSON.stringify(exportData, null, 2);
       document.getElementById('export-json-preview').value = jsonStr;
-      document.getElementById('modal-export').classList.remove('hidden');
+      document.getElementById('import-file-input').value = '';
+      document.getElementById('import-text-input').value = '';
+      switchBackupSubTab('export');
+      document.getElementById('modal-backup').classList.remove('hidden');
+    }
+
+    function switchBackupSubTab(tab) {
+      const btnExp = document.getElementById('btn-backup-tab-export');
+      const btnImp = document.getElementById('btn-backup-tab-import');
+      const pnlExp = document.getElementById('backup-panel-export');
+      const pnlImp = document.getElementById('backup-panel-import');
+
+      if (tab === 'export') {
+        btnExp.className = 'flex-1 py-1.5 rounded-lg bg-white text-slate-900 shadow-xs transition-all font-bold';
+        btnImp.className = 'flex-1 py-1.5 rounded-lg text-slate-500 hover:text-slate-800 transition-all font-bold';
+        pnlExp.classList.remove('hidden');
+        pnlImp.classList.add('hidden');
+      } else {
+        btnImp.className = 'flex-1 py-1.5 rounded-lg bg-white text-slate-900 shadow-xs transition-all font-bold';
+        btnExp.className = 'flex-1 py-1.5 rounded-lg text-slate-500 hover:text-slate-800 transition-all font-bold';
+        pnlImp.classList.remove('hidden');
+        pnlExp.classList.add('hidden');
+      }
     }
 
     function downloadBackupFile() {
@@ -2401,12 +3140,6 @@
       showToast(t('toast_clipboard_copied'));
     }
 
-    function openImportModal() {
-      document.getElementById('import-file-input').value = '';
-      document.getElementById('import-text-input').value = '';
-      document.getElementById('modal-import').classList.remove('hidden');
-    }
-
     function executeImportBackup() {
       const fileInput = document.getElementById('import-file-input');
       const textInput = document.getElementById('import-text-input').value.trim();
@@ -2433,9 +3166,11 @@
           appState.plans = data.plans;
           appState.activatedBlockIds = data.activatedBlockIds || [];
           if (data.lang) appState.lang = data.lang;
+          if (data.theme) appState.theme = data.theme;
 
           saveState();
-          closeModal('modal-import');
+          closeModal('modal-backup');
+          applyTheme();
           changeLanguage(appState.lang);
           showToast(t('toast_backup_imported'));
         } else {
@@ -2460,12 +3195,19 @@
     }
 
     /* --------------------------------------------------------------------------
-       13. Service Worker & PWA Registration
+       13. Service Worker Clean-up (Prevent Disk Cache Index Conflicts on file://)
        -------------------------------------------------------------------------- */
     if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('sw.js').catch(() => {});
-      });
+      if (window.location.protocol.startsWith('http')) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('sw.js').catch(() => {});
+        });
+      } else {
+        // Unregister any stale service workers on file:// protocol
+        navigator.serviceWorker.getRegistrations().then(regs => {
+          regs.forEach(r => r.unregister());
+        }).catch(() => {});
+      }
     }
 
     /* --------------------------------------------------------------------------
@@ -2480,9 +3222,11 @@
       appState.habitYear = now.getFullYear();
       appState.habitMonth = now.getMonth() + 1;
 
+      applyTheme();
       changeLanguage(appState.lang);
       renderTimetable();
       renderPlanActual();
+      updateStudyBuddy();
       renderSubjectHeatmaps();
       renderCharts();
     });
