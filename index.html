@@ -3,9 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" id="theme-color-meta" content="#F8FAFC">
+  <link rel="manifest" href="manifest.json">
   <title>Planner</title>
   <!-- Tailwind CSS CDN -->
-  <link rel="manifest" href="manifest.json">
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Chart.js CDN -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -50,9 +54,9 @@
       padding-bottom: max(68px, calc(env(safe-area-inset-bottom) + 60px));
     }
 
-    /* 7-Column Adaptive Timetable */
+    /* 7-Column Adaptive Timetable (Compressed Height: 32px per hour) */
     .time-slot-row {
-      height: 44px;
+      height: 32px;
       border-bottom: 1px solid #F1F5F9;
       position: relative;
     }
@@ -124,9 +128,10 @@
       animation: fadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
 
-    /* Mobile Landscape Mode Optimization for Focus Timer (Reference Desktop Flip Clock) */
+
+    /* Mobile Landscape Mode Optimization for Focus Timer (Strictly scoped to timer view) */
     @media (orientation: landscape) {
-      html, body {
+      body.timer-view-active {
         background: #000000 !important;
         background-color: #000000 !important;
         margin: 0 !important;
@@ -135,11 +140,11 @@
         width: 100vw !important;
         height: 100vh !important;
       }
-      body #app-container,
-      body nav {
+      body.timer-view-active #app-container,
+      body.timer-view-active nav {
         display: none !important;
       }
-      #view-timer {
+      body.timer-view-active #view-timer {
         position: fixed !important;
         inset: 0 !important;
         top: 0 !important;
@@ -161,10 +166,23 @@
         align-items: center !important;
         justify-content: center !important;
       }
-      #view-timer .timer-hide-in-landscape {
+      body.timer-view-active #view-timer .timer-hide-in-landscape {
         display: none !important;
       }
-      #view-timer .timer-center-core {
+      body.timer-view-active #view-timer #timer-top-bar {
+        position: absolute !important;
+        top: 1.25rem !important;
+        left: 1.25rem !important;
+        width: auto !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        z-index: 100000 !important;
+      }
+      body.timer-view-active #view-timer #timer-btn-back {
+        display: flex !important;
+        background: rgba(39, 39, 42, 0.8) !important;
+      }
+      body.timer-view-active #view-timer .timer-center-core {
         margin: 0 !important;
         padding: 0 !important;
         width: 100vw !important;
@@ -173,7 +191,7 @@
         align-items: center !important;
         justify-content: center !important;
       }
-      #view-timer .timer-digits-container {
+      body.timer-view-active #view-timer .timer-digits-container {
         display: flex !important;
         align-items: center !important;
         justify-content: center !important;
@@ -182,11 +200,11 @@
         margin: 0 !important;
         padding: 0 !important;
       }
-      #view-timer .timer-pair {
+      body.timer-view-active #view-timer .timer-pair {
         display: flex !important;
         margin: 0 1.2vw !important;
       }
-      #view-timer .timer-digit-card {
+      body.timer-view-active #view-timer .timer-digit-card {
         width: 13.8vw !important;
         height: 76vh !important;
         font-size: 16.5vw !important;
@@ -200,7 +218,7 @@
         align-items: center !important;
         justify-content: center !important;
       }
-      #view-timer .timer-digit-card::after {
+      body.timer-view-active #view-timer .timer-digit-card::after {
         content: '' !important;
         position: absolute !important;
         top: calc(50% - 1.5px) !important;
@@ -211,64 +229,32 @@
         box-shadow: 0 1px 0 rgba(255, 255, 255, 0.15) !important;
         z-index: 2 !important;
       }
-      #view-timer .timer-colon {
+      body.timer-view-active #view-timer .timer-colon {
         display: none !important;
       }
-    }
 
-    /* Study Buddy Keyframe Animations (Reference Images 2 & 3) */
-    @keyframes buddyBreath {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(2px); }
-    }
-    @keyframes buddyNod {
-      0%, 100% { transform: rotate(0deg) translateY(0); }
-      50% { transform: rotate(-2deg) translateY(1.5px); }
-    }
-    @keyframes pencilScribble {
-      0%, 100% { transform: translate(0, 0) rotate(0deg); }
-      25% { transform: translate(1.5px, -1px) rotate(-3deg); }
-      75% { transform: translate(-1px, 1px) rotate(2deg); }
-    }
-    @keyframes floatZ {
-      0% { opacity: 0; transform: translate(0, 0) scale(0.7); }
-      40% { opacity: 0.9; }
-      100% { opacity: 0; transform: translate(10px, -20px) scale(1.15); }
-    }
-    @keyframes lanternGlow {
-      0%, 100% { opacity: 0.85; filter: drop-shadow(0 0 6px rgba(254, 240, 138, 0.7)); }
-      50% { opacity: 1; filter: drop-shadow(0 0 10px rgba(254, 240, 138, 0.95)); }
-    }
-    @keyframes twinkleSparkle {
-      0%, 100% { opacity: 0.2; transform: scale(0.8); }
-      50% { opacity: 1; transform: scale(1.2); }
-    }
-
-    .anim-buddy-sleep {
-      animation: buddyBreath 3s ease-in-out infinite;
-    }
-    .anim-buddy-study {
-      animation: buddyNod 2.2s ease-in-out infinite;
-      transform-origin: 50% 90%;
-    }
-    .anim-pencil {
-      animation: pencilScribble 0.8s ease-in-out infinite;
-      transform-origin: center bottom;
-    }
-    .anim-float-z1 {
-      animation: floatZ 2.4s ease-out infinite;
-    }
-    .anim-float-z2 {
-      animation: floatZ 2.4s ease-out 0.8s infinite;
-    }
-    .anim-float-z3 {
-      animation: floatZ 2.4s ease-out 1.6s infinite;
-    }
-    .anim-lantern {
-      animation: lanternGlow 2.5s ease-in-out infinite;
-    }
-    .anim-sparkle {
-      animation: twinkleSparkle 1.6s ease-in-out infinite;
+      /* Requirement 9: Strictly lock non-timer views (timetable, plan-actual, analytics) to vertical column layout on landscape */
+      body:not(.timer-view-active) {
+        background-color: #F8FAFC !important;
+      }
+      body:not(.timer-view-active) #app-container {
+        max-width: 480px !important;
+        width: 100% !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+      }
+      body:not(.timer-view-active) nav {
+        max-width: 480px !important;
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+        right: auto !important;
+        width: 100% !important;
+      }
+      body:not(.timer-view-active) .view-panel {
+        max-width: 480px !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+      }
     }
   </style>
 </head>
@@ -330,21 +316,21 @@
           </div>
         </div>
 
-        <!-- Timetable Scroll Body (Vertical only, 09:00 to 次日 03:00) -->
-        <div class="overflow-y-auto max-h-[620px] relative" id="timetable-scroll-box">
+        <!-- Timetable Scroll Body (Vertical only, 09:00 to 次日 03:00, compressed 32px/h) -->
+        <div class="overflow-y-auto max-h-[580px] relative" id="timetable-scroll-box">
           <div class="flex w-full relative">
-            <!-- Left Compact Time Axis (09 to 03, 44px per hour) -->
+            <!-- Left Compact Time Axis (09 to 03, 32px per hour) -->
             <div class="w-9 shrink-0 border-r border-slate-200 bg-slate-50/80 text-[11px] font-mono text-slate-500 font-semibold select-none flex flex-col text-center" id="timetable-time-axis">
               <!-- Populated dynamically -->
             </div>
 
             <!-- 7 Days Grid Area (100% width, no horizontal scroll) -->
             <div class="flex-1 relative bg-white">
-              <!-- Background Horizontal Grid lines (44px per hour, 22px per 30m) -->
+              <!-- Background Horizontal Grid lines (32px per hour, 16px per 30m) -->
               <div id="timetable-bg-grid" class="absolute inset-0 pointer-events-none"></div>
 
-              <!-- 7 Column Slots Container -->
-              <div class="grid grid-cols-7 w-full relative z-10 min-h-[792px]" id="timetable-columns-container">
+              <!-- 7 Column Slots Container (Compressed: 18h x 32px = 576px) -->
+              <div class="grid grid-cols-7 w-full relative z-10 min-h-[576px]" id="timetable-columns-container">
                 <div class="relative border-r border-slate-100 timetable-day-col" data-col-day="0"></div>
                 <div class="relative border-r border-slate-100 timetable-day-col" data-col-day="1"></div>
                 <div class="relative border-r border-slate-100 timetable-day-col" data-col-day="2"></div>
@@ -409,8 +395,8 @@
           </div>
         </div>
 
-        <div class="max-h-[560px] overflow-y-auto relative" id="dual-col-scroll">
-          <div class="grid grid-cols-11 relative min-h-[792px]">
+        <div class="max-h-[580px] overflow-y-auto relative" id="dual-col-scroll">
+          <div class="grid grid-cols-11 relative min-h-[576px]">
             <div class="col-span-5 border-r border-slate-100 relative bg-slate-50/30" id="pa-plan-column"></div>
             <div class="col-span-1 border-r border-slate-200 bg-slate-50/80 text-[11px] font-mono font-semibold text-slate-400 select-none flex flex-col text-center" id="pa-time-ruler"></div>
             <div class="col-span-5 relative bg-white" id="pa-actual-column"></div>
@@ -450,16 +436,16 @@
 
       <!-- SUB-PANEL A: 科目月度打卡方格 (自动提取首页创建的科目，支持月份切换) -->
       <div id="analytics-heatmap-panel" class="space-y-3 mb-12">
-        <div class="bg-white rounded-2xl border border-slate-200 p-3 shadow-xs flex items-center justify-between">
-          <div class="flex items-center gap-1.5">
+        <div class="bg-white rounded-2xl border border-slate-200 p-3 shadow-xs flex items-center justify-between gap-2 overflow-hidden">
+          <div class="flex items-center gap-1.5 shrink-0">
             <button onclick="changeHabitMonth(-1)" class="w-7 h-7 flex items-center justify-center rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold active:scale-95 transition-all">◀</button>
-            <div class="text-center px-1">
-              <div class="text-sm font-black text-slate-900" id="habit-month-label"></div>
+            <div class="text-center px-1 shrink-0">
+              <div class="text-sm font-black text-slate-900 whitespace-nowrap" id="habit-month-label"></div>
             </div>
             <button onclick="changeHabitMonth(1)" class="w-7 h-7 flex items-center justify-center rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold active:scale-95 transition-all">▶</button>
           </div>
-          <div class="text-right">
-            <span class="text-xs text-slate-400 font-medium" data-i18n="auto_sync_hint">第二页点亮实际执行自动打卡</span>
+          <div class="text-right pl-2 shrink-0">
+            <span class="text-xs text-slate-400 font-medium whitespace-nowrap" data-i18n="auto_sync_hint">点亮任务自动打卡</span>
           </div>
         </div>
 
@@ -568,81 +554,77 @@
   </main>
 
   <!-- ==========================================================================
-       VIEW 3: 第三页：专注计时器 (Timer Screen · 还原翻页钟大字视觉与角落小角色)
+       VIEW 3: 第三页：专注计时器 (Timer Screen · 还原翻页钟大字视觉)
        ========================================================================== -->
-  <section id="view-timer" class="view-panel fixed inset-0 bg-[#000000] text-white z-50 flex flex-col justify-between p-5 pb-24 select-none hidden" onclick="handleTimerBgClick(event)">
-    <!-- Top Mode Switcher -->
-    <div class="timer-hide-in-landscape w-full flex items-center justify-between text-slate-400">
-      <button onclick="switchView('timetable')" class="w-10 h-10 flex items-center justify-center rounded-full bg-zinc-800/90 text-zinc-200 hover:text-white active:scale-95 text-base">
-        ←
+  <section id="view-timer" class="view-panel fixed inset-0 bg-[#000000] text-white z-[99999] flex flex-col justify-between p-5 pb-24 select-none hidden" onclick="handleTimerBgClick(event)">
+    <!-- Top Header: Unified single Back Button and Mode Switcher (Clean, no duplicates or overlaps in portrait/landscape) -->
+    <div id="timer-top-bar" class="w-full flex items-center justify-between text-slate-400 relative z-50 pt-1 pointer-events-auto">
+      <!-- Single Unified Top-Left Back Button -->
+      <button id="timer-btn-back" onclick="exitLandscapeOrTimer(event)" class="min-w-[48px] min-h-[44px] px-3.5 py-2 flex items-center justify-center gap-1.5 rounded-full bg-zinc-800/80 hover:bg-zinc-700/90 text-zinc-200 hover:text-white active:scale-95 text-xs font-bold cursor-pointer backdrop-blur-md border border-zinc-700/60 shadow-lg transition-all" aria-label="返回时间表" title="返回周课表">
+        <span class="text-base font-black leading-none">←</span>
+        <span data-i18n="btn_back">返回</span>
       </button>
 
-      <div class="flex bg-zinc-900 rounded-2xl p-1 border border-zinc-800">
-        <button id="btn-mode-countup" onclick="setTimerMode('countup')" class="px-4 py-1.5 rounded-xl text-xs font-bold bg-zinc-700 text-white transition-all" data-i18n="timer_mode_countup">正计时</button>
-        <button id="btn-mode-countdown" onclick="setTimerMode('countdown')" class="px-4 py-1.5 rounded-xl text-xs font-bold text-zinc-400 hover:text-white transition-all" data-i18n="timer_mode_countdown">倒计时</button>
+      <!-- Mode Switcher (Hidden in landscape to keep landscape screen ultra-clean and immersive) -->
+      <div id="timer-mode-switcher" class="timer-hide-in-landscape flex bg-zinc-900 rounded-2xl p-1 border border-zinc-800 shadow-sm" onclick="event.stopPropagation()">
+        <button id="btn-mode-countup" onclick="setTimerMode('countup')" class="min-w-[44px] min-h-[44px] px-4 py-2 rounded-xl text-xs font-bold bg-zinc-700 text-white transition-all cursor-pointer flex items-center justify-center" data-i18n="timer_mode_countup">正计时</button>
+        <button id="btn-mode-countdown" onclick="setTimerMode('countdown')" class="min-w-[44px] min-h-[44px] px-4 py-2 rounded-xl text-xs font-bold text-zinc-400 hover:text-white transition-all cursor-pointer flex items-center justify-center" data-i18n="timer_mode_countdown">倒计时</button>
       </div>
 
-      <div class="w-10"></div>
+      <div class="w-12 min-w-[44px] timer-hide-in-landscape"></div>
     </div>
 
     <!-- Central Visual Core: Focus Subject + Massive Centerpiece Flip Clock + Presets -->
     <div class="timer-center-core flex-1 flex flex-col items-center justify-center my-auto -mt-6">
       <!-- Current Focus Subject -->
-      <div id="timer-task-selector-box" onclick="openTimerTaskModal()" class="timer-hide-in-landscape flex items-center gap-2 bg-zinc-900/90 border border-zinc-800 rounded-full px-4 py-1.5 cursor-pointer hover:bg-zinc-800 transition-all active:scale-95 shadow-sm mb-6">
+      <div id="timer-task-selector-box" onclick="event.stopPropagation(); openTimerTaskModal()" class="timer-hide-in-landscape flex items-center gap-2 bg-zinc-900/90 border border-zinc-800 rounded-full px-4 py-2 cursor-pointer hover:bg-zinc-800 transition-all active:scale-95 shadow-sm mb-6 min-h-[44px]">
         <span class="w-2.5 h-2.5 rounded-full bg-blue-500 shadow-xs"></span>
         <span id="timer-task-name" class="text-sm font-bold text-zinc-100">深度专注</span>
         <span class="text-[10px] text-zinc-500">▼</span>
       </div>
 
       <!-- Classic Flip-Clock Style Centerpiece (HH : MM : SS) -->
-      <div class="timer-digits-container flex items-center gap-1.5 sm:gap-2.5 cursor-pointer" onclick="handleTimerClick()" title="点击开始/暂停">
+      <div class="timer-digits-container flex items-center justify-center cursor-pointer" onclick="handleTimerClick()" title="点击开始/暂停">
         <!-- Hours -->
-        <div class="flex">
+        <div class="timer-pair flex">
           <div class="timer-digit-card" id="time-h1">0</div>
           <div class="timer-digit-card" id="time-h2">0</div>
         </div>
         <span class="timer-colon text-zinc-600 font-bold text-2xl mb-1 animate-pulse">:</span>
         <!-- Minutes -->
-        <div class="flex">
+        <div class="timer-pair flex">
           <div class="timer-digit-card" id="time-m1">0</div>
           <div class="timer-digit-card" id="time-m2">0</div>
         </div>
         <span class="timer-colon text-zinc-600 font-bold text-2xl mb-1 animate-pulse">:</span>
         <!-- Seconds -->
-        <div class="flex">
+        <div class="timer-pair flex">
           <div class="timer-digit-card" id="time-s1">0</div>
           <div class="timer-digit-card" id="time-s2">0</div>
         </div>
       </div>
 
       <!-- Presets for Countdown (15m, 25m, 45m, 60m, Custom) -->
-      <div id="countdown-presets" class="timer-hide-in-landscape flex items-center gap-1.5 sm:gap-2 mt-6 hidden">
-        <button onclick="setCountdownMinutes(15)" class="px-3 py-1.5 rounded-full bg-zinc-900 text-xs font-bold text-zinc-300 border border-zinc-800 hover:bg-zinc-800 active:scale-95">15m</button>
-        <button onclick="setCountdownMinutes(25)" class="px-3 py-1.5 rounded-full bg-zinc-700 text-xs font-bold text-white border border-zinc-600 hover:bg-zinc-600 active:scale-95">25m</button>
-        <button onclick="setCountdownMinutes(45)" class="px-3 py-1.5 rounded-full bg-zinc-900 text-xs font-bold text-zinc-300 border border-zinc-800 hover:bg-zinc-800 active:scale-95">45m</button>
-        <button onclick="setCountdownMinutes(60)" class="px-3 py-1.5 rounded-full bg-zinc-900 text-xs font-bold text-zinc-300 border border-zinc-800 hover:bg-zinc-800 active:scale-95">60m</button>
-        <button onclick="promptCustomCountdown()" class="px-3 py-1.5 rounded-full bg-blue-900/40 text-xs font-bold text-blue-300 border border-blue-700/60 hover:bg-blue-800/50 active:scale-95" data-i18n="btn_custom_timer">自定义</button>
+      <div id="countdown-presets" class="timer-hide-in-landscape flex items-center gap-1.5 sm:gap-2 mt-6 hidden" onclick="event.stopPropagation()">
+        <button id="btn-preset-15" onclick="setCountdownMinutes(15)" class="min-w-[44px] min-h-[40px] px-3.5 py-2 rounded-full bg-zinc-900 text-xs font-bold text-zinc-400 border border-zinc-800 hover:bg-zinc-800 active:scale-95 transition-all">15m</button>
+        <button id="btn-preset-25" onclick="setCountdownMinutes(25)" class="min-w-[44px] min-h-[40px] px-3.5 py-2 rounded-full bg-zinc-700 text-xs font-bold text-white border border-zinc-600 hover:bg-zinc-600 active:scale-95 transition-all">25m</button>
+        <button id="btn-preset-45" onclick="setCountdownMinutes(45)" class="min-w-[44px] min-h-[40px] px-3.5 py-2 rounded-full bg-zinc-900 text-xs font-bold text-zinc-400 border border-zinc-800 hover:bg-zinc-800 active:scale-95 transition-all">45m</button>
+        <button id="btn-preset-60" onclick="setCountdownMinutes(60)" class="min-w-[44px] min-h-[40px] px-3.5 py-2 rounded-full bg-zinc-900 text-xs font-bold text-zinc-400 border border-zinc-800 hover:bg-zinc-800 active:scale-95 transition-all">60m</button>
+        <button id="btn-preset-custom" onclick="openCustomCountdownModal()" class="min-w-[44px] min-h-[40px] px-3.5 py-2 rounded-full bg-zinc-900 text-xs font-bold text-zinc-400 border border-zinc-800 hover:bg-zinc-800 active:scale-95 transition-all" data-i18n="btn_custom_timer">自定义</button>
       </div>
 
       <p id="timer-status-hint" class="timer-hide-in-landscape text-xs text-zinc-500 mt-5 tracking-widest uppercase font-semibold" data-i18n="timer_hint_ready">准备就绪 · 保持专注</p>
     </div>
 
-    <!-- Bottom Area: Corner Fruit Buddy (No text badges) + Controls -->
+    <!-- Bottom Area: Focus Controls (Fruit Buddy Removed, Requirement 2) -->
     <div class="timer-hide-in-landscape w-full max-w-sm mx-auto flex flex-col items-center">
-      <!-- Corner Desk Buddy (Reference Image 1 & 2, strictly without surrounding text labels) -->
-      <div class="w-full flex justify-end px-2 mb-1.5">
-        <div id="buddy-svg-box" class="w-32 h-20 relative flex items-center justify-end">
-          <!-- Dynamically populated with Vector SVG character based on weekday & state -->
-        </div>
-      </div>
-
       <!-- Pure Focus Controls -->
       <div class="w-full flex items-center gap-3">
-        <button id="btn-timer-toggle" onclick="toggleTimer()" class="flex-1 py-3.5 rounded-2xl bg-white text-zinc-950 font-black text-base hover:bg-zinc-200 active:scale-95 shadow-xl transition-all flex items-center justify-center gap-2">
+        <button id="btn-timer-toggle" onclick="event.stopPropagation(); toggleTimer()" class="flex-1 min-h-[52px] py-3.5 rounded-2xl bg-white text-zinc-950 font-black text-base hover:bg-zinc-200 active:scale-95 shadow-xl transition-all flex items-center justify-center gap-2 cursor-pointer">
           <span id="timer-play-icon">▶</span>
           <span id="timer-play-text" data-i18n="btn_start_focus">开始专注</span>
         </button>
-        <button onclick="resetTimer()" class="w-13 h-13 py-3.5 px-4 rounded-2xl bg-zinc-900 text-zinc-300 hover:text-white hover:bg-zinc-800 active:scale-95 text-lg border border-zinc-800 flex items-center justify-center font-bold" title="重置">
+        <button onclick="event.stopPropagation(); resetTimer()" class="w-13 h-13 min-w-[52px] min-h-[52px] py-3.5 px-4 rounded-2xl bg-zinc-900 text-zinc-300 hover:text-white hover:bg-zinc-800 active:scale-95 text-lg border border-zinc-800 flex items-center justify-center font-bold cursor-pointer" title="重置">
           ↺
         </button>
       </div>
@@ -870,6 +852,60 @@
     </div>
   </div>
 
+  <!-- ==========================================================================
+       MODAL: Custom Countdown Duration (Slider + 30m Step Selector, Requirement 4)
+       ========================================================================== -->
+  <div id="modal-custom-countdown" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[100000] flex items-end sm:items-center justify-center p-4 hidden" onclick="if(event.target===this)closeModal('modal-custom-countdown')">
+    <div class="bg-zinc-900 border border-zinc-800 w-full max-w-sm rounded-3xl p-5 shadow-2xl animate-fade-in text-white" onclick="event.stopPropagation()">
+      <div class="flex items-center justify-between mb-4 border-b border-zinc-800 pb-3">
+        <h3 class="text-sm font-black text-white flex items-center gap-2">
+          <span>⏱️</span> <span data-i18n="custom_timer_title">自定义倒计时</span>
+        </h3>
+        <button onclick="closeModal('modal-custom-countdown')" class="w-8 h-8 rounded-full bg-zinc-800 hover:bg-zinc-700 text-zinc-400 hover:text-white flex items-center justify-center text-lg leading-none cursor-pointer transition-colors">&times;</button>
+      </div>
+
+      <!-- Current selected duration display -->
+      <div class="text-center py-3 mb-4 bg-zinc-950/70 rounded-2xl border border-zinc-800/80 shadow-inner">
+        <div class="text-3xl font-black text-blue-400 tracking-tight font-mono">
+          <span id="custom-slider-val">90</span> <span class="text-xs font-bold text-zinc-400 uppercase">min</span>
+        </div>
+        <div class="text-[11px] text-zinc-400 font-medium mt-0.5" id="custom-slider-hours">1.5 小时</div>
+      </div>
+
+      <!-- Range Slider -->
+      <div class="mb-5 px-1">
+        <input type="range" id="custom-slider-input" min="5" max="360" step="5" value="90" oninput="onCustomSliderChange(this.value)" class="w-full h-2.5 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-blue-500">
+        <div class="flex justify-between text-[10px] text-zinc-500 font-mono mt-2">
+          <span>5m</span>
+          <span>60m</span>
+          <span>180m</span>
+          <span>360m (6h)</span>
+        </div>
+      </div>
+
+      <!-- Quick 30m Step Pills -->
+      <div class="mb-5">
+        <div class="text-[11px] text-zinc-400 font-bold mb-2">快速快捷选项 (30m 步进):</div>
+        <div class="grid grid-cols-4 gap-1.5">
+          <button type="button" onclick="selectCustomStep(30)" class="step-pill py-2 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-xs font-bold text-zinc-300 text-center active:scale-95 transition-all">30m</button>
+          <button type="button" onclick="selectCustomStep(60)" class="step-pill py-2 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-xs font-bold text-zinc-300 text-center active:scale-95 transition-all">60m</button>
+          <button type="button" onclick="selectCustomStep(90)" class="step-pill py-2 rounded-xl bg-blue-600 text-xs font-bold text-white text-center active:scale-95 transition-all shadow-sm">90m</button>
+          <button type="button" onclick="selectCustomStep(120)" class="step-pill py-2 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-xs font-bold text-zinc-300 text-center active:scale-95 transition-all">120m</button>
+          <button type="button" onclick="selectCustomStep(150)" class="step-pill py-2 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-xs font-bold text-zinc-300 text-center active:scale-95 transition-all">150m</button>
+          <button type="button" onclick="selectCustomStep(180)" class="step-pill py-2 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-xs font-bold text-zinc-300 text-center active:scale-95 transition-all">180m</button>
+          <button type="button" onclick="selectCustomStep(240)" class="step-pill py-2 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-xs font-bold text-zinc-300 text-center active:scale-95 transition-all">240m</button>
+          <button type="button" onclick="selectCustomStep(360)" class="step-pill py-2 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-xs font-bold text-zinc-300 text-center active:scale-95 transition-all">360m</button>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex items-center gap-2 pt-2 border-t border-zinc-800">
+        <button type="button" onclick="closeModal('modal-custom-countdown')" class="flex-1 py-2.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-xs font-bold text-zinc-300 active:scale-95 transition-all" data-i18n="btn_cancel">取消</button>
+        <button type="button" onclick="confirmCustomCountdown()" class="flex-1 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-xs font-black text-white active:scale-95 shadow-md transition-all" data-i18n="btn_confirm_save">应用倒计时</button>
+      </div>
+    </div>
+  </div>
+
   <div id="toast-msg" class="fixed top-12 left-1/2 bg-slate-900/90 text-white text-xs font-bold px-4 py-2.5 rounded-full shadow-2xl z-50 flex items-center gap-2 border border-slate-700">
     <span id="toast-text"></span>
   </div>
@@ -923,7 +959,9 @@
         subtab_habit_grid: "打卡方格",
         subtab_charts: "时长图表",
         current_month: "当前月份",
-        auto_sync_hint: "第二页点亮实际执行自动打卡",
+        auto_sync_hint: "点亮任务自动打卡",
+        btn_back: "返回",
+        custom_timer_title: "自定义倒计时",
         dim_day: "日",
         dim_week: "周",
         dim_month: "月",
@@ -985,8 +1023,6 @@
         detailed_tasks_title: "具体任务时长分布",
         badge_checked_in: "已打卡",
         badge_pending: "待打卡",
-        buddy_state_resting: "休息中 · 养精蓄锐",
-        buddy_state_focusing: "用功学习中 · 专注冲刺",
         toast_plan_saved: "时间块已保存！",
         toast_plan_deleted: "时间块已删除！",
         toast_block_activated: "已点亮并计入实际执行！",
@@ -1031,7 +1067,9 @@
         subtab_habit_grid: "체크 그리드",
         subtab_charts: "시간 차트",
         current_month: "현재 월",
-        auto_sync_hint: "실행 탭에서 완료 시 자동 체크",
+        auto_sync_hint: "자동 체크인",
+        btn_back: "뒤로",
+        custom_timer_title: "타이머 시간 설정",
         dim_day: "일",
         dim_week: "주",
         dim_month: "월",
@@ -1093,8 +1131,6 @@
         detailed_tasks_title: "세부 항목 시간 분포",
         badge_checked_in: "체크완료",
         badge_pending: "미완료",
-        buddy_state_resting: "휴식 중 · 충전 중",
-        buddy_state_focusing: "열공 중 · 집중 스퍼트",
         toast_plan_saved: "시간 블록이 저장되었습니다!",
         toast_plan_deleted: "시간 블록이 삭제되었습니다!",
         toast_block_activated: "완료 처리 및 통계에 반영되었습니다!",
@@ -1139,7 +1175,9 @@
         subtab_habit_grid: "Habit Grid",
         subtab_charts: "Time Charts",
         current_month: "Current Month",
-        auto_sync_hint: "Auto checked when lit up in Plan vs Actual",
+        auto_sync_hint: "Auto check-in",
+        btn_back: "Back",
+        custom_timer_title: "Custom Timer",
         dim_day: "Day",
         dim_week: "Week",
         dim_month: "Month",
@@ -1201,8 +1239,6 @@
         detailed_tasks_title: "Detailed Tasks Distribution",
         badge_checked_in: "Done",
         badge_pending: "Pending",
-        buddy_state_resting: "Resting · Recharging",
-        buddy_state_focusing: "Studying Hard · In Focus",
         toast_plan_saved: "Time block saved!",
         toast_plan_deleted: "Time block deleted!",
         toast_block_activated: "Lit up & recorded to actual execution!",
@@ -1269,11 +1305,11 @@
     }
 
     // Time scale config: 09:00 to 27:00 (Next day 03:00)
-    // 18 hours total. 44px per hour.
+    // 18 hours total. 32px per hour (Compressed vertical height: 576px)
     const START_HOUR = 9;
     const END_HOUR_EXTENDED = 27; // 27 = 24 + 3 (03:00)
     const TOTAL_HOURS = END_HOUR_EXTENDED - START_HOUR; // 18 hours
-    const HOUR_HEIGHT = 44; // 44px per 60min, 22px per 30min
+    const HOUR_HEIGHT = 32; // 32px per 60min, 16px per 30min
     const BASE_MINUTES = START_HOUR * 60; // 540 min
 
     function timeToScaledMinutes(timeStr) {
@@ -1415,7 +1451,6 @@
       populateCategoryOptions();
       renderTimetable();
       renderPlanActual();
-      updateStudyBuddy();
       renderSubjectHeatmaps();
       renderCharts();
     }
@@ -1482,7 +1517,6 @@
       else if (viewName === 'plan-actual') renderPlanActual();
       else if (viewName === 'timer') {
         updateTimerDisplay();
-        updateStudyBuddy();
       }
       else if (viewName === 'analytics') {
         renderSubjectHeatmaps();
@@ -1542,18 +1576,18 @@
         headerContainer.appendChild(col);
       });
 
-      // 2. Render Left Compact Time Ruler (09 to 03, 44px per hour)
+      // 2. Render Left Compact Time Ruler (09 to 03, 32px per hour)
       const timeAxis = document.getElementById('timetable-time-axis');
       timeAxis.innerHTML = '';
       for (let h = START_HOUR; h <= END_HOUR_EXTENDED; h++) {
         const displayH = h >= 24 ? String(h - 24).padStart(2, '0') : String(h).padStart(2, '0');
         const row = document.createElement('div');
-        row.className = 'h-11 flex items-start justify-center pt-1 border-b border-slate-100';
+        row.className = 'h-8 flex items-start justify-center pt-0.5 border-b border-slate-100 text-[11px]';
         row.innerHTML = `<span class="leading-none">${displayH}</span>`;
         timeAxis.appendChild(row);
       }
 
-      // 3. Render Background Grid Lines (44px per hour, 22px per 30m)
+      // 3. Render Background Grid Lines (32px per hour, 16px per 30m)
       const bgGrid = document.getElementById('timetable-bg-grid');
       bgGrid.innerHTML = '';
       for (let h = START_HOUR; h <= END_HOUR_EXTENDED; h++) {
@@ -1576,7 +1610,7 @@
           const endMin = timeToScaledMinutes(plan.end);
 
           const topPx = (startMin - BASE_MINUTES) * (HOUR_HEIGHT / 60);
-          const heightPx = Math.max(22, (endMin - startMin) * (HOUR_HEIGHT / 60));
+          const heightPx = Math.max(16, (endMin - startMin) * (HOUR_HEIGHT / 60));
 
           if (topPx >= 0) {
             const blockEl = document.createElement('div');
@@ -1660,7 +1694,7 @@
       for (let h = START_HOUR; h <= END_HOUR_EXTENDED; h++) {
         const displayH = h >= 24 ? String(h - 24).padStart(2, '0') : String(h).padStart(2, '0');
         const div = document.createElement('div');
-        div.className = 'h-11 flex items-start justify-center pt-1 border-b border-slate-100';
+        div.className = 'h-8 flex items-start justify-center pt-0.5 border-b border-slate-100 text-[11px]';
         div.innerHTML = `<span>${displayH}</span>`;
         ruler.appendChild(div);
       }
@@ -1681,7 +1715,7 @@
         const endMin = timeToScaledMinutes(plan.end);
         const dur = endMin - startMin;
         const topPx = (startMin - BASE_MINUTES) * (HOUR_HEIGHT / 60);
-        const heightPx = Math.max(24, dur * (HOUR_HEIGHT / 60));
+        const heightPx = Math.max(16, dur * (HOUR_HEIGHT / 60));
         const cat = CATEGORIES[plan.category] || CATEGORIES['学习'];
         const translatedCat = getCategoryName(plan.category);
 
@@ -1768,322 +1802,118 @@
       const presets = document.getElementById('countdown-presets');
 
       if (mode === 'countup') {
-        btnUp.className = 'px-4 py-1.5 rounded-xl text-xs font-bold bg-zinc-700 text-white transition-all';
-        btnDown.className = 'px-4 py-1.5 rounded-xl text-xs font-bold text-zinc-400 hover:text-white transition-all';
+        btnUp.className = 'min-w-[44px] min-h-[44px] px-4 py-2 rounded-xl text-xs font-bold bg-zinc-700 text-white transition-all cursor-pointer flex items-center justify-center';
+        btnDown.className = 'min-w-[44px] min-h-[44px] px-4 py-2 rounded-xl text-xs font-bold text-zinc-400 hover:text-white transition-all cursor-pointer flex items-center justify-center';
         presets.classList.add('hidden');
       } else {
-        btnDown.className = 'px-4 py-1.5 rounded-xl text-xs font-bold bg-zinc-700 text-white transition-all';
-        btnUp.className = 'px-4 py-1.5 rounded-xl text-xs font-bold text-zinc-400 hover:text-white transition-all';
+        btnDown.className = 'min-w-[44px] min-h-[44px] px-4 py-2 rounded-xl text-xs font-bold bg-zinc-700 text-white transition-all cursor-pointer flex items-center justify-center';
+        btnUp.className = 'min-w-[44px] min-h-[44px] px-4 py-2 rounded-xl text-xs font-bold text-zinc-400 hover:text-white transition-all cursor-pointer flex items-center justify-center';
         presets.classList.remove('hidden');
+        setCountdownMinutes(Math.round(appState.timer.countdownTargetSec / 60) || 25, false);
       }
       updateTimerDisplay(0);
-      updateStudyBuddy();
     }
 
-    function setCountdownMinutes(mins) {
-      appState.timer.countdownTargetSec = mins * 60;
+    function setCountdownMinutes(mins, isCustom = false) {
+      const targetMins = parseInt(mins, 10) || 25;
+      appState.timer.countdownTargetSec = targetMins * 60;
       resetTimer();
+
+      // Highlight active preset button cleanly (Requirement 5)
+      const presets = [15, 25, 45, 60];
+      presets.forEach(p => {
+        const btn = document.getElementById(`btn-preset-${p}`);
+        if (btn) {
+          if (!isCustom && targetMins === p) {
+            btn.className = 'min-w-[44px] min-h-[40px] px-3.5 py-2 rounded-full bg-zinc-700 text-xs font-bold text-white border border-zinc-600 hover:bg-zinc-600 active:scale-95 transition-all shadow-sm';
+          } else {
+            btn.className = 'min-w-[44px] min-h-[40px] px-3.5 py-2 rounded-full bg-zinc-900 text-xs font-bold text-zinc-400 border border-zinc-800 hover:bg-zinc-800 active:scale-95 transition-all';
+          }
+        }
+      });
+
+      const customBtn = document.getElementById('btn-preset-custom');
+      if (customBtn) {
+        if (isCustom || !presets.includes(targetMins)) {
+          customBtn.className = 'min-w-[44px] min-h-[40px] px-3.5 py-2 rounded-full bg-blue-600 text-xs font-bold text-white border border-blue-500 hover:bg-blue-500 active:scale-95 transition-all shadow-sm';
+          customBtn.innerText = `${targetMins}m`;
+        } else {
+          customBtn.className = 'min-w-[44px] min-h-[40px] px-3.5 py-2 rounded-full bg-zinc-900 text-xs font-bold text-zinc-400 border border-zinc-800 hover:bg-zinc-800 active:scale-95 transition-all';
+          customBtn.innerText = t('btn_custom_timer');
+        }
+      }
     }
 
     /* --------------------------------------------------------------------------
-       Weekly Fruit Hood Study Buddy Engine (요일별 과일후드 공부 짝꿍 캐릭터 - 参考图一)
-       7 Hoods: Mon Apple, Tue Orange, Wed Mango, Thu Watermelon, Fri Grape, Sat Eggplant, Sun Peach
-       2 States: 动作1 (用功中 · 认真学习看书画笔) vs 动作2 (不学习 · 趴桌睡觉盖书休眠)
+       Custom Countdown Slider & 30-Minute Step Selector (Requirement 4)
        -------------------------------------------------------------------------- */
-    const BUDDY_CONFIGS = [
-      { day: 0, fruit: "apple", icon: "🍎", zh: "周一 苹果搭子", ko: "월요일 사과 짝꿍", en: "Mon Apple Buddy", hoodColor: "#EF4444", hoodDark: "#DC2626", leafColor: "#22C55E" },
-      { day: 1, fruit: "orange", icon: "🍊", zh: "周二 香橙搭子", ko: "화요일 오렌지 짝꿍", en: "Tue Orange Buddy", hoodColor: "#F97316", hoodDark: "#EA580C", leafColor: "#16A34A" },
-      { day: 2, fruit: "mango", icon: "🥭", zh: "周三 芒果搭子", ko: "수요일 망고 짝꿍", en: "Wed Mango Buddy", hoodColor: "#EAB308", hoodDark: "#CA8A04", leafColor: "#65A30D" },
-      { day: 3, fruit: "watermelon", icon: "🍉", zh: "周四 西瓜搭子", ko: "목요일 수박 짝꿍", en: "Thu Watermelon Buddy", hoodColor: "#22C55E", hoodDark: "#15803D", leafColor: "#166534" },
-      { day: 4, fruit: "grape", icon: "🍇", zh: "周五 葡萄搭子", ko: "금요일 포도 짝꿍", en: "Fri Grape Buddy", hoodColor: "#3B82F6", hoodDark: "#1D4ED8", leafColor: "#10B981" },
-      { day: 5, fruit: "eggplant", icon: "🍆", zh: "周六 茄子搭子", ko: "토요일 가지 짝꿍", en: "Sat Eggplant Buddy", hoodColor: "#8B5CF6", hoodDark: "#6D28D9", leafColor: "#059669" },
-      { day: 6, fruit: "peach", icon: "🍑", zh: "周日 桃子搭子", ko: "일요일 복숭아 짝꿍", en: "Sun Peach Buddy", hoodColor: "#F472B6", hoodDark: "#EC4899", leafColor: "#10B981" }
-    ];
+    let currentCustomSliderMinutes = 90;
 
-    function generateBuddySVG(cfg, isRunning) {
-      let fruitHeadExtra = '';
-      let hairAndGlasses = '';
-
-      if (cfg.fruit === 'apple') {
-        fruitHeadExtra = `
-          <rect x="86" y="15" width="4" height="9" rx="1.5" fill="#78350F"/>
-          <path d="M89 19 Q98 13 96 22 Q90 24 89 19" fill="${cfg.leafColor}"/>
-        `;
-        hairAndGlasses = `
-          <path d="M72 45 Q80 43 88 47 Q96 43 104 45 Q98 52 88 50 Q78 52 72 45 Z" fill="#451A03"/>
-        `;
-      } else if (cfg.fruit === 'orange') {
-        fruitHeadExtra = `
-          <circle cx="88" cy="21" r="3.2" fill="#EA580C"/>
-          <path d="M88 20 Q98 14 95 23 Z" fill="${cfg.leafColor}"/>
-        `;
-        hairAndGlasses = `
-          <path d="M73 45 Q81 42 88 46 Q95 42 103 45 Q97 52 88 49 Q79 52 73 45 Z" fill="#451A03"/>
-        `;
-      } else if (cfg.fruit === 'mango') {
-        fruitHeadExtra = `
-          <path d="M83 16 Q88 9 95 13 Q96 20 87 22 Z" fill="#CA8A04"/>
-          <path d="M87 17 Q97 11 94 21 Z" fill="${cfg.leafColor}"/>
-        `;
-        // Round glasses from Image 1!
-        hairAndGlasses = `
-          <circle cx="80" cy="52" r="5.5" fill="none" stroke="#0F172A" stroke-width="1.4"/>
-          <circle cx="96" cy="52" r="5.5" fill="none" stroke="#0F172A" stroke-width="1.4"/>
-          <line x1="85.5" y1="52" x2="90.5" y2="52" stroke="#0F172A" stroke-width="1.4"/>
-        `;
-      } else if (cfg.fruit === 'watermelon') {
-        // Watermelon hood with dark green curved stripes from Image 1!
-        fruitHeadExtra = `
-          <path d="M70 34 Q88 30 106 34" fill="none" stroke="#14532D" stroke-width="2.5" stroke-linecap="round"/>
-          <path d="M66 50 Q88 46 110 50" fill="none" stroke="#14532D" stroke-width="2.5" stroke-linecap="round"/>
-          <path d="M88 22 Q84 14 88 12 Q92 10 90 18" fill="none" stroke="#14532D" stroke-width="3" stroke-linecap="round"/>
-          <circle cx="90" cy="18" r="2.5" fill="#15803D"/>
-        `;
-        hairAndGlasses = `
-          <path d="M74 46 Q88 43 102 46 Q96 51 88 49 Q80 51 74 46 Z" fill="#451A03"/>
-        `;
-      } else if (cfg.fruit === 'grape') {
-        fruitHeadExtra = `
-          <circle cx="82" cy="21" r="3.8" fill="#1E40AF"/>
-          <circle cx="94" cy="21" r="3.8" fill="#1E40AF"/>
-          <circle cx="88" cy="17" r="3.5" fill="#1D4ED8"/>
-          <path d="M88 15 Q95 8 94 17" fill="none" stroke="${cfg.leafColor}" stroke-width="1.8"/>
-        `;
-        hairAndGlasses = `
-          <path d="M73 45 Q81 42 88 46 Q95 42 103 45 Q97 52 88 49 Q79 52 73 45 Z" fill="#1E293B"/>
-        `;
-      } else if (cfg.fruit === 'eggplant') {
-        // Purple eggplant with green 5-point calyx & blonde hair with glasses from Image 1!
-        fruitHeadExtra = `
-          <path d="M80 22 L88 13 L96 22 L88 19 Z" fill="${cfg.leafColor}"/>
-          <rect x="86.5" y="10" width="3" height="6" rx="1" fill="#047857"/>
-        `;
-        hairAndGlasses = `
-          <path d="M72 45 Q80 41 88 45 Q96 41 104 45 Q97 52 88 50 Q79 52 72 45 Z" fill="#FDE047"/>
-          <circle cx="80" cy="52" r="5.5" fill="none" stroke="#0F172A" stroke-width="1.4"/>
-          <circle cx="96" cy="52" r="5.5" fill="none" stroke="#0F172A" stroke-width="1.4"/>
-          <line x1="85.5" y1="52" x2="90.5" y2="52" stroke="#0F172A" stroke-width="1.4"/>
-        `;
-      } else if (cfg.fruit === 'peach') {
-        // Peach heart pointy tip
-        fruitHeadExtra = `
-          <path d="M82 22 Q88 14 94 22 Z" fill="#FB7185"/>
-          <path d="M88 19 Q96 13 95 22 Z" fill="${cfg.leafColor}"/>
-        `;
-        hairAndGlasses = `
-          <path d="M74 46 Q88 43 102 46 Q96 52 88 50 Q80 52 74 46 Z" fill="#451A03"/>
-        `;
-      }
-
-      if (!isRunning) {
-        // ---------------------------------------------------------
-        // 动作 2: 不学习/暂停 (趴桌打瞌睡睡觉、盖着书本休眠)
-        // ---------------------------------------------------------
-
-        // Special pose for Saturday Eggplant: Open book tented over head like a roof!
-        if (cfg.fruit === 'eggplant') {
-          return `
-          <svg viewBox="0 0 176 128" class="w-full h-full drop-shadow-md select-none overflow-visible">
-            <text x="120" y="65" class="anim-float-z1 text-amber-300 font-black text-xs font-mono" fill="#FDE047">z</text>
-            <text x="130" y="50" class="anim-float-z2 text-amber-300 font-black text-sm font-mono" fill="#FDE047">Z</text>
-            <text x="142" y="35" class="anim-float-z3 text-amber-400 font-black text-base font-mono" fill="#FACC15">Z</text>
-
-            <rect x="12" y="93" width="152" height="14" rx="3" fill="#854D0E" stroke="#713F12" stroke-width="1.2"/>
-            <rect x="20" y="107" width="8" height="15" fill="#713F12" rx="1"/>
-            <rect x="148" y="107" width="8" height="15" fill="#713F12" rx="1"/>
-
-            <g class="anim-buddy-sleep" style="transform-origin: 88px 94px;">
-              <ellipse cx="88" cy="86" rx="28" ry="16" fill="${cfg.hoodColor}"/>
-              <circle cx="88" cy="68" r="24" fill="${cfg.hoodColor}" stroke="${cfg.hoodDark}" stroke-width="1.2"/>
-              ${fruitHeadExtra}
-              <!-- Book tented over head from Image 1! -->
-              <polygon points="88,38 56,70 72,70 88,49 104,70 120,70" fill="#15803D" stroke="#14532D" stroke-width="1.5"/>
-              <polygon points="88,42 62,69 72,69 88,51 104,69 114,69" fill="#F8FAFC"/>
-              <line x1="88" y1="42" x2="88" y2="70" stroke="#CBD5E1" stroke-width="1"/>
-              <ellipse cx="70" cy="90" rx="7" ry="5" fill="#FFF5EB" stroke="#FED7AA" stroke-width="1"/>
-              <ellipse cx="106" cy="90" rx="7" ry="5" fill="#FFF5EB" stroke="#FED7AA" stroke-width="1"/>
-            </g>
-          </svg>`;
-        }
-
-        // Special pose for Wednesday Mango: Covered in plaid blanket!
-        if (cfg.fruit === 'mango') {
-          return `
-          <svg viewBox="0 0 176 128" class="w-full h-full drop-shadow-md select-none overflow-visible">
-            <text x="120" y="65" class="anim-float-z1 text-amber-300 font-black text-xs font-mono" fill="#FDE047">z</text>
-            <text x="130" y="50" class="anim-float-z2 text-amber-300 font-black text-sm font-mono" fill="#FDE047">Z</text>
-            <text x="142" y="35" class="anim-float-z3 text-amber-400 font-black text-base font-mono" fill="#FACC15">Z</text>
-
-            <rect x="12" y="93" width="152" height="14" rx="3" fill="#854D0E" stroke="#713F12" stroke-width="1.2"/>
-            <rect x="20" y="107" width="8" height="15" fill="#713F12" rx="1"/>
-            <rect x="148" y="107" width="8" height="15" fill="#713F12" rx="1"/>
-
-            <g class="anim-buddy-sleep" style="transform-origin: 88px 94px;">
-              <!-- Sleeping head with glasses -->
-              <ellipse cx="72" cy="74" rx="20" ry="16" fill="${cfg.hoodColor}" stroke="${cfg.hoodDark}" stroke-width="1.2"/>
-              ${fruitHeadExtra}
-              <ellipse cx="74" cy="78" rx="12" ry="9" fill="#FFF5EB"/>
-              <circle cx="70" cy="78" r="4" fill="none" stroke="#0F172A" stroke-width="1.2"/>
-              <circle cx="80" cy="78" r="4" fill="none" stroke="#0F172A" stroke-width="1.2"/>
-              <path d="M68 78 Q70 80 72 78" fill="none" stroke="#475569" stroke-width="1.5" stroke-linecap="round"/>
-              <path d="M78 78 Q80 80 82 78" fill="none" stroke="#475569" stroke-width="1.5" stroke-linecap="round"/>
-              <!-- Plaid cozy blanket from Image 1 -->
-              <path d="M78 72 Q105 68 132 76 L130 94 L76 94 Z" fill="#FDE047" stroke="#CA8A04" stroke-width="1.5"/>
-              <line x1="90" y1="72" x2="88" y2="94" stroke="#F59E0B" stroke-width="1.2" stroke-dasharray="3,2"/>
-              <line x1="106" y1="71" x2="104" y2="94" stroke="#F59E0B" stroke-width="1.2" stroke-dasharray="3,2"/>
-              <line x1="120" y1="73" x2="118" y2="94" stroke="#F59E0B" stroke-width="1.2" stroke-dasharray="3,2"/>
-              <line x1="77" y1="80" x2="131" y2="84" stroke="#F59E0B" stroke-width="1.2" stroke-dasharray="3,2"/>
-              <line x1="76" y1="88" x2="130" y2="90" stroke="#F59E0B" stroke-width="1.2" stroke-dasharray="3,2"/>
-            </g>
-          </svg>`;
-        }
-
-        // General resting / sleeping pose on open book or desk
-        const hasAlarmClock = (cfg.fruit === 'apple' || cfg.fruit === 'orange');
-        const clockSvg = hasAlarmClock ? `
-          <circle cx="28" cy="85" r="7.5" fill="#FFFFFF" stroke="#B45309" stroke-width="1.4"/>
-          <circle cx="23" cy="78" r="2.2" fill="#B45309"/><circle cx="33" cy="78" r="2.2" fill="#B45309"/>
-          <line x1="28" y1="85" x2="28" y2="80" stroke="#1E293B" stroke-width="1"/><line x1="28" y1="85" x2="31" y2="85" stroke="#1E293B" stroke-width="1"/>
-          <line x1="24" y1="92" x2="22" y2="94" stroke="#B45309" stroke-width="1.2"/><line x1="32" y1="92" x2="34" y2="94" stroke="#B45309" stroke-width="1.2"/>
-        ` : `
-          <rect x="24" y="80" width="13" height="13" rx="2.5" fill="#F1F5F9" stroke="#CBD5E1" stroke-width="1"/>
-          <path d="M37 83 Q42 85 37 88" fill="none" stroke="#CBD5E1" stroke-width="1.5" stroke-linecap="round"/>
-        `;
-
-        return `
-        <svg viewBox="0 0 176 128" class="w-full h-full drop-shadow-md select-none overflow-visible">
-          <text x="120" y="70" class="anim-float-z1 text-amber-300 font-black text-xs font-mono" fill="#FDE047">z</text>
-          <text x="130" y="55" class="anim-float-z2 text-amber-300 font-black text-sm font-mono" fill="#FDE047">Z</text>
-          <text x="142" y="38" class="anim-float-z3 text-amber-400 font-black text-base font-mono" fill="#FACC15">Z</text>
-
-          <rect x="12" y="93" width="152" height="14" rx="3" fill="#854D0E" stroke="#713F12" stroke-width="1.2"/>
-          <rect x="20" y="107" width="8" height="15" fill="#713F12" rx="1"/>
-          <rect x="148" y="107" width="8" height="15" fill="#713F12" rx="1"/>
-
-          ${clockSvg}
-
-          <!-- Open resting book on desk -->
-          <path d="M68 94 L88 91 L108 94 L106 98 L88 96 L66 98 Z" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="1.2"/>
-
-          <g class="anim-buddy-sleep" style="transform-origin: 88px 94px;">
-            <ellipse cx="88" cy="85" rx="30" ry="18" fill="${cfg.hoodColor}"/>
-            <circle cx="88" cy="65" r="26" fill="${cfg.hoodColor}" stroke="${cfg.hoodDark}" stroke-width="1.2"/>
-            ${fruitHeadExtra}
-            <ellipse cx="88" cy="70" rx="18" ry="14" fill="#FFF5EB"/>
-            <path d="M77 69 Q82 72 87 69" fill="none" stroke="#475569" stroke-width="2" stroke-linecap="round"/>
-            <path d="M89 69 Q94 72 99 69" fill="none" stroke="#475569" stroke-width="2" stroke-linecap="round"/>
-            <ellipse cx="74" cy="73" rx="3" ry="1.8" fill="#FB7185" opacity="0.75"/>
-            <ellipse cx="102" cy="73" rx="3" ry="1.8" fill="#FB7185" opacity="0.75"/>
-            <ellipse cx="74" cy="88" rx="7" ry="5" fill="#FFF5EB" stroke="#FED7AA" stroke-width="1"/>
-            <ellipse cx="102" cy="88" rx="7" ry="5" fill="#FFF5EB" stroke="#FED7AA" stroke-width="1"/>
-          </g>
-        </svg>`;
-      } else {
-        // ---------------------------------------------------------
-        // 动作 1: 用功中 (书桌前拿着笔看书、开着台灯认真学习)
-        // ---------------------------------------------------------
-        const hasAlarmClock = (cfg.fruit === 'apple' || cfg.fruit === 'orange');
-        const lampOnRight = (cfg.fruit === 'apple' || cfg.fruit === 'orange');
-
-        let deskLeftItems = '';
-        let deskRightItems = '';
-
-        if (lampOnRight) {
-          deskLeftItems = `
-            <!-- Alarm clock on left -->
-            <circle cx="28" cy="85" r="7.5" fill="#FFFFFF" stroke="#B45309" stroke-width="1.4"/>
-            <circle cx="23" cy="78" r="2.2" fill="#B45309"/><circle cx="33" cy="78" r="2.2" fill="#B45309"/>
-            <line x1="28" y1="85" x2="28" y2="80" stroke="#1E293B" stroke-width="1"/><line x1="28" y1="85" x2="31" y2="85" stroke="#1E293B" stroke-width="1"/>
-            <line x1="24" y1="92" x2="22" y2="94" stroke="#B45309" stroke-width="1.2"/><line x1="32" y1="92" x2="34" y2="94" stroke="#B45309" stroke-width="1.2"/>
-          `;
-          deskRightItems = `
-            <!-- Desk Lamp on Right with light cone from Image 1 -->
-            <path d="M148 94 L148 64 L138 56" fill="none" stroke="#94A3B8" stroke-width="2.5" stroke-linecap="round"/>
-            <path d="M144 52 L130 61 L138 67 Z" fill="#F59E0B" stroke="#D97706" stroke-width="1"/>
-            <polygon points="136,64 82,95 146,95" fill="url(#lampGlow)" class="anim-lantern"/>
-          `;
-        } else {
-          deskLeftItems = `
-            <!-- Lantern / Lamp on Left with light cone from Image 1 -->
-            <path d="M24 94 L24 64 L36 56" fill="none" stroke="#94A3B8" stroke-width="2.5" stroke-linecap="round"/>
-            <path d="M30 52 L44 61 L36 67 Z" fill="#F59E0B" stroke="#D97706" stroke-width="1"/>
-            <polygon points="38,64 92,95 28,95" fill="url(#lampGlow)" class="anim-lantern"/>
-          `;
-        }
-
-        return `
-        <svg viewBox="0 0 176 128" class="w-full h-full drop-shadow-md select-none overflow-visible">
-          <defs>
-            <linearGradient id="lampGlow" x1="0%" y1="0%" x2="50%" y2="100%">
-              <stop offset="0%" stop-color="#FEF08A" stop-opacity="0.85"/>
-              <stop offset="100%" stop-color="#FEF08A" stop-opacity="0.05"/>
-            </linearGradient>
-          </defs>
-
-          <g class="anim-sparkle">
-            <path d="M136 28 L138 23 L140 28 L145 30 L140 32 L138 37 L136 32 L131 30 Z" fill="#FDE047" opacity="0.9"/>
-            <path d="M48 34 L49 30 L50 34 L54 35 L50 36 L49 40 L48 36 L44 35 Z" fill="#FDE047" opacity="0.75"/>
-          </g>
-
-          <!-- Desk -->
-          <rect x="12" y="93" width="152" height="14" rx="3" fill="#854D0E" stroke="#713F12" stroke-width="1.2"/>
-          <rect x="20" y="107" width="8" height="15" fill="#713F12" rx="1"/>
-          <rect x="148" y="107" width="8" height="15" fill="#713F12" rx="1"/>
-
-          ${deskLeftItems}
-          ${deskRightItems}
-
-          <!-- Open notebook with lines from Image 1 -->
-          <path d="M68 95 L88 92 L108 95 L106 101 L88 98 L66 101 Z" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="1.2"/>
-          <line x1="72" y1="95.5" x2="84" y2="94" stroke="#94A3B8" stroke-width="1"/>
-          <line x1="72" y1="97.5" x2="84" y2="96" stroke="#94A3B8" stroke-width="1"/>
-          <line x1="90" y1="94" x2="102" y2="95.5" stroke="#94A3B8" stroke-width="1"/>
-          <line x1="90" y1="96" x2="102" y2="97.5" stroke="#94A3B8" stroke-width="1"/>
-
-          <!-- Character Studying -->
-          <g class="anim-buddy-study">
-            <ellipse cx="88" cy="85" rx="26" ry="16" fill="${cfg.hoodColor}"/>
-            <circle cx="88" cy="50" r="28" fill="${cfg.hoodColor}" stroke="${cfg.hoodDark}" stroke-width="1.2"/>
-            ${fruitHeadExtra}
-            <ellipse cx="88" cy="54" rx="19" ry="16" fill="#FFF5EB"/>
-            ${hairAndGlasses}
-            <!-- Sparkling focused eyes -->
-            <circle cx="81" cy="52" r="3.2" fill="#0F172A"/>
-            <circle cx="82" cy="50.8" r="1.1" fill="#FFFFFF"/>
-            <circle cx="95" cy="52" r="3.2" fill="#0F172A"/>
-            <circle cx="96" cy="50.8" r="1.1" fill="#FFFFFF"/>
-            <!-- Happy smiling mouth & blush -->
-            <path d="M85 60 Q88 63 91 60" fill="none" stroke="#E11D48" stroke-width="1.8" stroke-linecap="round"/>
-            <circle cx="75" cy="57" r="3" fill="#FDA4AF" opacity="0.85"/>
-            <circle cx="101" cy="57" r="3" fill="#FDA4AF" opacity="0.85"/>
-            <!-- Left paw resting on book -->
-            <circle cx="73" cy="92" r="5" fill="#FFF5EB" stroke="#FED7AA" stroke-width="1"/>
-            <!-- Right paw holding pencil with scribble animation from Image 1 -->
-            <g class="anim-pencil">
-              <line x1="97" y1="88" x2="108" y2="74" stroke="#F59E0B" stroke-width="3" stroke-linecap="round"/>
-              <polygon points="97,88 95,91 100,90" fill="#1E293B"/>
-              <circle cx="101" cy="83" r="5" fill="#FFF5EB" stroke="#FED7AA" stroke-width="1"/>
-            </g>
-          </g>
-        </svg>`;
-      }
+    function openCustomCountdownModal() {
+      currentCustomSliderMinutes = Math.round(appState.timer.countdownTargetSec / 60) || 90;
+      const slider = document.getElementById('custom-slider-input');
+      if (slider) slider.value = currentCustomSliderMinutes;
+      updateCustomSliderUI(currentCustomSliderMinutes);
+      document.getElementById('modal-custom-countdown').classList.remove('hidden');
     }
 
-    function updateStudyBuddy() {
-      const now = new Date();
-      const dayIdx = (now.getDay() + 6) % 7; // Mon = 0 ... Sun = 6
-      const cfg = BUDDY_CONFIGS[dayIdx] || BUDDY_CONFIGS[0];
-      const isRunning = appState.timer.isRunning;
+    function onCustomSliderChange(val) {
+      currentCustomSliderMinutes = parseInt(val, 10);
+      updateCustomSliderUI(currentCustomSliderMinutes);
+    }
 
-      const svgBox = document.getElementById('buddy-svg-box');
-      if (svgBox) {
-        svgBox.innerHTML = generateBuddySVG(cfg, isRunning);
+    function selectCustomStep(mins) {
+      currentCustomSliderMinutes = mins;
+      const slider = document.getElementById('custom-slider-input');
+      if (slider) slider.value = mins;
+      updateCustomSliderUI(mins);
+    }
+
+    function updateCustomSliderUI(mins) {
+      document.getElementById('custom-slider-val').innerText = mins;
+      const hrs = (mins / 60).toFixed(1);
+      document.getElementById('custom-slider-hours').innerText = `${hrs} ${appState.lang === 'zh' ? '小时' : (appState.lang === 'ko' ? '시간' : 'hours')}`;
+
+      document.querySelectorAll('.step-pill').forEach(btn => {
+        if (btn.innerText.startsWith(`${mins}m`)) {
+          btn.className = 'step-pill py-2 rounded-xl bg-blue-600 text-xs font-bold text-white text-center active:scale-95 transition-all shadow-sm';
+        } else {
+          btn.className = 'step-pill py-2 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-xs font-bold text-zinc-300 text-center active:scale-95 transition-all';
+        }
+      });
+    }
+
+    function confirmCustomCountdown() {
+      setCountdownMinutes(currentCustomSliderMinutes, true);
+      closeModal('modal-custom-countdown');
+    }
+
+    function exitLandscapeOrTimer(event) {
+      if (event) event.stopPropagation();
+      try {
+        if (screen.orientation && screen.orientation.unlock) {
+          screen.orientation.unlock();
+        }
+      } catch (e) {}
+      if (document.fullscreenElement) {
+        document.exitFullscreen().catch(() => {});
       }
+      switchView('timetable');
     }
 
     function handleTimerClick() {
       // In landscape mode, tapping clock toggles start/pause smoothly
       if (window.matchMedia("(orientation: landscape)").matches) {
+        toggleTimer();
+      }
+    }
+
+    function handleTimerBgClick(event) {
+      // In landscape mode, clicking the empty black background toggles timer
+      if (window.matchMedia("(orientation: landscape)").matches) {
+        if (event.target.closest('button') || event.target.closest('#modal-custom-countdown') || event.target.closest('#timer-btn-back') || event.target.closest('.timer-hide-in-landscape') || event.target.closest('#countdown-presets')) {
+          return;
+        }
         toggleTimer();
       }
     }
@@ -2132,7 +1962,6 @@
         document.getElementById('timer-play-icon').innerText = '▶';
         document.getElementById('timer-play-text').innerText = t('btn_continue_focus');
         document.getElementById('timer-status-hint').innerText = t('btn_pause_focus');
-        updateStudyBuddy();
       } else {
         // Start timer: store absolute start timestamp
         appState.timer.isRunning = true;
@@ -2141,7 +1970,6 @@
         document.getElementById('timer-play-icon').innerText = '⏸';
         document.getElementById('timer-play-text').innerText = t('btn_pause_focus');
         document.getElementById('timer-status-hint').innerText = `${appState.timer.taskName}`;
-        updateStudyBuddy();
 
         appState.timer.intervalId = setInterval(() => {
           const totalSec = getElapsedSeconds();
@@ -2153,7 +1981,6 @@
             document.getElementById('timer-play-icon').innerText = '▶';
             document.getElementById('timer-play-text').innerText = t('btn_start_focus');
             document.getElementById('timer-status-hint').innerText = '🎉 倒计时已完成！';
-            updateStudyBuddy();
             if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
           }
         }, 200);
@@ -2172,17 +1999,10 @@
       document.getElementById('timer-play-text').innerText = t('btn_start_focus');
       document.getElementById('timer-status-hint').innerText = t('timer_hint_ready');
       updateTimerDisplay(0);
-      updateStudyBuddy();
     }
 
     function promptCustomCountdown() {
-      const val = prompt(t('prompt_custom_minutes'), "30");
-      if (val) {
-        const mins = parseInt(val.trim(), 10);
-        if (!isNaN(mins) && mins > 0) {
-          setCountdownMinutes(Math.min(180, mins));
-        }
-      }
+      openCustomCountdownModal();
     }
 
     function openTimerTaskModal() {
@@ -2227,6 +2047,7 @@
         appState.habitYear--;
       }
       renderSubjectHeatmaps();
+      renderCharts();
     }
 
     function goToCurrentHabitMonth() {
@@ -2234,6 +2055,7 @@
       appState.habitYear = now.getFullYear();
       appState.habitMonth = now.getMonth() + 1;
       renderSubjectHeatmaps();
+      renderCharts();
     }
 
     // A. 科目月度打卡方格矩阵 (自动提取首页创建的全部科目，支持历史/未来月份切换)
@@ -2325,10 +2147,6 @@
         }
 
         const pct = Math.round((completedDays.size / daysInMonth) * 100);
-        const isDoneToday = completedDays.has(currentDay);
-        const heartBadge = isDoneToday
-          ? `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-bold bg-pink-100/90 text-pink-700 border border-pink-200 shadow-xs"><span>💙</span><span>${t('badge_checked_in')}</span></span>`
-          : `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-bold bg-slate-100 text-slate-500 border border-slate-200"><span>🤍</span><span>${t('badge_pending')}</span></span>`;
 
         card.innerHTML = `
           <div class="flex items-center justify-between mb-2.5">
@@ -2336,7 +2154,6 @@
               <span class="w-3 h-3 rounded-full shadow-xs" style="background:${cat.color}"></span>
               <span class="text-sm font-black text-slate-900">${subjectName}</span>
               <span class="text-xs px-2 py-0.5 rounded-full font-bold" style="background:${cat.bg}; color:${cat.text}">${translatedCat}</span>
-              ${heartBadge}
             </div>
             <span class="text-xs font-bold text-slate-500">${completedDays.size}/${daysInMonth} ${t('unit_days')} (${pct}%)</span>
           </div>
@@ -2469,8 +2286,9 @@
         const days = getWeekDays(appState.currentWeekStart).map(d => d.dateStr);
         filtered = activatedPlans.filter(p => days.includes(p.date));
       } else if (dim === 'month') {
-        const prefix = formatDateYMD(now).substring(0, 7);
-        filtered = activatedPlans.filter(p => p.date.startsWith(prefix));
+        // Real-time linkage: Month dimension syncs with habitMonth selected in habit grid (Requirement 11)
+        const selectedMonthPrefix = `${appState.habitYear}-${String(appState.habitMonth).padStart(2, '0')}`;
+        filtered = activatedPlans.filter(p => p.date.startsWith(selectedMonthPrefix));
       }
 
       const catMinutes = { "学习": 0, "工作": 0, "运动": 0, "阅读": 0, "日常": 0 };
@@ -2620,21 +2438,40 @@
         const tCtx = document.getElementById('trendChart').getContext('2d');
         if (trendChartInstance) trendChartInstance.destroy();
 
-        const weekDays = getWeekDays(appState.currentWeekStart);
-        const dayHoursData = weekDays.map(d => {
-          const dPlans = filtered.filter(p => p.date === d.dateStr);
-          let m = 0;
-          dPlans.forEach(p => m += (timeToScaledMinutes(p.end) - timeToScaledMinutes(p.start)));
-          return parseFloat((m / 60).toFixed(1));
-        });
+        let trendLabels = [];
+        let trendData = [];
+        if (dim === 'month') {
+          trendLabels = appState.lang === 'zh'
+            ? ['第1周 (1-7)', '第2周 (8-14)', '第3周 (15-21)', '第4周 (22-28)', '第5周 (29+)']
+            : (appState.lang === 'ko'
+              ? ['1주 (1-7)', '2주 (8-14)', '3주 (15-21)', '4주 (22-28)', '5주 (29+)']
+              : ['W1 (1-7)', 'W2 (8-14)', 'W3 (15-21)', 'W4 (22-28)', 'W5 (29+)']);
+          trendData = [0, 0, 0, 0, 0];
+          filtered.forEach(p => {
+            const dayNum = parseInt(p.date.split('-')[2], 10);
+            const dur = timeToScaledMinutes(p.end) - timeToScaledMinutes(p.start);
+            const idx = dayNum <= 7 ? 0 : (dayNum <= 14 ? 1 : (dayNum <= 21 ? 2 : (dayNum <= 28 ? 3 : 4)));
+            trendData[idx] += (dur / 60);
+          });
+          trendData = trendData.map(v => parseFloat(v.toFixed(1)));
+        } else {
+          const weekDays = getWeekDays(appState.currentWeekStart);
+          trendLabels = I18N[appState.lang].days_short;
+          trendData = weekDays.map(d => {
+            const dPlans = filtered.filter(p => p.date === d.dateStr);
+            let m = 0;
+            dPlans.forEach(p => m += (timeToScaledMinutes(p.end) - timeToScaledMinutes(p.start)));
+            return parseFloat((m / 60).toFixed(1));
+          });
+        }
 
         trendChartInstance = new Chart(tCtx, {
           type: 'line',
           data: {
-            labels: I18N[appState.lang].days_short,
+            labels: trendLabels,
             datasets: [{
               label: '专注时长 (小时)',
-              data: dayHoursData,
+              data: trendData,
               borderColor: '#3B82F6',
               backgroundColor: 'rgba(59, 130, 246, 0.1)',
               fill: true,
@@ -3216,6 +3053,9 @@
        -------------------------------------------------------------------------- */
     window.addEventListener('DOMContentLoaded', () => {
       loadState();
+      // 需求 1: 默认启动页面锁定为首页（第一页【每周时间表】）
+      appState.currentView = 'timetable';
+
       // 实时获取手机当天真实日期，彻底避免停留于过期日期
       const now = new Date();
       appState.activeDateStr = formatDateYMD(now);
@@ -3225,11 +3065,7 @@
 
       applyTheme();
       changeLanguage(appState.lang);
-      renderTimetable();
-      renderPlanActual();
-      updateStudyBuddy();
-      renderSubjectHeatmaps();
-      renderCharts();
+      switchView('timetable');
     });
   </script>
 </body>
