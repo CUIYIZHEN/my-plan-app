@@ -2,7 +2,7 @@
   "id": "planner-pwa-app",
   "name": "Planner",
   "short_name": "Planner",
-  "description": "一款简洁多语言的个人时间规划与专注计时应用，支持周课表管理、对比打卡与多维数据统计。",
+  "description": "简洁多语言个人时间规划与专注计时应用",
   "start_url": "./index.html",
   "display": "standalone",
   "orientation": "any",
@@ -10,32 +10,16 @@
   "theme_color": "#F8FAFC",
   "icons": [
     {
-      "src": "icon-192.png",
+      "src": "https://api.iconify.design/heroicons:calendar-days-20-solid.svg?color=%232563eb",
       "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any maskable"
+      "type": "image/svg+xml",
+      "purpose": "any"
     },
     {
-      "src": "icon-512.png",
+      "src": "https://api.iconify.design/heroicons:calendar-days-20-solid.svg?color=%232563eb",
       "sizes": "512x512",
-      "type": "image/png",
+      "type": "image/svg+xml",
       "purpose": "any maskable"
-    }
-  ],
-  "screenshots": [
-    {
-      "src": "screenshot-mobile.png",
-      "sizes": "1080x1920",
-      "type": "image/png",
-      "form_factor": "narrow",
-      "label": "每周时间表与任务规划"
-    },
-    {
-      "src": "screenshot-desktop.png",
-      "sizes": "1920x1080",
-      "type": "image/png",
-      "form_factor": "wide",
-      "label": "数据统计与习惯打卡"
     }
   ]
 }
