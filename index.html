@@ -68,16 +68,16 @@
       border-bottom: 1px dashed #E2E8F0;
     }
 
-    /* Minimal Flip-Clock Style Cards (Timer Screen) */
+    /* Minimal Flip-Clock Style Cards (Timer Screen - Portrait Baseline) */
     .timer-digit-card {
       position: relative;
-      width: 46px;
-      height: 72px;
+      width: 44px;
+      height: 70px;
       background: #1C1C1E;
       color: #FFFFFF;
       border-radius: 10px;
       font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", Roboto, "Segoe UI", monospace;
-      font-size: 44px;
+      font-size: 42px;
       font-weight: 800;
       display: flex;
       align-items: center;
@@ -85,11 +85,21 @@
       box-shadow: 0 8px 18px rgba(0, 0, 0, 0.55), inset 0 1px 1px rgba(255, 255, 255, 0.15);
       margin: 0 2px;
       overflow: hidden;
+      user-select: none;
     }
     @media (min-width: 390px) {
       .timer-digit-card {
+        width: 50px;
+        height: 78px;
+        font-size: 48px;
+        margin: 0 2px;
+        border-radius: 12px;
+      }
+    }
+    @media (min-width: 420px) {
+      .timer-digit-card {
         width: 54px;
-        height: 82px;
+        height: 84px;
         font-size: 52px;
         margin: 0 2.5px;
         border-radius: 12px;
@@ -99,13 +109,14 @@
     .timer-digit-card::after {
       content: '';
       position: absolute;
-      top: calc(50% - 0.5px);
+      top: calc(50% - 0.75px);
       left: 0;
       right: 0;
       height: 1.5px;
       background: rgba(0, 0, 0, 0.9);
       box-shadow: 0 1px 0 rgba(255, 255, 255, 0.12);
       z-index: 2;
+      pointer-events: none;
     }
 
     /* Toast Animation */
@@ -161,6 +172,17 @@
         border: none !important;
         outline: none !important;
         box-shadow: none !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+      }
+      body.timer-view-active #view-timer #timer-portrait-container {
+        max-width: 100vw !important;
+        width: 100vw !important;
+        height: 100vh !important;
+        padding: 0 !important;
+        margin: 0 !important;
         display: flex !important;
         flex-direction: column !important;
         align-items: center !important;
@@ -556,77 +578,79 @@
   <!-- ==========================================================================
        VIEW 3: 第三页：专注计时器 (Timer Screen · 还原翻页钟大字视觉)
        ========================================================================== -->
-  <section id="view-timer" class="view-panel fixed inset-0 bg-[#000000] text-white z-[99999] flex flex-col justify-between p-5 pb-24 select-none hidden" onclick="handleTimerBgClick(event)">
-    <!-- Top Header: Unified single Back Button and Mode Switcher (Clean, no duplicates or overlaps in portrait/landscape) -->
-    <div id="timer-top-bar" class="w-full flex items-center justify-between text-slate-400 relative z-50 pt-1 pointer-events-auto">
-      <!-- Single Unified Top-Left Back Button -->
-      <button id="timer-btn-back" onclick="exitLandscapeOrTimer(event)" class="min-w-[48px] min-h-[44px] px-3.5 py-2 flex items-center justify-center gap-1.5 rounded-full bg-zinc-800/80 hover:bg-zinc-700/90 text-zinc-200 hover:text-white active:scale-95 text-xs font-bold cursor-pointer backdrop-blur-md border border-zinc-700/60 shadow-lg transition-all" aria-label="返回时间表" title="返回周课表">
-        <span class="text-base font-black leading-none">←</span>
-        <span data-i18n="btn_back">返回</span>
-      </button>
-
-      <!-- Mode Switcher (Hidden in landscape to keep landscape screen ultra-clean and immersive) -->
-      <div id="timer-mode-switcher" class="timer-hide-in-landscape flex bg-zinc-900 rounded-2xl p-1 border border-zinc-800 shadow-sm" onclick="event.stopPropagation()">
-        <button id="btn-mode-countup" onclick="setTimerMode('countup')" class="min-w-[44px] min-h-[44px] px-4 py-2 rounded-xl text-xs font-bold bg-zinc-700 text-white transition-all cursor-pointer flex items-center justify-center" data-i18n="timer_mode_countup">正计时</button>
-        <button id="btn-mode-countdown" onclick="setTimerMode('countdown')" class="min-w-[44px] min-h-[44px] px-4 py-2 rounded-xl text-xs font-bold text-zinc-400 hover:text-white transition-all cursor-pointer flex items-center justify-center" data-i18n="timer_mode_countdown">倒计时</button>
-      </div>
-
-      <div class="w-12 min-w-[44px] timer-hide-in-landscape"></div>
-    </div>
-
-    <!-- Central Visual Core: Focus Subject + Massive Centerpiece Flip Clock + Presets -->
-    <div class="timer-center-core flex-1 flex flex-col items-center justify-center my-auto -mt-6">
-      <!-- Current Focus Subject -->
-      <div id="timer-task-selector-box" onclick="event.stopPropagation(); openTimerTaskModal()" class="timer-hide-in-landscape flex items-center gap-2 bg-zinc-900/90 border border-zinc-800 rounded-full px-4 py-2 cursor-pointer hover:bg-zinc-800 transition-all active:scale-95 shadow-sm mb-6 min-h-[44px]">
-        <span class="w-2.5 h-2.5 rounded-full bg-blue-500 shadow-xs"></span>
-        <span id="timer-task-name" class="text-sm font-bold text-zinc-100">深度专注</span>
-        <span class="text-[10px] text-zinc-500">▼</span>
-      </div>
-
-      <!-- Classic Flip-Clock Style Centerpiece (HH : MM : SS) -->
-      <div class="timer-digits-container flex items-center justify-center cursor-pointer" onclick="handleTimerClick()" title="点击开始/暂停">
-        <!-- Hours -->
-        <div class="timer-pair flex">
-          <div class="timer-digit-card" id="time-h1">0</div>
-          <div class="timer-digit-card" id="time-h2">0</div>
-        </div>
-        <span class="timer-colon text-zinc-600 font-bold text-2xl mb-1 animate-pulse">:</span>
-        <!-- Minutes -->
-        <div class="timer-pair flex">
-          <div class="timer-digit-card" id="time-m1">0</div>
-          <div class="timer-digit-card" id="time-m2">0</div>
-        </div>
-        <span class="timer-colon text-zinc-600 font-bold text-2xl mb-1 animate-pulse">:</span>
-        <!-- Seconds -->
-        <div class="timer-pair flex">
-          <div class="timer-digit-card" id="time-s1">0</div>
-          <div class="timer-digit-card" id="time-s2">0</div>
-        </div>
-      </div>
-
-      <!-- Presets for Countdown (15m, 25m, 45m, 60m, Custom) -->
-      <div id="countdown-presets" class="timer-hide-in-landscape flex items-center gap-1.5 sm:gap-2 mt-6 hidden" onclick="event.stopPropagation()">
-        <button id="btn-preset-15" onclick="setCountdownMinutes(15)" class="min-w-[44px] min-h-[40px] px-3.5 py-2 rounded-full bg-zinc-900 text-xs font-bold text-zinc-400 border border-zinc-800 hover:bg-zinc-800 active:scale-95 transition-all">15m</button>
-        <button id="btn-preset-25" onclick="setCountdownMinutes(25)" class="min-w-[44px] min-h-[40px] px-3.5 py-2 rounded-full bg-zinc-700 text-xs font-bold text-white border border-zinc-600 hover:bg-zinc-600 active:scale-95 transition-all">25m</button>
-        <button id="btn-preset-45" onclick="setCountdownMinutes(45)" class="min-w-[44px] min-h-[40px] px-3.5 py-2 rounded-full bg-zinc-900 text-xs font-bold text-zinc-400 border border-zinc-800 hover:bg-zinc-800 active:scale-95 transition-all">45m</button>
-        <button id="btn-preset-60" onclick="setCountdownMinutes(60)" class="min-w-[44px] min-h-[40px] px-3.5 py-2 rounded-full bg-zinc-900 text-xs font-bold text-zinc-400 border border-zinc-800 hover:bg-zinc-800 active:scale-95 transition-all">60m</button>
-        <button id="btn-preset-custom" onclick="openCustomCountdownModal()" class="min-w-[44px] min-h-[40px] px-3.5 py-2 rounded-full bg-zinc-900 text-xs font-bold text-zinc-400 border border-zinc-800 hover:bg-zinc-800 active:scale-95 transition-all" data-i18n="btn_custom_timer">自定义</button>
-      </div>
-
-      <p id="timer-status-hint" class="timer-hide-in-landscape text-xs text-zinc-500 mt-5 tracking-widest uppercase font-semibold" data-i18n="timer_hint_ready">准备就绪 · 保持专注</p>
-    </div>
-
-    <!-- Bottom Area: Focus Controls (Fruit Buddy Removed, Requirement 2) -->
-    <div class="timer-hide-in-landscape w-full max-w-sm mx-auto flex flex-col items-center">
-      <!-- Pure Focus Controls -->
-      <div class="w-full flex items-center gap-3">
-        <button id="btn-timer-toggle" onclick="event.stopPropagation(); toggleTimer()" class="flex-1 min-h-[52px] py-3.5 rounded-2xl bg-white text-zinc-950 font-black text-base hover:bg-zinc-200 active:scale-95 shadow-xl transition-all flex items-center justify-center gap-2 cursor-pointer">
-          <span id="timer-play-icon">▶</span>
-          <span id="timer-play-text" data-i18n="btn_start_focus">开始专注</span>
+  <section id="view-timer" class="view-panel fixed inset-0 bg-[#000000] text-white z-[99999] select-none hidden" onclick="handleTimerBgClick(event)">
+    <div id="timer-portrait-container" class="w-full h-full max-w-md mx-auto flex flex-col justify-between p-5 pb-8 safe-area-bottom">
+      <!-- Top Header: Unified single Back Button and Mode Switcher (Centered in portrait, docked in landscape) -->
+      <div id="timer-top-bar" class="w-full flex items-center justify-between text-slate-400 relative z-50 pt-1 pointer-events-auto">
+        <!-- Single Unified Top-Left Back Button -->
+        <button id="timer-btn-back" onclick="exitLandscapeOrTimer(event)" class="min-w-[48px] min-h-[44px] px-3.5 py-2 flex items-center justify-center gap-1.5 rounded-full bg-zinc-800/80 hover:bg-zinc-700/90 text-zinc-200 hover:text-white active:scale-95 text-xs font-bold cursor-pointer backdrop-blur-md border border-zinc-700/60 shadow-lg transition-all" aria-label="返回时间表" title="返回周课表">
+          <span class="text-base font-black leading-none">←</span>
+          <span data-i18n="btn_back">返回</span>
         </button>
-        <button onclick="event.stopPropagation(); resetTimer()" class="w-13 h-13 min-w-[52px] min-h-[52px] py-3.5 px-4 rounded-2xl bg-zinc-900 text-zinc-300 hover:text-white hover:bg-zinc-800 active:scale-95 text-lg border border-zinc-800 flex items-center justify-center font-bold cursor-pointer" title="重置">
-          ↺
-        </button>
+
+        <!-- Mode Switcher (Hidden in landscape to keep landscape screen ultra-clean and immersive) -->
+        <div id="timer-mode-switcher" class="timer-hide-in-landscape flex bg-zinc-900 rounded-2xl p-1 border border-zinc-800 shadow-sm" onclick="event.stopPropagation()">
+          <button id="btn-mode-countup" onclick="setTimerMode('countup')" class="min-w-[44px] min-h-[44px] px-4 py-2 rounded-xl text-xs font-bold bg-zinc-700 text-white transition-all cursor-pointer flex items-center justify-center" data-i18n="timer_mode_countup">正计时</button>
+          <button id="btn-mode-countdown" onclick="setTimerMode('countdown')" class="min-w-[44px] min-h-[44px] px-4 py-2 rounded-xl text-xs font-bold text-zinc-400 hover:text-white transition-all cursor-pointer flex items-center justify-center" data-i18n="timer_mode_countdown">倒计时</button>
+        </div>
+
+        <div class="w-[76px] min-w-[48px] timer-hide-in-landscape pointer-events-none"></div>
+      </div>
+
+      <!-- Central Visual Core: Focus Subject + Flip Clock + Presets + Status -->
+      <div class="timer-center-core flex-1 flex flex-col items-center justify-center my-auto">
+        <!-- Current Focus Subject -->
+        <div id="timer-task-selector-box" onclick="event.stopPropagation(); openTimerTaskModal()" class="timer-hide-in-landscape flex items-center gap-2 bg-zinc-900/90 border border-zinc-800 rounded-full px-4 py-2 cursor-pointer hover:bg-zinc-800 transition-all active:scale-95 shadow-sm mb-6 min-h-[44px]">
+          <span class="w-2.5 h-2.5 rounded-full bg-blue-500 shadow-xs"></span>
+          <span id="timer-task-name" class="text-sm font-bold text-zinc-100">深度专注</span>
+          <span class="text-[10px] text-zinc-500">▼</span>
+        </div>
+
+        <!-- Classic Flip-Clock Style Centerpiece (HH : MM : SS) -->
+        <div class="timer-digits-container flex items-center justify-center cursor-pointer select-none" onclick="handleTimerClick()" title="点击开始/暂停">
+          <!-- Hours -->
+          <div class="timer-pair flex">
+            <div class="timer-digit-card" id="time-h1">0</div>
+            <div class="timer-digit-card" id="time-h2">0</div>
+          </div>
+          <span class="timer-colon text-zinc-500 font-bold text-2xl mx-1 select-none animate-pulse">:</span>
+          <!-- Minutes -->
+          <div class="timer-pair flex">
+            <div class="timer-digit-card" id="time-m1">0</div>
+            <div class="timer-digit-card" id="time-m2">0</div>
+          </div>
+          <span class="timer-colon text-zinc-500 font-bold text-2xl mx-1 select-none animate-pulse">:</span>
+          <!-- Seconds -->
+          <div class="timer-pair flex">
+            <div class="timer-digit-card" id="time-s1">0</div>
+            <div class="timer-digit-card" id="time-s2">0</div>
+          </div>
+        </div>
+
+        <!-- Presets for Countdown (15m, 25m, 45m, 60m, Custom) -->
+        <div id="countdown-presets" class="timer-hide-in-landscape flex items-center justify-center flex-wrap gap-1.5 sm:gap-2 mt-6 hidden" onclick="event.stopPropagation()">
+          <button id="btn-preset-15" onclick="setCountdownMinutes(15)" class="min-w-[44px] min-h-[40px] px-3.5 py-2 rounded-full bg-zinc-900 text-xs font-bold text-zinc-400 border border-zinc-800 hover:bg-zinc-800 active:scale-95 transition-all">15m</button>
+          <button id="btn-preset-25" onclick="setCountdownMinutes(25)" class="min-w-[44px] min-h-[40px] px-3.5 py-2 rounded-full bg-zinc-700 text-xs font-bold text-white border border-zinc-600 hover:bg-zinc-600 active:scale-95 transition-all">25m</button>
+          <button id="btn-preset-45" onclick="setCountdownMinutes(45)" class="min-w-[44px] min-h-[40px] px-3.5 py-2 rounded-full bg-zinc-900 text-xs font-bold text-zinc-400 border border-zinc-800 hover:bg-zinc-800 active:scale-95 transition-all">45m</button>
+          <button id="btn-preset-60" onclick="setCountdownMinutes(60)" class="min-w-[44px] min-h-[40px] px-3.5 py-2 rounded-full bg-zinc-900 text-xs font-bold text-zinc-400 border border-zinc-800 hover:bg-zinc-800 active:scale-95 transition-all">60m</button>
+          <button id="btn-preset-custom" onclick="openCustomCountdownModal()" class="min-w-[44px] min-h-[40px] px-3.5 py-2 rounded-full bg-zinc-900 text-xs font-bold text-zinc-400 border border-zinc-800 hover:bg-zinc-800 active:scale-95 transition-all" data-i18n="btn_custom_timer">自定义</button>
+        </div>
+
+        <p id="timer-status-hint" class="timer-hide-in-landscape text-xs text-zinc-500 mt-5 tracking-widest uppercase font-semibold" data-i18n="timer_hint_ready">准备就绪 · 保持专注</p>
+      </div>
+
+      <!-- Bottom Area: Focus Controls (Start / Pause + Reset) -->
+      <div class="timer-hide-in-landscape w-full max-w-sm mx-auto flex flex-col items-center pb-2">
+        <!-- Pure Focus Controls -->
+        <div class="w-full flex items-center gap-3">
+          <button id="btn-timer-toggle" onclick="event.stopPropagation(); toggleTimer()" class="flex-1 min-h-[52px] py-3.5 rounded-2xl bg-white text-zinc-950 font-black text-base hover:bg-zinc-200 active:scale-95 shadow-xl transition-all flex items-center justify-center gap-2 cursor-pointer">
+            <span id="timer-play-icon">▶</span>
+            <span id="timer-play-text" data-i18n="btn_start_focus">开始专注</span>
+          </button>
+          <button onclick="event.stopPropagation(); resetTimer()" class="w-13 h-13 min-w-[52px] min-h-[52px] py-3.5 px-4 rounded-2xl bg-zinc-900 text-zinc-300 hover:text-white hover:bg-zinc-800 active:scale-95 text-lg border border-zinc-800 flex items-center justify-center font-bold cursor-pointer" title="重置">
+            ↺
+          </button>
+        </div>
       </div>
     </div>
   </section>
@@ -1902,10 +1926,8 @@
     }
 
     function handleTimerClick() {
-      // In landscape mode, tapping clock toggles start/pause smoothly
-      if (window.matchMedia("(orientation: landscape)").matches) {
-        toggleTimer();
-      }
+      // Tapping the centerpiece clock toggles start/pause smoothly in both portrait and landscape
+      toggleTimer();
     }
 
     function handleTimerBgClick(event) {
