@@ -12,7 +12,7 @@
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Chart.js CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js" onload="if(window.onChartJsLoaded)window.onChartJsLoaded()"></script>
 
   <style>
     * {
@@ -54,9 +54,9 @@
       padding-bottom: max(68px, calc(env(safe-area-inset-bottom) + 60px));
     }
 
-    /* 7-Column Adaptive Timetable (Compressed Height: 32px per hour) */
+    /* 7-Column Adaptive Timetable (Height: 40px per hour) */
     .time-slot-row {
-      height: 32px;
+      height: 40px;
       border-bottom: 1px solid #F1F5F9;
       position: relative;
     }
@@ -195,12 +195,17 @@
         position: absolute !important;
         top: 1.25rem !important;
         left: 1.25rem !important;
-        width: auto !important;
+        right: 1.25rem !important;
+        width: calc(100vw - 2.5rem) !important;
         padding: 0 !important;
         margin: 0 !important;
         z-index: 100000 !important;
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
       }
-      body.timer-view-active #view-timer #timer-btn-back {
+      body.timer-view-active #view-timer #timer-btn-back,
+      body.timer-view-active #view-timer #timer-btn-fullscreen {
         display: flex !important;
         background: rgba(39, 39, 42, 0.8) !important;
       }
@@ -338,21 +343,21 @@
           </div>
         </div>
 
-        <!-- Timetable Scroll Body (Vertical only, 09:00 to 次日 03:00, compressed 32px/h) -->
-        <div class="overflow-y-auto max-h-[580px] relative" id="timetable-scroll-box">
+        <!-- Timetable Scroll Body (Vertical only, 09:00 to 次日 03:00, 40px/h) -->
+        <div class="overflow-y-auto max-h-[460px] relative" id="timetable-scroll-box">
           <div class="flex w-full relative">
-            <!-- Left Compact Time Axis (09 to 03, 32px per hour) -->
+            <!-- Left Compact Time Axis (09 to 03, 40px per hour) -->
             <div class="w-9 shrink-0 border-r border-slate-200 bg-slate-50/80 text-[11px] font-mono text-slate-500 font-semibold select-none flex flex-col text-center" id="timetable-time-axis">
               <!-- Populated dynamically -->
             </div>
 
             <!-- 7 Days Grid Area (100% width, no horizontal scroll) -->
             <div class="flex-1 relative bg-white">
-              <!-- Background Horizontal Grid lines (32px per hour, 16px per 30m) -->
+              <!-- Background Horizontal Grid lines (40px per hour, 20px per 30m) -->
               <div id="timetable-bg-grid" class="absolute inset-0 pointer-events-none"></div>
 
-              <!-- 7 Column Slots Container (Compressed: 18h x 32px = 576px) -->
-              <div class="grid grid-cols-7 w-full relative z-10 min-h-[576px]" id="timetable-columns-container">
+              <!-- 7 Column Slots Container (18h x 40px = 720px) -->
+              <div class="grid grid-cols-7 w-full relative z-10 min-h-[720px]" id="timetable-columns-container">
                 <div class="relative border-r border-slate-100 timetable-day-col" data-col-day="0"></div>
                 <div class="relative border-r border-slate-100 timetable-day-col" data-col-day="1"></div>
                 <div class="relative border-r border-slate-100 timetable-day-col" data-col-day="2"></div>
@@ -417,8 +422,8 @@
           </div>
         </div>
 
-        <div class="max-h-[580px] overflow-y-auto relative" id="dual-col-scroll">
-          <div class="grid grid-cols-11 relative min-h-[576px]">
+        <div class="max-h-[460px] overflow-y-auto relative" id="dual-col-scroll">
+          <div class="grid grid-cols-11 relative min-h-[720px]">
             <div class="col-span-5 border-r border-slate-100 relative bg-slate-50/30" id="pa-plan-column"></div>
             <div class="col-span-1 border-r border-slate-200 bg-slate-50/80 text-[11px] font-mono font-semibold text-slate-400 select-none flex flex-col text-center" id="pa-time-ruler"></div>
             <div class="col-span-5 relative bg-white" id="pa-actual-column"></div>
@@ -465,6 +470,7 @@
               <div class="text-sm font-black text-slate-900 whitespace-nowrap" id="habit-month-label"></div>
             </div>
             <button onclick="changeHabitMonth(1)" class="w-7 h-7 flex items-center justify-center rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold active:scale-95 transition-all">▶</button>
+            <button onclick="goToCurrentHabitMonth()" class="px-2.5 py-1 text-xs font-bold text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg active:scale-95 transition-all ml-0.5" data-i18n="current_month_btn">本月</button>
           </div>
           <div class="text-right pl-2 shrink-0">
             <span class="text-xs text-slate-400 font-medium whitespace-nowrap" data-i18n="auto_sync_hint">点亮任务自动打卡</span>
@@ -517,7 +523,7 @@
               <h3 class="text-xs font-bold text-slate-800" data-i18n="yearly_trend_title">1-12月 全年专注时长趋势 (小时)</h3>
               <span class="text-xs text-slate-400 font-mono font-semibold" id="yearly-year-label"></span>
             </div>
-            <div class="relative h-48">
+            <div class="relative w-full h-48 sm:h-56">
               <canvas id="yearlyChart"></canvas>
             </div>
           </div>
@@ -532,9 +538,9 @@
               </h3>
               <span class="text-xs text-slate-400 font-medium" data-i18n="category_ratio_subtitle">投入分布</span>
             </div>
-            <div class="relative h-56 flex items-center justify-center">
+            <div class="relative w-full h-48 sm:h-56">
               <canvas id="categoryPieChart"></canvas>
-              <div id="chart-empty-hint" class="hidden absolute inset-0 flex items-center justify-center text-xs text-slate-400" data-i18n="chart_empty_hint">
+              <div id="chart-empty-hint" class="hidden absolute inset-0 flex items-center justify-center text-xs text-slate-400 bg-white/80 pointer-events-none" data-i18n="chart_empty_hint">
                 暂无实际完成数据，请在第二页点亮完成
               </div>
             </div>
@@ -549,9 +555,9 @@
               </h3>
               <span class="text-xs text-slate-400 font-medium" id="tasks-table-count">0 项</span>
             </div>
-            <div class="relative h-56 flex items-center justify-center">
+            <div class="relative w-full h-48 sm:h-56">
               <canvas id="tasksDoughnutChart"></canvas>
-              <div id="tasks-chart-empty-hint" class="hidden absolute inset-0 flex items-center justify-center text-xs text-slate-400" data-i18n="chart_empty_hint">
+              <div id="tasks-chart-empty-hint" class="hidden absolute inset-0 flex items-center justify-center text-xs text-slate-400 bg-white/80 pointer-events-none" data-i18n="chart_empty_hint">
                 暂无实际完成数据，请在第二页点亮完成
               </div>
             </div>
@@ -565,7 +571,7 @@
               </h3>
               <span class="text-xs text-blue-600 font-bold" id="trend-peak-label"></span>
             </div>
-            <div class="relative h-44">
+            <div class="relative w-full h-48 sm:h-56">
               <canvas id="trendChart"></canvas>
             </div>
           </div>
@@ -580,12 +586,11 @@
        ========================================================================== -->
   <section id="view-timer" class="view-panel fixed inset-0 bg-[#000000] text-white z-[99999] select-none hidden" onclick="handleTimerBgClick(event)">
     <div id="timer-portrait-container" class="w-full h-full max-w-md mx-auto flex flex-col justify-between p-5 pb-8 safe-area-bottom">
-      <!-- Top Header: Unified single Back Button and Mode Switcher (Centered in portrait, docked in landscape) -->
+      <!-- Top Header: Unified single Back Button, Mode Switcher, and Fullscreen Button -->
       <div id="timer-top-bar" class="w-full flex items-center justify-between text-slate-400 relative z-50 pt-1 pointer-events-auto">
-        <!-- Single Unified Top-Left Back Button -->
-        <button id="timer-btn-back" onclick="exitLandscapeOrTimer(event)" class="min-w-[48px] min-h-[44px] px-3.5 py-2 flex items-center justify-center gap-1.5 rounded-full bg-zinc-800/80 hover:bg-zinc-700/90 text-zinc-200 hover:text-white active:scale-95 text-xs font-bold cursor-pointer backdrop-blur-md border border-zinc-700/60 shadow-lg transition-all" aria-label="返回时间表" title="返回周课表">
-          <span class="text-base font-black leading-none">←</span>
-          <span data-i18n="btn_back">返回</span>
+        <!-- Single Unified Top-Left Back Button (Arrow only) -->
+        <button id="timer-btn-back" onclick="exitLandscapeOrTimer(event)" class="w-10 h-10 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-full bg-zinc-800/80 hover:bg-zinc-700/90 text-zinc-200 hover:text-white active:scale-95 text-base font-black cursor-pointer backdrop-blur-md border border-zinc-700/60 shadow-lg transition-all" aria-label="返回" title="返回">
+          ←
         </button>
 
         <!-- Mode Switcher (Hidden in landscape to keep landscape screen ultra-clean and immersive) -->
@@ -594,7 +599,10 @@
           <button id="btn-mode-countdown" onclick="setTimerMode('countdown')" class="min-w-[44px] min-h-[44px] px-4 py-2 rounded-xl text-xs font-bold text-zinc-400 hover:text-white transition-all cursor-pointer flex items-center justify-center" data-i18n="timer_mode_countdown">倒计时</button>
         </div>
 
-        <div class="w-[76px] min-w-[48px] timer-hide-in-landscape pointer-events-none"></div>
+        <!-- Fullscreen / Landscape Button (⛶) -->
+        <button id="timer-btn-fullscreen" onclick="toggleTimerFullscreen(event)" class="w-10 h-10 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-full bg-zinc-800/80 hover:bg-zinc-700/90 text-zinc-200 hover:text-white active:scale-95 text-base font-bold cursor-pointer backdrop-blur-md border border-zinc-700/60 shadow-lg transition-all" aria-label="全屏沉浸模式" title="全屏沉浸模式">
+          ⛶
+        </button>
       </div>
 
       <!-- Central Visual Core: Focus Subject + Flip Clock + Presets + Status -->
@@ -827,6 +835,36 @@
   </div>
 
   <!-- ==========================================================================
+       MODAL: Theme / Style Selection Modal
+       ========================================================================== -->
+  <div id="modal-style" class="fixed inset-0 bg-black/50 backdrop-blur-xs z-50 flex items-end sm:items-center justify-center p-3 hidden" onclick="if(event.target===this)closeModal('modal-style')">
+    <div class="bg-white w-full max-w-sm rounded-2xl p-4 shadow-2xl animate-fade-in" onclick="event.stopPropagation()">
+      <div class="flex items-center justify-between mb-3 border-b border-slate-100 pb-2.5">
+        <h3 class="text-base font-black text-slate-900 flex items-center gap-1.5">
+          <span>🎨</span> <span>主题风格选择</span>
+        </h3>
+        <button onclick="closeModal('modal-style')" class="text-slate-400 hover:text-slate-600 text-xl font-bold leading-none p-1">&times;</button>
+      </div>
+      <div class="space-y-2.5 text-xs">
+        <div id="theme-opt-default" onclick="selectThemeStyle('default')" class="p-3 rounded-xl border-2 border-blue-500 bg-blue-50/40 cursor-pointer transition-all flex items-center justify-between shadow-xs">
+          <div>
+            <div class="font-bold text-slate-800">默认极简</div>
+            <div class="text-[11px] text-slate-400">清爽高效的极简商务排版</div>
+          </div>
+          <div id="theme-check-default" class="w-5 h-5 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-bold">✓</div>
+        </div>
+        <div id="theme-opt-y2k" onclick="selectThemeStyle('y2k')" class="p-3 rounded-xl border border-slate-200 bg-white hover:bg-purple-50/30 cursor-pointer transition-all flex items-center justify-between">
+          <div>
+            <div class="font-bold text-slate-800">梦幻 Y2K</div>
+            <div class="text-[11px] text-slate-400">温柔甜美的马卡龙柔和光晕</div>
+          </div>
+          <div id="theme-check-y2k" class="w-5 h-5 rounded-full border border-slate-300 text-transparent flex items-center justify-center text-xs font-bold">✓</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
        MODAL: Unified Backup & Restore Modal (导出与恢复双重保障合一, Requirement 5)
        ========================================================================== -->
   <div id="modal-backup" class="fixed inset-0 bg-black/50 backdrop-blur-xs z-50 flex items-end sm:items-center justify-center p-3 hidden">
@@ -896,29 +934,15 @@
         <div class="text-[11px] text-zinc-400 font-medium mt-0.5" id="custom-slider-hours">1.5 小时</div>
       </div>
 
-      <!-- Range Slider -->
+      <!-- Range Slider (5min ~ 120min) -->
       <div class="mb-5 px-1">
-        <input type="range" id="custom-slider-input" min="5" max="360" step="5" value="90" oninput="onCustomSliderChange(this.value)" class="w-full h-2.5 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-blue-500">
+        <input type="range" id="custom-slider-input" min="5" max="120" step="5" value="60" oninput="onCustomSliderChange(this.value)" class="w-full h-2.5 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-blue-500">
         <div class="flex justify-between text-[10px] text-zinc-500 font-mono mt-2">
           <span>5m</span>
+          <span>30m</span>
           <span>60m</span>
-          <span>180m</span>
-          <span>360m (6h)</span>
-        </div>
-      </div>
-
-      <!-- Quick 30m Step Pills -->
-      <div class="mb-5">
-        <div class="text-[11px] text-zinc-400 font-bold mb-2">快速快捷选项 (30m 步进):</div>
-        <div class="grid grid-cols-4 gap-1.5">
-          <button type="button" onclick="selectCustomStep(30)" class="step-pill py-2 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-xs font-bold text-zinc-300 text-center active:scale-95 transition-all">30m</button>
-          <button type="button" onclick="selectCustomStep(60)" class="step-pill py-2 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-xs font-bold text-zinc-300 text-center active:scale-95 transition-all">60m</button>
-          <button type="button" onclick="selectCustomStep(90)" class="step-pill py-2 rounded-xl bg-blue-600 text-xs font-bold text-white text-center active:scale-95 transition-all shadow-sm">90m</button>
-          <button type="button" onclick="selectCustomStep(120)" class="step-pill py-2 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-xs font-bold text-zinc-300 text-center active:scale-95 transition-all">120m</button>
-          <button type="button" onclick="selectCustomStep(150)" class="step-pill py-2 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-xs font-bold text-zinc-300 text-center active:scale-95 transition-all">150m</button>
-          <button type="button" onclick="selectCustomStep(180)" class="step-pill py-2 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-xs font-bold text-zinc-300 text-center active:scale-95 transition-all">180m</button>
-          <button type="button" onclick="selectCustomStep(240)" class="step-pill py-2 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-xs font-bold text-zinc-300 text-center active:scale-95 transition-all">240m</button>
-          <button type="button" onclick="selectCustomStep(360)" class="step-pill py-2 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-xs font-bold text-zinc-300 text-center active:scale-95 transition-all">360m</button>
+          <span>90m</span>
+          <span>120m</span>
         </div>
       </div>
 
@@ -938,6 +962,16 @@
        SCRIPT: Logic & Data Processing
        ========================================================================== -->
   <script>
+    function safeSetText(id, text) {
+      const el = document.getElementById(id);
+      if (el) el.innerText = (text !== undefined && text !== null) ? text : '';
+    }
+
+    function safeSetHtml(id, html) {
+      const el = document.getElementById(id);
+      if (el) el.innerHTML = (html !== undefined && html !== null) ? html : '';
+    }
+
     /* --------------------------------------------------------------------------
        1. Multilingual Dictionary & Category Mappings
        -------------------------------------------------------------------------- */
@@ -1329,17 +1363,35 @@
     }
 
     // Time scale config: 09:00 to 27:00 (Next day 03:00)
-    // 18 hours total. 32px per hour (Compressed vertical height: 576px)
+    // 18 hours total. 40px per hour (Height: 720px)
     const START_HOUR = 9;
     const END_HOUR_EXTENDED = 27; // 27 = 24 + 3 (03:00)
     const TOTAL_HOURS = END_HOUR_EXTENDED - START_HOUR; // 18 hours
-    const HOUR_HEIGHT = 32; // 32px per 60min, 16px per 30min
+    const HOUR_HEIGHT = 40; // 40px per 60min, 20px per 30min
     const BASE_MINUTES = START_HOUR * 60; // 540 min
 
     function timeToScaledMinutes(timeStr) {
       const [h, m] = timeStr.split(':').map(Number);
       const adjustedH = h < START_HOUR ? h + 24 : h;
       return adjustedH * 60 + m;
+    }
+
+    function generatePlanId() {
+      if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+        try {
+          return 'plan_' + crypto.randomUUID();
+        } catch (e) {}
+      }
+      return 'plan_' + Date.now() + '_' + Math.random().toString(36).substring(2, 9);
+    }
+
+    function generateGroupId() {
+      if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+        try {
+          return 'grp_' + crypto.randomUUID();
+        } catch (e) {}
+      }
+      return 'grp_' + Date.now() + '_' + Math.random().toString(36).substring(2, 9);
     }
 
     /* --------------------------------------------------------------------------
@@ -1351,6 +1403,7 @@
       lang: 'zh',
       theme: 'default',
       currentView: 'timetable',
+      analyticsSubTab: 'heatmap',
       activeDateStr: getTodayStr(),
       currentWeekStart: getCurrentMondayStr(),
       habitYear: new Date().getFullYear(),
@@ -1380,6 +1433,7 @@
           if (parsed.activatedBlockIds) appState.activatedBlockIds = parsed.activatedBlockIds;
           if (parsed.lang) appState.lang = parsed.lang;
           if (parsed.theme) appState.theme = parsed.theme;
+          if (parsed.analyticsSubTab) appState.analyticsSubTab = parsed.analyticsSubTab;
         } catch (e) {
           console.error("Failed to parse state", e);
         }
@@ -1391,7 +1445,8 @@
         lang: appState.lang,
         theme: appState.theme,
         plans: appState.plans,
-        activatedBlockIds: appState.activatedBlockIds
+        activatedBlockIds: appState.activatedBlockIds,
+        analyticsSubTab: appState.analyticsSubTab
       }));
     }
 
@@ -1399,6 +1454,7 @@
        Theme Style Switching Engine (Default Minimalist vs Dreamy Y2K Pastel Glow)
        -------------------------------------------------------------------------- */
     function openStyleModal() {
+      if (!document.getElementById('modal-style')) return;
       updateStyleModalUI();
       document.getElementById('modal-style').classList.remove('hidden');
     }
@@ -1413,6 +1469,7 @@
     }
 
     function updateStyleModalUI() {
+      if (!document.getElementById('modal-style')) return;
       const isY2K = appState.theme === 'y2k';
       const optDef = document.getElementById('theme-opt-default');
       const optY2k = document.getElementById('theme-opt-y2k');
@@ -1543,8 +1600,7 @@
         updateTimerDisplay();
       }
       else if (viewName === 'analytics') {
-        renderSubjectHeatmaps();
-        renderCharts();
+        switchAnalyticsSubTab(appState.analyticsSubTab || 'heatmap');
       }
     }
 
@@ -1577,38 +1633,42 @@
       // Week label
       const startD = parseDateYMD(appState.currentWeekStart);
       const endD = parseDateYMD(days[6].dateStr);
-      document.getElementById('timetable-week-label').innerText = `${startD.getFullYear()}.${startD.getMonth()+1}.${startD.getDate()} - ${endD.getMonth()+1}.${endD.getDate()}`;
+      safeSetText('timetable-week-label', `${startD.getFullYear()}.${startD.getMonth()+1}.${startD.getDate()} - ${endD.getMonth()+1}.${endD.getDate()}`);
 
       // 1. Render 7-Day Headers (Mon-Sun)
       const headerContainer = document.getElementById('timetable-header-days');
-      headerContainer.innerHTML = '';
-      const currentTodayStr = getTodayStr();
-      days.forEach((d, idx) => {
-        const isToday = d.dateStr === currentTodayStr;
-        const isSelected = d.dateStr === appState.activeDateStr;
-        const col = document.createElement('div');
-        col.className = `py-2 flex flex-col items-center justify-center cursor-pointer hover:bg-slate-100/70 transition-colors ${isSelected ? 'bg-blue-50/60' : ''} ${idx < 6 ? 'border-r border-slate-100' : ''}`;
-        col.onclick = () => {
-          appState.activeDateStr = d.dateStr;
-          renderTimetable();
-          renderPlanActual();
-        };
-        col.innerHTML = `
-          <span class="text-xs text-slate-400 font-bold block">${d.shortName}</span>
-          <span class="text-xs font-black ${isToday ? 'w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center mt-0.5 shadow-xs' : (isSelected ? 'w-6 h-6 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center mt-0.5' : 'text-slate-800 mt-0.5')}">${d.dayNumber}</span>
-        `;
-        headerContainer.appendChild(col);
-      });
+      if (headerContainer) {
+        headerContainer.innerHTML = '';
+        const currentTodayStr = getTodayStr();
+        days.forEach((d, idx) => {
+          const isToday = d.dateStr === currentTodayStr;
+          const isSelected = d.dateStr === appState.activeDateStr;
+          const col = document.createElement('div');
+          col.className = `py-2 flex flex-col items-center justify-center cursor-pointer hover:bg-slate-100/70 transition-colors ${isSelected ? 'bg-blue-50/60' : ''} ${idx < 6 ? 'border-r border-slate-100' : ''}`;
+          col.onclick = () => {
+            appState.activeDateStr = d.dateStr;
+            renderTimetable();
+            renderPlanActual();
+          };
+          col.innerHTML = `
+            <span class="text-xs text-slate-400 font-bold block">${d.shortName}</span>
+            <span class="text-xs font-black ${isToday ? 'w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center mt-0.5 shadow-xs' : (isSelected ? 'w-6 h-6 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center mt-0.5' : 'text-slate-800 mt-0.5')}">${d.dayNumber}</span>
+          `;
+          headerContainer.appendChild(col);
+        });
+      }
 
-      // 2. Render Left Compact Time Ruler (09 to 03, 32px per hour)
+      // 2. Render Left Compact Time Ruler (09 to 03, 40px per hour)
       const timeAxis = document.getElementById('timetable-time-axis');
-      timeAxis.innerHTML = '';
-      for (let h = START_HOUR; h <= END_HOUR_EXTENDED; h++) {
-        const displayH = h >= 24 ? String(h - 24).padStart(2, '0') : String(h).padStart(2, '0');
-        const row = document.createElement('div');
-        row.className = 'h-8 flex items-start justify-center pt-0.5 border-b border-slate-100 text-[11px]';
-        row.innerHTML = `<span class="leading-none">${displayH}</span>`;
-        timeAxis.appendChild(row);
+      if (timeAxis) {
+        timeAxis.innerHTML = '';
+        for (let h = START_HOUR; h <= END_HOUR_EXTENDED; h++) {
+          const displayH = h >= 24 ? String(h - 24).padStart(2, '0') : String(h).padStart(2, '0');
+          const row = document.createElement('div');
+          row.className = 'h-10 flex items-start justify-center pt-0.5 border-b border-slate-100 text-[11px]';
+          row.innerHTML = `<span class="leading-none">${displayH}</span>`;
+          timeAxis.appendChild(row);
+        }
       }
 
       // 3. Render Background Grid Lines (32px per hour, 16px per 30m)
@@ -1686,48 +1746,54 @@
       const m = String(activeD.getMonth() + 1).padStart(2, '0');
       const d = String(activeD.getDate()).padStart(2, '0');
       const dayIdx = (activeD.getDay() + 6) % 7; // Monday = 0
-      document.getElementById('pa-date-display').innerText = `${m}.${d} ${I18N[appState.lang].days_names[dayIdx]}`;
+      safeSetText('pa-date-display', `${m}.${d} ${I18N[appState.lang].days_names[dayIdx]}`);
 
       const todayBadge = document.getElementById('pa-today-badge');
-      if (appState.activeDateStr === getTodayStr()) todayBadge.classList.remove('hidden');
-      else todayBadge.classList.add('hidden');
+      if (todayBadge) {
+        if (appState.activeDateStr === getTodayStr()) todayBadge.classList.remove('hidden');
+        else todayBadge.classList.add('hidden');
+      }
 
       // Weekday strip
       const days = getWeekDays(appState.currentWeekStart);
       const strip = document.getElementById('pa-day-strip');
-      strip.innerHTML = '';
-      days.forEach(day => {
-        const isSelected = day.dateStr === appState.activeDateStr;
-        const btn = document.createElement('button');
-        btn.className = `py-1.5 rounded-xl text-center transition-all ${isSelected ? 'bg-blue-600 text-white font-black shadow-xs' : 'text-slate-600 hover:bg-slate-100 font-bold'}`;
-        btn.onclick = () => {
-          appState.activeDateStr = day.dateStr;
-          renderPlanActual();
-          renderTimetable();
-        };
-        btn.innerHTML = `
-          <span class="text-xs block opacity-80">${day.shortName}</span>
-          <span class="text-xs font-black mt-0.5">${day.dayNumber}</span>
-        `;
-        strip.appendChild(btn);
-      });
+      if (strip) {
+        strip.innerHTML = '';
+        days.forEach(day => {
+          const isSelected = day.dateStr === appState.activeDateStr;
+          const btn = document.createElement('button');
+          btn.className = `py-1.5 rounded-xl text-center transition-all ${isSelected ? 'bg-blue-600 text-white font-black shadow-xs' : 'text-slate-600 hover:bg-slate-100 font-bold'}`;
+          btn.onclick = () => {
+            appState.activeDateStr = day.dateStr;
+            renderPlanActual();
+            renderTimetable();
+          };
+          btn.innerHTML = `
+            <span class="text-xs block opacity-80">${day.shortName}</span>
+            <span class="text-xs font-black mt-0.5">${day.dayNumber}</span>
+          `;
+          strip.appendChild(btn);
+        });
+      }
 
-      // Center Time Ruler (09 to 03)
+      // Center Time Ruler (09 to 03, 40px per hour)
       const ruler = document.getElementById('pa-time-ruler');
-      ruler.innerHTML = '';
-      for (let h = START_HOUR; h <= END_HOUR_EXTENDED; h++) {
-        const displayH = h >= 24 ? String(h - 24).padStart(2, '0') : String(h).padStart(2, '0');
-        const div = document.createElement('div');
-        div.className = 'h-8 flex items-start justify-center pt-0.5 border-b border-slate-100 text-[11px]';
-        div.innerHTML = `<span>${displayH}</span>`;
-        ruler.appendChild(div);
+      if (ruler) {
+        ruler.innerHTML = '';
+        for (let h = START_HOUR; h <= END_HOUR_EXTENDED; h++) {
+          const displayH = h >= 24 ? String(h - 24).padStart(2, '0') : String(h).padStart(2, '0');
+          const div = document.createElement('div');
+          div.className = 'h-10 flex items-start justify-center pt-0.5 border-b border-slate-100 text-[11px]';
+          div.innerHTML = `<span>${displayH}</span>`;
+          ruler.appendChild(div);
+        }
       }
 
       // Left Column (Plan) & Right Column (Actual)
       const planCol = document.getElementById('pa-plan-column');
       const actualCol = document.getElementById('pa-actual-column');
-      planCol.innerHTML = '';
-      actualCol.innerHTML = '';
+      if (planCol) planCol.innerHTML = '';
+      if (actualCol) actualCol.innerHTML = '';
 
       let plannedMinutes = 0;
       let actualMinutes = 0;
@@ -1747,7 +1813,7 @@
 
         // 1. Left Plan Block
         const leftBlock = document.createElement('div');
-        leftBlock.className = 'absolute left-1.5 right-1.5 rounded-xl p-2 border border-slate-300/80 bg-white shadow-xs transition-all overflow-hidden flex flex-col justify-center';
+        leftBlock.className = 'absolute left-1.5 right-1.5 rounded-xl p-2 bg-blue-50/50 border border-blue-200/80 shadow-xs transition-all overflow-hidden flex flex-col justify-start';
         leftBlock.style.top = `${topPx}px`;
         leftBlock.style.height = `${heightPx - 3}px`;
         leftBlock.innerHTML = `
@@ -1811,8 +1877,8 @@
       });
 
       // Update Header Stats
-      document.getElementById('pa-stat-planned').innerHTML = `${(plannedMinutes / 60).toFixed(1)} <span class="text-xs font-normal text-blue-700">${t('unit_hour')}</span>`;
-      document.getElementById('pa-stat-actual').innerHTML = `${(actualMinutes / 60).toFixed(1)} <span class="text-xs font-normal text-emerald-700">${t('unit_hour')}</span>`;
+      safeSetHtml('pa-stat-planned', `${(plannedMinutes / 60).toFixed(1)} <span class="text-xs font-normal text-blue-700">${t('unit_hour')}</span>`);
+      safeSetHtml('pa-stat-actual', `${(actualMinutes / 60).toFixed(1)} <span class="text-xs font-normal text-emerald-700">${t('unit_hour')}</span>`);
     }
 
     /* --------------------------------------------------------------------------
@@ -1869,16 +1935,20 @@
     }
 
     /* --------------------------------------------------------------------------
-       Custom Countdown Slider & 30-Minute Step Selector (Requirement 4)
+       Custom Countdown Slider (5min ~ 120min, Requirement 6)
        -------------------------------------------------------------------------- */
-    let currentCustomSliderMinutes = 90;
+    let currentCustomSliderMinutes = 60;
 
     function openCustomCountdownModal() {
-      currentCustomSliderMinutes = Math.round(appState.timer.countdownTargetSec / 60) || 90;
+      let mins = Math.round(appState.timer.countdownTargetSec / 60) || 60;
+      if (mins < 5) mins = 5;
+      if (mins > 120) mins = 120;
+      currentCustomSliderMinutes = mins;
       const slider = document.getElementById('custom-slider-input');
       if (slider) slider.value = currentCustomSliderMinutes;
       updateCustomSliderUI(currentCustomSliderMinutes);
-      document.getElementById('modal-custom-countdown').classList.remove('hidden');
+      const modal = document.getElementById('modal-custom-countdown');
+      if (modal) modal.classList.remove('hidden');
     }
 
     function onCustomSliderChange(val) {
@@ -1886,25 +1956,10 @@
       updateCustomSliderUI(currentCustomSliderMinutes);
     }
 
-    function selectCustomStep(mins) {
-      currentCustomSliderMinutes = mins;
-      const slider = document.getElementById('custom-slider-input');
-      if (slider) slider.value = mins;
-      updateCustomSliderUI(mins);
-    }
-
     function updateCustomSliderUI(mins) {
-      document.getElementById('custom-slider-val').innerText = mins;
+      safeSetText('custom-slider-val', mins);
       const hrs = (mins / 60).toFixed(1);
-      document.getElementById('custom-slider-hours').innerText = `${hrs} ${appState.lang === 'zh' ? '小时' : (appState.lang === 'ko' ? '시간' : 'hours')}`;
-
-      document.querySelectorAll('.step-pill').forEach(btn => {
-        if (btn.innerText.startsWith(`${mins}m`)) {
-          btn.className = 'step-pill py-2 rounded-xl bg-blue-600 text-xs font-bold text-white text-center active:scale-95 transition-all shadow-sm';
-        } else {
-          btn.className = 'step-pill py-2 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-xs font-bold text-zinc-300 text-center active:scale-95 transition-all';
-        }
-      });
+      safeSetText('custom-slider-hours', `${hrs} ${appState.lang === 'zh' ? '小时' : (appState.lang === 'ko' ? '시간' : 'hours')}`);
     }
 
     function confirmCustomCountdown() {
@@ -1912,17 +1967,74 @@
       closeModal('modal-custom-countdown');
     }
 
-    function exitLandscapeOrTimer(event) {
+    /* --------------------------------------------------------------------------
+       Manual Fullscreen / Landscape & Back Navigation (Requirement 2 & 3)
+       -------------------------------------------------------------------------- */
+    function toggleTimerFullscreen(event) {
       if (event) event.stopPropagation();
+      const elem = document.documentElement;
+      const isFull = !!(document.fullscreenElement || document.webkitFullscreenElement || document.body.classList.contains('timer-fullscreen-active'));
+      if (!isFull) {
+        if (elem.requestFullscreen) {
+          elem.requestFullscreen().catch(() => {});
+        } else if (elem.webkitRequestFullscreen) {
+          elem.webkitRequestFullscreen();
+        }
+        try {
+          if (screen.orientation && screen.orientation.lock) {
+            screen.orientation.lock('landscape').catch(() => {});
+          }
+        } catch (e) {}
+        document.body.classList.add('timer-fullscreen-active');
+      } else {
+        exitTimerFullscreen();
+      }
+    }
+
+    function exitTimerFullscreen() {
+      if (document.fullscreenElement) {
+        document.exitFullscreen().catch(() => {});
+      } else if (document.webkitExitFullscreen) {
+        document.webkitExitFullscreen();
+      }
       try {
         if (screen.orientation && screen.orientation.unlock) {
           screen.orientation.unlock();
         }
       } catch (e) {}
-      if (document.fullscreenElement) {
-        document.exitFullscreen().catch(() => {});
+      document.body.classList.remove('timer-fullscreen-active');
+    }
+
+    document.addEventListener('fullscreenchange', () => {
+      if (!document.fullscreenElement) {
+        document.body.classList.remove('timer-fullscreen-active');
       }
+    });
+    document.addEventListener('webkitfullscreenchange', () => {
+      if (!document.webkitFullscreenElement) {
+        document.body.classList.remove('timer-fullscreen-active');
+      }
+    });
+
+    function exitLandscapeOrTimer(event) {
+      if (event) event.stopPropagation();
+      const isFull = !!(document.fullscreenElement || document.webkitFullscreenElement || document.body.classList.contains('timer-fullscreen-active'));
+      const isLand = window.matchMedia("(orientation: landscape)").matches;
+      if (isFull || isLand) {
+        // 在全屏/横屏模式下点击返回键，仅退出全屏并恢复为“竖屏计时界面”，不得直接跳回首页时间表
+        exitTimerFullscreen();
+        return;
+      }
+      // 竖屏常规状态下点击返回键，切回第一页周课表
       switchView('timetable');
+    }
+
+    function handleAppBackNav() {
+      if (appState.currentView === 'timer') {
+        exitLandscapeOrTimer();
+      } else {
+        switchView('timetable');
+      }
     }
 
     function handleTimerClick() {
@@ -1965,12 +2077,12 @@
       const mStr = String(m).padStart(2, '0');
       const sStr = String(s).padStart(2, '0');
 
-      document.getElementById('time-h1').innerText = hStr[0];
-      document.getElementById('time-h2').innerText = hStr[1];
-      document.getElementById('time-m1').innerText = mStr[0];
-      document.getElementById('time-m2').innerText = mStr[1];
-      document.getElementById('time-s1').innerText = sStr[0];
-      document.getElementById('time-s2').innerText = sStr[1];
+      safeSetText('time-h1', hStr[0]);
+      safeSetText('time-h2', hStr[1]);
+      safeSetText('time-m1', mStr[0]);
+      safeSetText('time-m2', mStr[1]);
+      safeSetText('time-s1', sStr[0]);
+      safeSetText('time-s2', sStr[1]);
     }
 
     function toggleTimer() {
@@ -1981,17 +2093,17 @@
         appState.timer.isRunning = false;
         clearInterval(appState.timer.intervalId);
 
-        document.getElementById('timer-play-icon').innerText = '▶';
-        document.getElementById('timer-play-text').innerText = t('btn_continue_focus');
-        document.getElementById('timer-status-hint').innerText = t('btn_pause_focus');
+        safeSetText('timer-play-icon', '▶');
+        safeSetText('timer-play-text', t('btn_continue_focus'));
+        safeSetText('timer-status-hint', t('btn_pause_focus'));
       } else {
         // Start timer: store absolute start timestamp
         appState.timer.isRunning = true;
         appState.timer.startTime = Date.now();
 
-        document.getElementById('timer-play-icon').innerText = '⏸';
-        document.getElementById('timer-play-text').innerText = t('btn_pause_focus');
-        document.getElementById('timer-status-hint').innerText = `${appState.timer.taskName}`;
+        safeSetText('timer-play-icon', '⏸');
+        safeSetText('timer-play-text', t('btn_pause_focus'));
+        safeSetText('timer-status-hint', `${appState.timer.taskName}`);
 
         appState.timer.intervalId = setInterval(() => {
           const totalSec = getElapsedSeconds();
@@ -2000,9 +2112,9 @@
           if (appState.timer.mode === 'countdown' && totalSec >= appState.timer.countdownTargetSec) {
             clearInterval(appState.timer.intervalId);
             appState.timer.isRunning = false;
-            document.getElementById('timer-play-icon').innerText = '▶';
-            document.getElementById('timer-play-text').innerText = t('btn_start_focus');
-            document.getElementById('timer-status-hint').innerText = '🎉 倒计时已完成！';
+            safeSetText('timer-play-icon', '▶');
+            safeSetText('timer-play-text', t('btn_start_focus'));
+            safeSetText('timer-status-hint', '🎉 倒计时已完成！');
             if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
           }
         }, 200);
@@ -2017,9 +2129,9 @@
       appState.timer.startTime = null;
       appState.timer.accumulatedMs = 0;
 
-      document.getElementById('timer-play-icon').innerText = '▶';
-      document.getElementById('timer-play-text').innerText = t('btn_start_focus');
-      document.getElementById('timer-status-hint').innerText = t('timer_hint_ready');
+      safeSetText('timer-play-icon', '▶');
+      safeSetText('timer-play-text', t('btn_start_focus'));
+      safeSetText('timer-status-hint', t('timer_hint_ready'));
       updateTimerDisplay(0);
     }
 
@@ -2039,23 +2151,46 @@
        10. VIEW 4: 统计打卡与趋势 (科目自动提取打卡 + 导出导入双重保障)
        -------------------------------------------------------------------------- */
     function switchAnalyticsSubTab(tab) {
+      appState.analyticsSubTab = tab;
+      saveState();
       const btnHeatmap = document.getElementById('btn-sub-heatmap');
       const btnCharts = document.getElementById('btn-sub-charts');
       const panelHeatmap = document.getElementById('analytics-heatmap-panel');
       const panelCharts = document.getElementById('analytics-charts-panel');
 
       if (tab === 'heatmap') {
-        btnHeatmap.className = 'flex-1 py-2 text-xs font-bold rounded-xl bg-blue-600 text-white transition-all';
-        btnCharts.className = 'flex-1 py-2 text-xs font-bold rounded-xl text-slate-600 hover:text-slate-900 transition-all';
-        panelHeatmap.classList.remove('hidden');
-        panelCharts.classList.add('hidden');
+        if (btnHeatmap) btnHeatmap.className = 'flex-1 py-2 text-xs font-bold rounded-xl bg-blue-600 text-white transition-all';
+        if (btnCharts) btnCharts.className = 'flex-1 py-2 text-xs font-bold rounded-xl text-slate-600 hover:text-slate-900 transition-all';
+        if (panelHeatmap) panelHeatmap.classList.remove('hidden');
+        if (panelCharts) panelCharts.classList.add('hidden');
         renderSubjectHeatmaps();
       } else {
-        btnCharts.className = 'flex-1 py-2 text-xs font-bold rounded-xl bg-blue-600 text-white transition-all';
-        btnHeatmap.className = 'flex-1 py-2 text-xs font-bold rounded-xl text-slate-600 hover:text-slate-900 transition-all';
-        panelCharts.classList.remove('hidden');
-        panelHeatmap.classList.add('hidden');
-        renderCharts();
+        if (btnCharts) btnCharts.className = 'flex-1 py-2 text-xs font-bold rounded-xl bg-blue-600 text-white transition-all';
+        if (btnHeatmap) btnHeatmap.className = 'flex-1 py-2 text-xs font-bold rounded-xl text-slate-600 hover:text-slate-900 transition-all';
+        if (panelCharts) panelCharts.classList.remove('hidden');
+        if (panelHeatmap) panelHeatmap.classList.add('hidden');
+        // 确保 DOM 完全移除 hidden 显现并重排后再渲染与调整图表，避免高度坍塌
+        requestAnimationFrame(() => {
+          setTimeout(() => {
+            renderCharts();
+            if (pieChartInstance) {
+              pieChartInstance.resize();
+              pieChartInstance.update();
+            }
+            if (tasksChartInstance) {
+              tasksChartInstance.resize();
+              tasksChartInstance.update();
+            }
+            if (trendChartInstance) {
+              trendChartInstance.resize();
+              trendChartInstance.update();
+            }
+            if (yearlyChartInstance) {
+              yearlyChartInstance.resize();
+              yearlyChartInstance.update();
+            }
+          }, 50);
+        });
       }
     }
 
@@ -2083,6 +2218,7 @@
     // A. 科目月度打卡方格矩阵 (自动提取首页创建的全部科目，支持历史/未来月份切换)
     function renderSubjectHeatmaps() {
       const list = document.getElementById('subject-heatmap-list');
+      if (!list) return;
       list.innerHTML = '';
 
       const currentYear = appState.habitYear;
@@ -2093,7 +2229,7 @@
       const isViewingCurrentMonth = (realNow.getFullYear() === currentYear && (realNow.getMonth() + 1) === currentMonth);
       const currentDay = isViewingCurrentMonth ? realNow.getDate() : -1;
 
-      document.getElementById('habit-month-label').innerText = `${currentYear} · ${String(currentMonth).padStart(2, '0')}${appState.lang === 'zh' ? '月' : ''}`;
+      safeSetText('habit-month-label', `${currentYear} · ${String(currentMonth).padStart(2, '0')}${appState.lang === 'zh' ? '月' : ''}`);
 
       // 1. Filter out plans that have includeInStats === false (Requirement 1)
       const statsPlans = appState.plans.filter(p => p.includeInStats !== false);
@@ -2194,49 +2330,67 @@
     let trendChartInstance = null;
     let yearlyChartInstance = null;
 
+    window.onChartJsLoaded = function() {
+      if (appState.currentView === 'analytics') {
+        renderCharts();
+      }
+    };
+
     function setChartDimension(dim) {
       appState.chartDimension = dim;
       ['day', 'week', 'month', 'year'].forEach(d => {
         const btn = document.getElementById(`chart-dim-${d}`);
-        if (d === dim) {
-          btn.className = 'flex-1 py-2 rounded-xl bg-blue-600 text-white shadow-xs transition-all';
-        } else {
-          btn.className = 'flex-1 py-2 rounded-xl text-slate-600 hover:text-slate-900 transition-all';
+        if (btn) {
+          if (d === dim) {
+            btn.className = 'flex-1 py-2 rounded-xl bg-blue-600 text-white shadow-xs transition-all';
+          } else {
+            btn.className = 'flex-1 py-2 rounded-xl text-slate-600 hover:text-slate-900 transition-all';
+          }
         }
       });
       renderCharts();
+      requestAnimationFrame(() => {
+        if (pieChartInstance) { pieChartInstance.resize(); pieChartInstance.update(); }
+        if (tasksChartInstance) { tasksChartInstance.resize(); tasksChartInstance.update(); }
+        if (trendChartInstance) { trendChartInstance.resize(); trendChartInstance.update(); }
+        if (yearlyChartInstance) { yearlyChartInstance.resize(); yearlyChartInstance.update(); }
+      });
     }
 
     function renderCharts() {
+      const panelCharts = document.getElementById('analytics-charts-panel');
+      if (panelCharts && panelCharts.classList.contains('hidden')) {
+        return;
+      }
+
       const dim = appState.chartDimension;
       const yearlyPanel = document.getElementById('yearly-special-panel');
       const standardContainer = document.getElementById('standard-charts-container');
-      const now = new Date();
-      const currentYear = now.getFullYear();
+      const currentYear = appState.habitYear; // 实时同步打卡方格当前选中的年份 (Requirement 4)
 
-      // Only include plans with includeInStats !== false (Requirement 1)
+      // Only include plans with includeInStats !== false
       const activatedPlans = appState.plans.filter(p => (p.includeInStats !== false) && appState.activatedBlockIds.includes(p.id));
 
       if (dim === 'year') {
-        yearlyPanel.classList.remove('hidden');
-        standardContainer.classList.add('hidden');
+        if (yearlyPanel) yearlyPanel.classList.remove('hidden');
+        if (standardContainer) standardContainer.classList.add('hidden');
         renderYearlyView(activatedPlans, currentYear);
       } else {
-        yearlyPanel.classList.add('hidden');
-        standardContainer.classList.remove('hidden');
-        renderStandardDimensions(dim, activatedPlans, now);
+        if (yearlyPanel) yearlyPanel.classList.add('hidden');
+        if (standardContainer) standardContainer.classList.remove('hidden');
+        renderStandardDimensions(dim, activatedPlans, currentYear);
       }
     }
 
     function renderYearlyView(activatedPlans, currentYear) {
-      document.getElementById('yearly-year-label').innerText = `${currentYear}`;
+      safeSetText('yearly-year-label', `${currentYear}`);
 
       const monthlyHours = new Array(12).fill(0);
       const activeDaysSet = new Set();
       let totalYearMinutes = 0;
 
       activatedPlans.forEach(plan => {
-        const pDate = new Date(plan.date);
+        const pDate = parseDateYMD(plan.date);
         if (pDate.getFullYear() === currentYear) {
           const mIndex = pDate.getMonth();
           const dur = timeToScaledMinutes(plan.end) - timeToScaledMinutes(plan.start);
@@ -2252,7 +2406,7 @@
       let prevTimestamp = 0;
 
       sortedDates.forEach(dStr => {
-        const ts = new Date(dStr).getTime();
+        const ts = parseDateYMD(dStr).getTime();
         if (prevTimestamp === 0) {
           currentStreak = 1;
         } else {
@@ -2264,39 +2418,42 @@
         prevTimestamp = ts;
       });
 
-      document.getElementById('yearly-active-days-val').innerHTML = `${activeDaysSet.size} <span class="text-xs font-bold text-blue-700">${t('unit_days')}</span>`;
-      document.getElementById('yearly-max-streak-val').innerHTML = `${maxStreak} <span class="text-xs font-bold text-amber-700">${t('unit_days')}</span>`;
+      safeSetHtml('yearly-active-days-val', `${activeDaysSet.size} <span class="text-xs font-bold text-blue-700">${t('unit_days')}</span>`);
+      safeSetHtml('yearly-max-streak-val', `${maxStreak} <span class="text-xs font-bold text-amber-700">${t('unit_days')}</span>`);
 
       const totalYearHours = (totalYearMinutes / 60).toFixed(1);
-      document.getElementById('stat-sessions-count').innerText = activatedPlans.length;
-      document.getElementById('stat-total-hours').innerHTML = `${totalYearHours} <span class="text-xs font-normal text-slate-500">h</span>`;
-      document.getElementById('stat-avg-hours').innerHTML = `${(totalYearHours / 12).toFixed(1)} <span class="text-xs font-normal text-slate-500">h/m</span>`;
+      safeSetText('stat-sessions-count', activatedPlans.length);
+      safeSetHtml('stat-total-hours', `${totalYearHours} <span class="text-xs font-normal text-slate-500">h</span>`);
+      safeSetHtml('stat-avg-hours', `${(totalYearHours / 12).toFixed(1)} <span class="text-xs font-normal text-slate-500">h/m</span>`);
 
       const monthLabels = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'];
       if (typeof Chart !== 'undefined') {
-        const ctx = document.getElementById('yearlyChart').getContext('2d');
-        if (yearlyChartInstance) yearlyChartInstance.destroy();
-        yearlyChartInstance = new Chart(ctx, {
-          type: 'bar',
-          data: {
-            labels: monthLabels,
-            datasets: [{
-              label: '专注时长 (小时)',
-              data: monthlyHours.map(v => parseFloat(v.toFixed(1))),
-              backgroundColor: '#3B82F6',
-              borderRadius: 6
-            }]
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: { legend: { display: false } },
-            scales: {
-              y: { beginAtZero: true, grid: { color: '#F1F5F9' } },
-              x: { grid: { display: false } }
+        const chartEl = document.getElementById('yearlyChart');
+        if (chartEl) {
+          const ctx = chartEl.getContext('2d');
+          if (yearlyChartInstance) yearlyChartInstance.destroy();
+          yearlyChartInstance = new Chart(ctx, {
+            type: 'bar',
+            data: {
+              labels: monthLabels,
+              datasets: [{
+                label: '专注时长 (小时)',
+                data: monthlyHours.map(v => parseFloat(v.toFixed(1))),
+                backgroundColor: '#3B82F6',
+                borderRadius: 6
+              }]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: { legend: { display: false } },
+              scales: {
+                y: { beginAtZero: true, grid: { color: '#F1F5F9' } },
+                x: { grid: { display: false } }
+              }
             }
-          }
-        });
+          });
+        }
       }
     }
 
@@ -2323,35 +2480,40 @@
       });
 
       const totalHours = (totalMinutes / 60).toFixed(1);
-      document.getElementById('stat-sessions-count').innerText = filtered.length;
-      document.getElementById('stat-total-hours').innerHTML = `${totalHours} <span class="text-xs font-normal text-slate-500">h</span>`;
+      safeSetText('stat-sessions-count', filtered.length);
+      safeSetHtml('stat-total-hours', `${totalHours} <span class="text-xs font-normal text-slate-500">h</span>`);
       const divisor = dim === 'day' ? 1 : (dim === 'week' ? 7 : 30);
-      document.getElementById('stat-avg-hours').innerHTML = `${(totalHours / divisor).toFixed(1)} <span class="text-xs font-normal text-slate-500">h</span>`;
+      safeSetHtml('stat-avg-hours', `${(totalHours / divisor).toFixed(1)} <span class="text-xs font-normal text-slate-500">h</span>`);
 
-      const legendList = document.getElementById('category-legend-list');
-      legendList.innerHTML = '';
+      // Category Breakdown Data (Lifted outside if (legendList) to avoid ReferenceError in Chart creation)
       const rawKeys = Object.keys(catMinutes);
       const translatedLabels = rawKeys.map(k => getCategoryName(k));
       const dataHours = rawKeys.map(k => (catMinutes[k] / 60).toFixed(1));
-      const colors = rawKeys.map(k => CATEGORIES[k].color);
+      const colors = rawKeys.map(k => (CATEGORIES[k] ? CATEGORIES[k].color : '#3B82F6'));
 
-      rawKeys.forEach((key, idx) => {
-        const hrs = dataHours[idx];
-        const pct = totalMinutes > 0 ? Math.round((catMinutes[key] / totalMinutes) * 100) : 0;
-        legendList.innerHTML += `
-          <div class="flex items-center justify-between p-2 bg-slate-50 rounded-xl">
-            <div class="flex items-center gap-2">
-              <span class="w-2.5 h-2.5 rounded-full" style="background:${colors[idx]}"></span>
-              <span class="font-bold text-slate-700 text-xs">${translatedLabels[idx]}</span>
+      const legendList = document.getElementById('category-legend-list');
+      if (legendList) {
+        legendList.innerHTML = '';
+        rawKeys.forEach((key, idx) => {
+          const hrs = dataHours[idx];
+          const pct = totalMinutes > 0 ? Math.round((catMinutes[key] / totalMinutes) * 100) : 0;
+          legendList.innerHTML += `
+            <div class="flex items-center justify-between p-2 bg-slate-50 rounded-xl">
+              <div class="flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full" style="background:${colors[idx]}"></span>
+                <span class="font-bold text-slate-700 text-xs">${translatedLabels[idx]}</span>
+              </div>
+              <div class="font-bold text-slate-900 text-xs">${hrs}h <span class="text-[10px] text-slate-400 font-normal">(${pct}%)</span></div>
             </div>
-            <div class="font-bold text-slate-900 text-xs">${hrs}h <span class="text-[10px] text-slate-400 font-normal">(${pct}%)</span></div>
-          </div>
-        `;
-      });
+          `;
+        });
+      }
 
       const emptyHint = document.getElementById('chart-empty-hint');
-      if (totalMinutes === 0) emptyHint.classList.remove('hidden');
-      else emptyHint.classList.add('hidden');
+      if (emptyHint) {
+        if (totalMinutes === 0) emptyHint.classList.remove('hidden');
+        else emptyHint.classList.add('hidden');
+      }
 
       // Detailed tasks breakdown table (Requirement 7)
       const taskMap = {};
@@ -2407,26 +2569,29 @@
       }
 
       if (typeof Chart !== 'undefined') {
-        const pCtx = document.getElementById('categoryPieChart').getContext('2d');
-        if (pieChartInstance) pieChartInstance.destroy();
-        pieChartInstance = new Chart(pCtx, {
-          type: 'doughnut',
-          data: {
-            labels: translatedLabels,
-            datasets: [{
-              data: totalMinutes > 0 ? dataHours : [1, 1, 1, 1, 1],
-              backgroundColor: totalMinutes > 0 ? colors : ['#E2E8F0', '#E2E8F0', '#E2E8F0', '#E2E8F0', '#E2E8F0'],
-              borderWidth: 2,
-              borderColor: '#ffffff'
-            }]
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: { legend: { display: false } },
-            cutout: '70%'
-          }
-        });
+        const pCanvas = document.getElementById('categoryPieChart');
+        if (pCanvas) {
+          const pCtx = pCanvas.getContext('2d');
+          if (pieChartInstance) pieChartInstance.destroy();
+          pieChartInstance = new Chart(pCtx, {
+            type: 'doughnut',
+            data: {
+              labels: translatedLabels,
+              datasets: [{
+                data: totalMinutes > 0 ? dataHours : [1, 1, 1, 1, 1],
+                backgroundColor: totalMinutes > 0 ? colors : ['#E2E8F0', '#E2E8F0', '#E2E8F0', '#E2E8F0', '#E2E8F0'],
+                borderWidth: 2,
+                borderColor: '#ffffff'
+              }]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: { legend: { display: false } },
+              cutout: '70%'
+            }
+          });
+        }
 
         // Tasks Doughnut Chart (Requirement 2)
         const tCanvas = document.getElementById('tasksDoughnutChart');
@@ -2457,61 +2622,64 @@
           });
         }
 
-        const tCtx = document.getElementById('trendChart').getContext('2d');
-        if (trendChartInstance) trendChartInstance.destroy();
+        const trCanvas = document.getElementById('trendChart');
+        if (trCanvas) {
+          const tCtx = trCanvas.getContext('2d');
+          if (trendChartInstance) trendChartInstance.destroy();
 
-        let trendLabels = [];
-        let trendData = [];
-        if (dim === 'month') {
-          trendLabels = appState.lang === 'zh'
-            ? ['第1周 (1-7)', '第2周 (8-14)', '第3周 (15-21)', '第4周 (22-28)', '第5周 (29+)']
-            : (appState.lang === 'ko'
-              ? ['1주 (1-7)', '2주 (8-14)', '3주 (15-21)', '4주 (22-28)', '5주 (29+)']
-              : ['W1 (1-7)', 'W2 (8-14)', 'W3 (15-21)', 'W4 (22-28)', 'W5 (29+)']);
-          trendData = [0, 0, 0, 0, 0];
-          filtered.forEach(p => {
-            const dayNum = parseInt(p.date.split('-')[2], 10);
-            const dur = timeToScaledMinutes(p.end) - timeToScaledMinutes(p.start);
-            const idx = dayNum <= 7 ? 0 : (dayNum <= 14 ? 1 : (dayNum <= 21 ? 2 : (dayNum <= 28 ? 3 : 4)));
-            trendData[idx] += (dur / 60);
-          });
-          trendData = trendData.map(v => parseFloat(v.toFixed(1)));
-        } else {
-          const weekDays = getWeekDays(appState.currentWeekStart);
-          trendLabels = I18N[appState.lang].days_short;
-          trendData = weekDays.map(d => {
-            const dPlans = filtered.filter(p => p.date === d.dateStr);
-            let m = 0;
-            dPlans.forEach(p => m += (timeToScaledMinutes(p.end) - timeToScaledMinutes(p.start)));
-            return parseFloat((m / 60).toFixed(1));
+          let trendLabels = [];
+          let trendData = [];
+          if (dim === 'month') {
+            trendLabels = appState.lang === 'zh'
+              ? ['第1周 (1-7)', '第2周 (8-14)', '第3周 (15-21)', '第4周 (22-28)', '第5周 (29+)']
+              : (appState.lang === 'ko'
+                ? ['1주 (1-7)', '2주 (8-14)', '3주 (15-21)', '4주 (22-28)', '5주 (29+)']
+                : ['W1 (1-7)', 'W2 (8-14)', 'W3 (15-21)', 'W4 (22-28)', 'W5 (29+)']);
+            trendData = [0, 0, 0, 0, 0];
+            filtered.forEach(p => {
+              const dayNum = parseInt(p.date.split('-')[2], 10);
+              const dur = timeToScaledMinutes(p.end) - timeToScaledMinutes(p.start);
+              const idx = dayNum <= 7 ? 0 : (dayNum <= 14 ? 1 : (dayNum <= 21 ? 2 : (dayNum <= 28 ? 3 : 4)));
+              trendData[idx] += (dur / 60);
+            });
+            trendData = trendData.map(v => parseFloat(v.toFixed(1)));
+          } else {
+            const weekDays = getWeekDays(appState.currentWeekStart);
+            trendLabels = I18N[appState.lang].days_short;
+            trendData = weekDays.map(d => {
+              const dPlans = filtered.filter(p => p.date === d.dateStr);
+              let m = 0;
+              dPlans.forEach(p => m += (timeToScaledMinutes(p.end) - timeToScaledMinutes(p.start)));
+              return parseFloat((m / 60).toFixed(1));
+            });
+          }
+
+          trendChartInstance = new Chart(tCtx, {
+            type: 'line',
+            data: {
+              labels: trendLabels,
+              datasets: [{
+                label: '专注时长 (小时)',
+                data: trendData,
+                borderColor: '#3B82F6',
+                backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                fill: true,
+                tension: 0.35,
+                pointRadius: 4,
+                pointBackgroundColor: '#2563EB'
+              }]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: { legend: { display: false } },
+              scales: {
+                y: { beginAtZero: true, grid: { color: '#F1F5F9' } },
+                x: { grid: { display: false } }
+              }
+            }
           });
         }
-
-        trendChartInstance = new Chart(tCtx, {
-          type: 'line',
-          data: {
-            labels: trendLabels,
-            datasets: [{
-              label: '专注时长 (小时)',
-              data: trendData,
-              borderColor: '#3B82F6',
-              backgroundColor: 'rgba(59, 130, 246, 0.1)',
-              fill: true,
-              tension: 0.35,
-              pointRadius: 4,
-              pointBackgroundColor: '#2563EB'
-            }]
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: { legend: { display: false } },
-            scales: {
-              y: { beginAtZero: true, grid: { color: '#F1F5F9' } },
-              x: { grid: { display: false } }
-            }
-          }
-        });
       }
     }
 
@@ -2683,7 +2851,7 @@
         const checkedDays = Array.from(checkedDayNodes).map(el => parseInt(el.value, 10));
 
         if (isRepeat && repeatUntilMonth && checkedDays.length > 0) {
-          const groupId = 'grp_' + Date.now();
+          const groupId = generateGroupId();
           appState.plans = appState.plans.filter(p => p.id !== editId);
           appState.activatedBlockIds = appState.activatedBlockIds.filter(id => id !== editId);
 
@@ -2696,7 +2864,7 @@
             if (checkedDays.includes(dayIdx)) {
               const dateStr = formatDateYMD(currDate);
               appState.plans.push({
-                id: 'plan_' + Date.now() + Math.random().toString(36).substring(2, 7),
+                id: generatePlanId(),
                 groupId: groupId,
                 date: dateStr,
                 title: title,
@@ -2721,7 +2889,7 @@
         // Create New Block (With Weekly Recurrence Engine by Weekdays)
         const isRepeat = document.getElementById('modal-repeat-weekly').checked;
         const repeatUntilMonth = document.getElementById('modal-repeat-until').value; // YYYY-MM
-        const groupId = 'grp_' + Date.now();
+        const groupId = generateGroupId();
 
         const checkedDayNodes = document.querySelectorAll('.repeat-day-chk:checked');
         const checkedDays = Array.from(checkedDayNodes).map(el => parseInt(el.value, 10));
@@ -2736,7 +2904,7 @@
             if (checkedDays.includes(dayIdx)) {
               const dateStr = formatDateYMD(currDate);
               appState.plans.push({
-                id: 'plan_' + Date.now() + Math.random().toString(36).substring(2, 7),
+                id: generatePlanId(),
                 groupId: groupId,
                 date: dateStr,
                 title: title,
@@ -2751,7 +2919,7 @@
         } else {
           // Single Date Block
           appState.plans.push({
-            id: 'plan_' + Date.now() + Math.random().toString(36).substring(2, 7),
+            id: generatePlanId(),
             date: startDateStr,
             title: title,
             category: category,
@@ -2835,7 +3003,7 @@
             const dayIdx = (currDate.getDay() + 6) % 7;
             if (checkedDays.includes(dayIdx)) {
               const dateStr = formatDateYMD(currDate);
-              const newPlanId = 'plan_' + Date.now() + Math.random().toString(36).substring(2, 7);
+              const newPlanId = generatePlanId();
               appState.plans.push({
                 id: newPlanId,
                 groupId: targetGroupId,
@@ -3055,12 +3223,14 @@
     }
 
     /* --------------------------------------------------------------------------
-       13. Service Worker Clean-up (Prevent Disk Cache Index Conflicts on file://)
+       13. Service Worker Clean-up & Registration (Safe & Fault-tolerant)
        -------------------------------------------------------------------------- */
     if ('serviceWorker' in navigator) {
       if (window.location.protocol.startsWith('http')) {
         window.addEventListener('load', () => {
-          navigator.serviceWorker.register('sw.js').catch(() => {});
+          navigator.serviceWorker.register('sw.js').catch((err) => {
+            console.warn('SW registration warning:', err);
+          });
         });
       } else {
         // Unregister any stale service workers on file:// protocol
@@ -3071,23 +3241,40 @@
     }
 
     /* --------------------------------------------------------------------------
-       14. App Entry Point
+       14. App Entry Point (Anti-Black-Screen Fault Tolerance, Requirement 8)
        -------------------------------------------------------------------------- */
     window.addEventListener('DOMContentLoaded', () => {
-      loadState();
-      // 需求 1: 默认启动页面锁定为首页（第一页【每周时间表】）
-      appState.currentView = 'timetable';
+      try {
+        loadState();
+        appState.currentView = 'timetable';
 
-      // 实时获取手机当天真实日期，彻底避免停留于过期日期
-      const now = new Date();
-      appState.activeDateStr = formatDateYMD(now);
-      appState.currentWeekStart = formatDateYMD(getMonday(now));
-      appState.habitYear = now.getFullYear();
-      appState.habitMonth = now.getMonth() + 1;
+        // 实时获取手机当天真实日期
+        const now = new Date();
+        appState.activeDateStr = formatDateYMD(now);
+        appState.currentWeekStart = formatDateYMD(getMonday(now));
+        appState.habitYear = now.getFullYear();
+        appState.habitMonth = now.getMonth() + 1;
 
-      applyTheme();
-      changeLanguage(appState.lang);
-      switchView('timetable');
+        try {
+          applyTheme();
+        } catch (e) {
+          console.warn('Theme apply non-fatal error:', e);
+        }
+
+        try {
+          changeLanguage(appState.lang);
+        } catch (e) {
+          console.warn('Change language non-fatal error:', e);
+        }
+
+        switchView('timetable');
+      } catch (fatalErr) {
+        console.error('Fatal initialization error caught to prevent black screen:', fatalErr);
+        try {
+          const timetableEl = document.getElementById('view-timetable');
+          if (timetableEl) timetableEl.classList.remove('hidden');
+        } catch (e) {}
+      }
     });
   </script>
 </body>
