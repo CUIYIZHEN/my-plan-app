@@ -1,4 +1,4 @@
-const CACHE_NAME = 'planner-pwa-v2';
+const CACHE_NAME = 'planner-v2';
 const CORE_ASSETS = [
   './',
   './index.html',
