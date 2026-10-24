@@ -2087,38 +2087,38 @@
     const FRUIT_CHARACTER_ASSETS = {
       1: {
         name: '苹果',
-        study: './characters/apple_work_bcb42ccc.png',
-        rest: './characters/apple_sleep_34d311c8.png'
+        study: './characters/apple_work.png',
+        rest: './characters/apple_sleep.png'
       },
       2: {
         name: '橙子',
-        study: './characters/orange_work_bd9b6ca1.png',
-        rest: './characters/orange_sleep_915b98a0.png'
+        study: './characters/orange_work.png',
+        rest: './characters/orange_sleep.png'
       },
       3: {
         name: '水蜜桃',
-        study: './characters/peach_work_207c9a30.png',
-        rest: './characters/peach_sleep_8b03de52.png'
+        study: './characters/peach_work.png',
+        rest: './characters/peach_sleep.png'
       },
       4: {
         name: '西瓜',
-        study: './characters/watermelon_work_cd2db813.png',
-        rest: './characters/watermelon_sleep_a23fd8a8.png'
+        study: './characters/watermelon_work.png',
+        rest: './characters/watermelon_sleep.png'
       },
       5: {
         name: '蓝莓',
-        study: './characters/blueberry_work_bd9cc960.png',
-        rest: './characters/blueberry_sleep_fd64bb96.png'
+        study: './characters/blueberry_work.png',
+        rest: './characters/blueberry_sleep.png'
       },
       6: {
         name: '葡萄',
-        study: './characters/grape_work_ba9673e0.png',
-        rest: './characters/grape_sleep_c3c574cc.png'
+        study: './characters/grape_work.png',
+        rest: './characters/grape_sleep.png'
       },
       0: {
         name: '水蜜桃',
-        study: './characters/peach_work_207c9a30.png',
-        rest: './characters/peach_sleep_8b03de52.png'
+        study: './characters/peach_work.png',
+        rest: './characters/peach_sleep.png'
       }
     };
 
@@ -2132,7 +2132,7 @@
       const day = (typeof dayOfWeek === 'number' && !isNaN(dayOfWeek)) ? dayOfWeek : new Date().getDay();
       const stateKey = isRunning ? 'study' : 'rest';
       const item = FRUIT_CHARACTER_ASSETS[day] || FRUIT_CHARACTER_ASSETS[1];
-      return item ? item[stateKey] : './characters/apple_sleep_34d311c8.png';
+      return item ? item[stateKey] : './characters/apple_sleep.png';
     }
 
     /**
