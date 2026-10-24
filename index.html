@@ -15,6 +15,14 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js" onload="if(window.onChartJsLoaded)window.onChartJsLoaded()"></script>
 
   <style>
+    html {
+      font-size: 18px;
+    }
+    @media (max-width: 380px) {
+      html {
+        font-size: 17px;
+      }
+    }
     * {
       -webkit-tap-highlight-color: transparent;
       box-sizing: border-box;
@@ -25,6 +33,7 @@
     }
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Hiragino Sans GB", "Malgun Gothic", "Microsoft YaHei", sans-serif;
+      font-size: 1rem;
       background-color: #F8FAFC;
       color: #1E293B;
       margin: 0;
@@ -191,29 +200,51 @@
       body.timer-view-active #view-timer .timer-hide-in-landscape {
         display: none !important;
       }
+      body.timer-view-active #view-timer .timer-show-in-landscape {
+        display: flex !important;
+        position: absolute !important;
+        bottom: 0.75rem !important;
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+        z-index: 100000 !important;
+        background: transparent !important;
+      }
+      #timer-character-img,
+      #timer-character-img-landscape {
+        background: transparent !important;
+        background-color: transparent !important;
+      }
       body.timer-view-active #view-timer #timer-top-bar {
         position: absolute !important;
-        top: 1.25rem !important;
-        left: 1.25rem !important;
-        right: 1.25rem !important;
-        width: calc(100vw - 2.5rem) !important;
+        top: 1rem !important;
+        left: 1.5rem !important;
+        right: 1.5rem !important;
+        width: calc(100vw - 3rem) !important;
         padding: 0 !important;
         margin: 0 !important;
         z-index: 100000 !important;
         display: flex !important;
-        justify-content: space-between !important;
+        justify-content: flex-end !important;
         align-items: center !important;
       }
-      body.timer-view-active #view-timer #timer-btn-back,
+      body.timer-view-active #view-timer #timer-btn-back {
+        display: none !important;
+      }
       body.timer-view-active #view-timer #timer-btn-fullscreen {
         display: flex !important;
-        background: rgba(39, 39, 42, 0.8) !important;
+        background: transparent !important;
+        background-color: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+        color: rgba(255, 255, 255, 0.85) !important;
       }
       body.timer-view-active #view-timer .timer-center-core {
         margin: 0 !important;
         padding: 0 !important;
         width: 100vw !important;
-        height: 100vh !important;
+        height: auto !important;
         display: flex !important;
         align-items: center !important;
         justify-content: center !important;
@@ -223,7 +254,7 @@
         align-items: center !important;
         justify-content: center !important;
         width: 100vw !important;
-        height: 100vh !important;
+        height: auto !important;
         margin: 0 !important;
         padding: 0 !important;
       }
@@ -233,8 +264,8 @@
       }
       body.timer-view-active #view-timer .timer-digit-card {
         width: 13.8vw !important;
-        height: 76vh !important;
-        font-size: 16.5vw !important;
+        height: 60vh !important;
+        font-size: 12.5vw !important;
         line-height: 1 !important;
         border-radius: 1.8vw !important;
         box-shadow: 0 16px 40px rgba(0, 0, 0, 0.95), inset 0 2px 2px rgba(255, 255, 255, 0.12) !important;
@@ -244,6 +275,10 @@
         display: flex !important;
         align-items: center !important;
         justify-content: center !important;
+        perspective: 1200px !important;
+        -webkit-perspective: 1200px !important;
+        transform-style: preserve-3d !important;
+        -webkit-transform-style: preserve-3d !important;
       }
       body.timer-view-active #view-timer .timer-digit-card::after {
         content: '' !important;
@@ -254,10 +289,171 @@
         height: 3px !important;
         background: rgba(0, 0, 0, 0.95) !important;
         box-shadow: 0 1px 0 rgba(255, 255, 255, 0.15) !important;
-        z-index: 2 !important;
+        z-index: 30 !important;
+        pointer-events: none !important;
       }
       body.timer-view-active #view-timer .timer-colon {
         display: none !important;
+      }
+
+      /* 3D Flip Clock Mechanical Animation for Landscape Digit Cards */
+      .flip-card-wrap {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        border-radius: inherit;
+        overflow: hidden;
+        background: #1C1C1E;
+        pointer-events: none;
+      }
+      .flip-half {
+        position: absolute;
+        left: 0;
+        right: 0;
+        width: 100%;
+        height: 50%;
+        overflow: hidden;
+        background: #1C1C1E;
+        color: #FFFFFF;
+        box-sizing: border-box;
+        backface-visibility: hidden;
+        -webkit-backface-visibility: hidden;
+      }
+      .flip-upper {
+        top: 0;
+        border-top-left-radius: inherit;
+        border-top-right-radius: inherit;
+      }
+      .flip-lower {
+        bottom: 0;
+        border-bottom-left-radius: inherit;
+        border-bottom-right-radius: inherit;
+      }
+      .flip-digit-text {
+        position: absolute;
+        left: 0;
+        right: 0;
+        width: 100%;
+        height: 200%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: inherit;
+        font-size: inherit;
+        font-weight: inherit;
+        line-height: 1;
+        color: inherit;
+        user-select: none;
+        margin: 0;
+        padding: 0;
+      }
+      .flip-upper .flip-digit-text {
+        top: 0;
+      }
+      .flip-lower .flip-digit-text {
+        top: -100%;
+      }
+
+      /* Animated Top Leaf (folds down from 0 to -90 deg) */
+      .flip-leaf-top {
+        z-index: 10;
+        transform-origin: 50% 100%;
+        -webkit-transform-origin: 50% 100%;
+        animation: flipFoldDown 0.28s cubic-bezier(0.4, 0, 0.7, 1) forwards;
+        -webkit-animation: flipFoldDown 0.28s cubic-bezier(0.4, 0, 0.7, 1) forwards;
+      }
+
+      /* Animated Bottom Leaf (unfolds down from 90 to 0 deg) */
+      .flip-leaf-bot {
+        z-index: 12;
+        transform-origin: 50% 0%;
+        -webkit-transform-origin: 50% 0%;
+        transform: rotateX(90deg);
+        -webkit-transform: rotateX(90deg);
+        animation: flipUnfoldDown 0.28s cubic-bezier(0.2, 0.8, 0.4, 1) 0.26s forwards;
+        -webkit-animation: flipUnfoldDown 0.28s cubic-bezier(0.2, 0.8, 0.4, 1) 0.26s forwards;
+      }
+
+      /* Realistic Lighting & 3D Depth Shadows */
+      .flip-leaf-top::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.65) 100%);
+        opacity: 0;
+        animation: flipShadowIn 0.28s cubic-bezier(0.4, 0, 0.7, 1) forwards;
+        -webkit-animation: flipShadowIn 0.28s cubic-bezier(0.4, 0, 0.7, 1) forwards;
+        pointer-events: none;
+      }
+
+      .flip-leaf-bot::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to bottom, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0) 100%);
+        opacity: 1;
+        animation: flipShadowOut 0.28s cubic-bezier(0.2, 0.8, 0.4, 1) 0.26s forwards;
+        -webkit-animation: flipShadowOut 0.28s cubic-bezier(0.2, 0.8, 0.4, 1) 0.26s forwards;
+        pointer-events: none;
+      }
+
+      .flip-back.flip-upper::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to top, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0) 100%);
+        opacity: 1;
+        animation: flipShadowOut 0.28s cubic-bezier(0.4, 0, 0.7, 1) forwards;
+        -webkit-animation: flipShadowOut 0.28s cubic-bezier(0.4, 0, 0.7, 1) forwards;
+        pointer-events: none;
+      }
+
+      .flip-back.flip-lower::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to bottom, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0) 100%);
+        opacity: 0;
+        animation: flipShadowIn 0.28s cubic-bezier(0.4, 0, 0.7, 1) forwards;
+        -webkit-animation: flipShadowIn 0.28s cubic-bezier(0.4, 0, 0.7, 1) forwards;
+        pointer-events: none;
+      }
+
+      @keyframes flipFoldDown {
+        0% { transform: rotateX(0deg); }
+        100% { transform: rotateX(-90deg); }
+      }
+      @-webkit-keyframes flipFoldDown {
+        0% { -webkit-transform: rotateX(0deg); }
+        100% { -webkit-transform: rotateX(-90deg); }
+      }
+
+      @keyframes flipUnfoldDown {
+        0% { transform: rotateX(90deg); }
+        100% { transform: rotateX(0deg); }
+      }
+      @-webkit-keyframes flipUnfoldDown {
+        0% { -webkit-transform: rotateX(90deg); }
+        100% { -webkit-transform: rotateX(0deg); }
+      }
+
+      @keyframes flipShadowIn {
+        0% { opacity: 0; }
+        100% { opacity: 1; }
+      }
+      @-webkit-keyframes flipShadowIn {
+        0% { opacity: 0; }
+        100% { opacity: 1; }
+      }
+
+      @keyframes flipShadowOut {
+        0% { opacity: 1; }
+        100% { opacity: 0; }
+      }
+      @-webkit-keyframes flipShadowOut {
+        0% { opacity: 1; }
+        100% { opacity: 0; }
       }
 
       /* Requirement 9: Strictly lock non-timer views (timetable, plan-actual, analytics) to vertical column layout on landscape */
@@ -324,8 +520,8 @@
           <button onclick="changeWeek(1)" class="w-7 h-7 flex items-center justify-center rounded-lg text-slate-600 hover:bg-slate-100 active:scale-95 text-xs font-bold">▶</button>
         </div>
 
-        <button onclick="openAddPlanModal()" class="inline-flex items-center gap-1.5 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 px-3.5 py-2 rounded-xl shadow-xs active:scale-95 transition-all">
-          <span class="text-sm leading-none">+</span> <span data-i18n="btn_add_plan">规划时间块</span>
+        <button onclick="openAddPlanModal()" class="inline-flex items-center justify-center w-8 h-8 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-black text-lg shadow-xs active:scale-95 transition-all" title="新建计划">
+          +
         </button>
       </div>
 
@@ -377,16 +573,6 @@
          左栏显示原本计划，右栏点击“点亮”代表实际执行，时间轴09:00~次日03:00
          ========================================================================== -->
     <section id="view-plan-actual" class="view-panel p-3 max-w-lg mx-auto safe-top hidden">
-      <!-- Date & Status -->
-      <div class="flex items-center justify-between mb-3 px-1">
-        <div>
-          <div class="flex items-center gap-2">
-            <h1 class="text-lg font-black text-slate-900 tracking-tight" id="pa-date-display"></h1>
-            <span class="px-2 py-0.5 rounded-full text-xs font-bold bg-blue-100 text-blue-700 border border-blue-200" id="pa-today-badge">今天</span>
-          </div>
-        </div>
-      </div>
-
       <!-- Quick Weekday Strip -->
       <div class="grid grid-cols-7 gap-1.5 bg-white border border-slate-200 rounded-2xl p-2 mb-3 shadow-xs text-center" id="pa-day-strip">
         <!-- populated dynamically -->
@@ -408,6 +594,11 @@
           </div>
           <span class="text-2xl">🎯</span>
         </div>
+      </div>
+
+      <!-- Completion Progress Bar (Real-time update on punch) -->
+      <div class="w-full bg-slate-200/80 h-1 rounded-full overflow-hidden mb-3">
+        <div id="pa-progress-bar" class="h-full bg-gradient-to-r from-blue-500 to-emerald-500 rounded-full transition-all duration-500 ease-out" style="width: 0%;"></div>
       </div>
 
       <!-- Dual Column Timetable (09:00 ~ 次日 03:00) -->
@@ -470,7 +661,6 @@
               <div class="text-sm font-black text-slate-900 whitespace-nowrap" id="habit-month-label"></div>
             </div>
             <button onclick="changeHabitMonth(1)" class="w-7 h-7 flex items-center justify-center rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold active:scale-95 transition-all">▶</button>
-            <button onclick="goToCurrentHabitMonth()" class="px-2.5 py-1 text-xs font-bold text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg active:scale-95 transition-all ml-0.5" data-i18n="current_month_btn">本月</button>
           </div>
           <div class="text-right pl-2 shrink-0">
             <span class="text-xs text-slate-400 font-medium whitespace-nowrap" data-i18n="auto_sync_hint">点亮任务自动打卡</span>
@@ -564,7 +754,7 @@
             <div id="tasks-legend-list" class="grid grid-cols-2 gap-2 mt-3 pt-3 border-t border-slate-100 text-xs font-medium"></div>
           </div>
 
-          <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm">
+          <div id="trend-chart-card" class="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm">
             <div class="flex items-center justify-between mb-2">
               <h3 class="text-xs font-bold text-slate-800 flex items-center gap-1.5">
                 <span>📈</span> <span data-i18n="focus_trend_title">专注趋势</span>
@@ -644,7 +834,15 @@
           <button id="btn-preset-custom" onclick="openCustomCountdownModal()" class="min-w-[44px] min-h-[40px] px-3.5 py-2 rounded-full bg-zinc-900 text-xs font-bold text-zinc-400 border border-zinc-800 hover:bg-zinc-800 active:scale-95 transition-all" data-i18n="btn_custom_timer">自定义</button>
         </div>
 
-        <p id="timer-status-hint" class="timer-hide-in-landscape text-xs text-zinc-500 mt-5 tracking-widest uppercase font-semibold" data-i18n="timer_hint_ready">准备就绪 · 保持专注</p>
+        <!-- Cute Fruit Character Pet (Portrait) -->
+        <div class="timer-hide-in-landscape flex items-center justify-center mt-4 bg-transparent">
+          <img id="timer-character-img" alt="萌宠" class="h-16 sm:h-20 object-contain bg-transparent transition-all duration-300 pointer-events-none select-none" />
+        </div>
+      </div>
+
+      <!-- Cute Fruit Character Pet (Landscape: centered below timer-center-core) -->
+      <div id="timer-landscape-pet-box" class="timer-show-in-landscape hidden items-center justify-center pointer-events-none select-none bg-transparent">
+        <img id="timer-character-img-landscape" alt="萌宠" class="h-16 sm:h-20 object-contain bg-transparent transition-all duration-300 pointer-events-none select-none" />
       </div>
 
       <!-- Bottom Area: Focus Controls (Start / Pause + Reset) -->
@@ -805,24 +1003,14 @@
         <button onclick="closeModal('modal-edit-scope')" class="text-slate-400 hover:text-slate-600 text-xl font-bold leading-none p-1">&times;</button>
       </div>
       <div class="space-y-3 text-xs">
-        <p class="text-slate-600 leading-relaxed font-medium" data-i18n="edit_scope_modal_desc">
-          该计划属于每周重复周期任务，请选择修改范围：
-        </p>
-
         <div class="bg-blue-50/60 border border-blue-100 rounded-xl p-3 space-y-2.5">
-          <label class="flex items-start gap-2.5 cursor-pointer">
-            <input type="radio" name="edit_scope" value="single" id="edit-opt-single" checked class="mt-0.5 text-blue-600">
-            <div>
-              <span class="font-bold text-slate-800 block text-xs" data-i18n="edit_scope_single">仅修改这一个时间块</span>
-              <span class="text-[11px] text-slate-400 font-medium" data-i18n="edit_scope_single_hint">仅保存当前选定日期的改动</span>
-            </div>
+          <label class="flex items-center gap-2.5 cursor-pointer py-1">
+            <input type="radio" name="edit_scope" value="single" id="edit-opt-single" checked class="text-blue-600">
+            <span class="font-bold text-slate-800 block text-xs" data-i18n="edit_scope_single">仅修改这一个计划</span>
           </label>
-          <label class="flex items-start gap-2.5 cursor-pointer pt-1 border-t border-blue-100/70">
-            <input type="radio" name="edit_scope" value="series" id="edit-opt-series" class="mt-0.5 text-blue-600">
-            <div>
-              <span class="font-bold text-slate-800 block text-xs" data-i18n="edit_scope_series">同步修改该周期内的所有重复时间块</span>
-              <span class="text-[11px] text-slate-400 font-medium" data-i18n="edit_scope_series_hint">更新周期内全部相关时间块</span>
-            </div>
+          <label class="flex items-center gap-2.5 cursor-pointer pt-2 border-t border-blue-100/70">
+            <input type="radio" name="edit_scope" value="series" id="edit-opt-series" class="text-blue-600">
+            <span class="font-bold text-slate-800 block text-xs" data-i18n="edit_scope_series">修改周期内所有计划</span>
           </label>
         </div>
 
@@ -989,10 +1177,11 @@
         timetable_badge: "周课表",
         timetable_title: "每周时间表",
         this_week: "本周",
-        btn_add_plan: "规划时间块",
+        btn_add_plan: "+",
         pa_subtitle: "点击右栏直接点亮完成状态",
         planned_total_hours: "计划总时长",
         actual_completed_hours: "实际已执行",
+        pa_progress_title: "完成进度",
         col_planned: "原本计划",
         col_time: "时",
         col_actual: "实际执行",
@@ -1049,16 +1238,16 @@
         delete_scope_single: "仅删除这一个时间块",
         delete_scope_series: "删除该周期的所有重复时间块",
         edit_scope_modal_title: "修改范围选择",
-        edit_scope_modal_desc: "该计划属于每周重复周期任务，请选择修改范围：",
-        edit_scope_single: "仅修改这一个时间块",
-        edit_scope_single_hint: "仅保存当前选定日期的改动",
-        edit_scope_series: "同步修改该周期内的所有重复时间块",
-        edit_scope_series_hint: "更新周期内全部相关时间块",
+        edit_scope_modal_desc: "",
+        edit_scope_single: "仅修改这一个计划",
+        edit_scope_single_hint: "",
+        edit_scope_series: "修改周期内所有计划",
+        edit_scope_series_hint: "",
         btn_confirm_save: "确认保存",
         btn_confirm_delete: "确认删除",
         btn_custom_timer: "自定义",
         prompt_custom_minutes: "请输入倒计时分钟数 (1-180):",
-        current_month_btn: "本月",
+        current_month_btn: "",
         btn_cancel: "取消",
         btn_save: "保存计划",
         btn_delete: "删除",
@@ -1097,10 +1286,11 @@
         timetable_badge: "주간 시간표",
         timetable_title: "주간 시간표",
         this_week: "이번 주",
-        btn_add_plan: "시간 블록 추가",
+        btn_add_plan: "+",
         pa_subtitle: "오른쪽 열을 탭하여 완료 상태 켜기",
         planned_total_hours: "계획 총 시간",
         actual_completed_hours: "실제 실행",
+        pa_progress_title: "완료 진행률",
         col_planned: "원래 계획",
         col_time: "시",
         col_actual: "실제 실행",
@@ -1157,16 +1347,16 @@
         delete_scope_single: "이 시간 블록만 삭제",
         delete_scope_series: "반복 주기의 모든 블록 삭제",
         edit_scope_modal_title: "수정 범위 선택",
-        edit_scope_modal_desc: "이 시간 블록은 반복 주기 항목입니다. 적용 범위를 선택하세요:",
-        edit_scope_single: "이 시간 블록만 수정",
-        edit_scope_single_hint: "선택한 날짜의 블록만 변경됩니다",
-        edit_scope_series: "이 주기의 모든 반복 시간 블록 동시 수정",
-        edit_scope_series_hint: "주기 내 모든 관련 시간 블록이 업데이트됩니다",
+        edit_scope_modal_desc: "",
+        edit_scope_single: "이 계획만 수정",
+        edit_scope_single_hint: "",
+        edit_scope_series: "주기 내 모든 계획 수정",
+        edit_scope_series_hint: "",
         btn_confirm_save: "저장 확인",
         btn_confirm_delete: "삭제 확인",
         btn_custom_timer: "직접 설정",
         prompt_custom_minutes: "타이머 시간(분)을 입력하세요 (1-180):",
-        current_month_btn: "이번 달",
+        current_month_btn: "",
         btn_cancel: "취소",
         btn_save: "계획 저장",
         btn_delete: "삭제",
@@ -1205,10 +1395,11 @@
         timetable_badge: "Timetable",
         timetable_title: "Weekly Timetable",
         this_week: "This Week",
-        btn_add_plan: "Plan Block",
+        btn_add_plan: "+",
         pa_subtitle: "Tap right column to light up & complete",
         planned_total_hours: "Planned Total",
         actual_completed_hours: "Actual Executed",
+        pa_progress_title: "Progress",
         col_planned: "Planned",
         col_time: "Hr",
         col_actual: "Actual",
@@ -1265,16 +1456,16 @@
         delete_scope_single: "Delete this block only",
         delete_scope_series: "Delete all recurring blocks",
         edit_scope_modal_title: "Edit Scope",
-        edit_scope_modal_desc: "This task belongs to a recurring series. Choose the update scope:",
-        edit_scope_single: "Edit this block only",
-        edit_scope_single_hint: "Only updates the currently selected date",
-        edit_scope_series: "Update all recurring blocks in this series",
-        edit_scope_series_hint: "Applies changes to all recurring blocks",
+        edit_scope_modal_desc: "",
+        edit_scope_single: "Edit this plan only",
+        edit_scope_single_hint: "",
+        edit_scope_series: "Edit all plans in series",
+        edit_scope_series_hint: "",
         btn_confirm_save: "Confirm Save",
         btn_confirm_delete: "Confirm Delete",
         btn_custom_timer: "Custom",
         prompt_custom_minutes: "Enter countdown minutes (1-180):",
-        current_month_btn: "This Month",
+        current_month_btn: "",
         btn_cancel: "Cancel",
         btn_save: "Save Plan",
         btn_delete: "Delete",
@@ -1598,6 +1789,7 @@
       else if (viewName === 'plan-actual') renderPlanActual();
       else if (viewName === 'timer') {
         updateTimerDisplay();
+        updateTimerCharacter();
       }
       else if (viewName === 'analytics') {
         switchAnalyticsSubTab(appState.analyticsSubTab || 'heatmap');
@@ -1706,8 +1898,7 @@
             blockEl.style.color = cat.text;
 
             blockEl.innerHTML = `
-              <div class="font-bold text-xs leading-tight truncate">${plan.title}</div>
-              <div class="text-[10px] font-mono font-semibold opacity-85 leading-none mt-1 truncate">${plan.start}-${plan.end}</div>
+              <div class="font-bold text-xs leading-snug break-words break-all" style="word-break: break-all; overflow-wrap: anywhere;">${plan.title}</div>
             `;
 
             // Click to Edit / Modify Modal
@@ -1876,9 +2067,107 @@
         actualCol.appendChild(rightBlock);
       });
 
-      // Update Header Stats
+      // Update Header Stats & Real-time Animated Progress Bar
       safeSetHtml('pa-stat-planned', `${(plannedMinutes / 60).toFixed(1)} <span class="text-xs font-normal text-blue-700">${t('unit_hour')}</span>`);
       safeSetHtml('pa-stat-actual', `${(actualMinutes / 60).toFixed(1)} <span class="text-xs font-normal text-emerald-700">${t('unit_hour')}</span>`);
+
+      const progressRatio = plannedMinutes > 0 ? Math.min(100, Math.round((actualMinutes / plannedMinutes) * 100)) : (actualMinutes > 0 ? 100 : 0);
+      const progressBar = document.getElementById('pa-progress-bar');
+      if (progressBar) {
+        progressBar.style.width = `${progressRatio}%`;
+      }
+    }
+
+    /* --------------------------------------------------------------------------
+       8.5. 萌宠角色系统 (7 款水果每日轮换 + 专注/休息双姿态联动, 严格使用提供的图片文件)
+       -------------------------------------------------------------------------- */
+    // 7 款水果萌宠角色本地图片资源映射 (严格使用用户提供的图片附件，禁止使用代码或 Emoji 绘制)
+    // 星期映射: 0: 周日, 1: 周一, 2: 周二, 3: 周三, 4: 周四, 5: 周五, 6: 周六
+    // 姿态联动: study (用功专注), rest (休息/睡眠)
+    const FRUIT_CHARACTER_ASSETS = {
+      1: {
+        name: '苹果',
+        study: './characters/apple_work_bcb42ccc.png',
+        rest: './characters/apple_sleep_34d311c8.png'
+      },
+      2: {
+        name: '橙子',
+        study: './characters/orange_work_bd9b6ca1.png',
+        rest: './characters/orange_sleep_915b98a0.png'
+      },
+      3: {
+        name: '水蜜桃',
+        study: './characters/peach_work_207c9a30.png',
+        rest: './characters/peach_sleep_8b03de52.png'
+      },
+      4: {
+        name: '西瓜',
+        study: './characters/watermelon_work_cd2db813.png',
+        rest: './characters/watermelon_sleep_a23fd8a8.png'
+      },
+      5: {
+        name: '蓝莓',
+        study: './characters/blueberry_work_bd9cc960.png',
+        rest: './characters/blueberry_sleep_fd64bb96.png'
+      },
+      6: {
+        name: '葡萄',
+        study: './characters/grape_work_ba9673e0.png',
+        rest: './characters/grape_sleep_c3c574cc.png'
+      },
+      0: {
+        name: '水蜜桃',
+        study: './characters/peach_work_207c9a30.png',
+        rest: './characters/peach_sleep_8b03de52.png'
+      }
+    };
+
+    /**
+     * 获取对应星期与专注状态的萌宠图片路径
+     * @param {number} dayOfWeek - 星期几 (0: 周日, 1: 周一, ..., 6: 周六)
+     * @param {boolean} isRunning - 是否处于专注计时中 (true: 用功, false: 休息/暂停)
+     * @returns {string} 本地图片相对路径
+     */
+    function getCharacterImgUrl(dayOfWeek, isRunning) {
+      const day = (typeof dayOfWeek === 'number' && !isNaN(dayOfWeek)) ? dayOfWeek : new Date().getDay();
+      const stateKey = isRunning ? 'study' : 'rest';
+      const item = FRUIT_CHARACTER_ASSETS[day] || FRUIT_CHARACTER_ASSETS[1];
+      return item ? item[stateKey] : './characters/apple_sleep_34d311c8.png';
+    }
+
+    /**
+     * 更新竖屏与横屏计时界面萌宠角色的图片与状态
+     */
+    function updateTimerCharacter() {
+      const day = new Date().getDay();
+      const isRunning = !!(appState.timer && appState.timer.isRunning);
+      const imgUrl = getCharacterImgUrl(day, isRunning);
+      if (!imgUrl) return;
+
+      const item = FRUIT_CHARACTER_ASSETS[day] || FRUIT_CHARACTER_ASSETS[1];
+      const fruitName = item ? item.name : '水果萌宠';
+      const actionName = isRunning ? '专注用功中' : '休息放松中';
+      const titleText = `${fruitName} · ${actionName}`;
+
+      const portraitImg = document.getElementById('timer-character-img');
+      if (portraitImg) {
+        const cleanName = imgUrl.split('/').pop();
+        if (!portraitImg.src || !portraitImg.src.includes(cleanName)) {
+          portraitImg.src = imgUrl;
+        }
+        portraitImg.alt = titleText;
+        portraitImg.title = titleText;
+      }
+
+      const landscapeImg = document.getElementById('timer-character-img-landscape');
+      if (landscapeImg) {
+        const cleanName = imgUrl.split('/').pop();
+        if (!landscapeImg.src || !landscapeImg.src.includes(cleanName)) {
+          landscapeImg.src = imgUrl;
+        }
+        landscapeImg.alt = titleText;
+        landscapeImg.title = titleText;
+      }
     }
 
     /* --------------------------------------------------------------------------
@@ -1902,6 +2191,7 @@
         setCountdownMinutes(Math.round(appState.timer.countdownTargetSec / 60) || 25, false);
       }
       updateTimerDisplay(0);
+      updateTimerCharacter();
     }
 
     function setCountdownMinutes(mins, isCustom = false) {
@@ -2062,6 +2352,87 @@
       return Math.floor((appState.timer.accumulatedMs + currentRunMs) / 1000);
     }
 
+    /**
+     * 3D 机械翻页时钟 (Flip Clock) 过渡渲染引擎
+     * 横屏模式下数字变动时触发 3D 上下翻转折叠动画，完美保留原有字体样式、颜色与背景
+     */
+    function renderTimerDigit(cardId, newChar) {
+      const card = document.getElementById(cardId);
+      if (!card) return;
+
+      const isLandscape = window.matchMedia("(orientation: landscape)").matches;
+      const currentStored = card.getAttribute('data-value');
+
+      if (!isLandscape) {
+        // 竖屏模式：保留原本基础直接更新渲染
+        if (card.textContent !== newChar) {
+          card.textContent = newChar;
+        }
+        card.setAttribute('data-value', newChar);
+        return;
+      }
+
+      // 横屏模式：3D 机械翻页动画
+      if (currentStored === newChar && card.querySelector('.flip-card-wrap')) {
+        return;
+      }
+
+      const oldChar = currentStored || card.textContent.trim() || newChar;
+      card.setAttribute('data-value', newChar);
+
+      // 初次加载或无数字变动：静态呈现上下半页，不播放翻页动作
+      if (!currentStored || oldChar === newChar) {
+        card.innerHTML = `
+          <div class="flip-card-wrap">
+            <div class="flip-half flip-upper flip-back">
+              <div class="flip-digit-text">${newChar}</div>
+            </div>
+            <div class="flip-half flip-lower flip-back">
+              <div class="flip-digit-text">${newChar}</div>
+            </div>
+          </div>
+        `;
+        return;
+      }
+
+      // 数字发生变化时：触发真实的 3D 机械翻页折叠动效
+      card.innerHTML = `
+        <div class="flip-card-wrap">
+          <div class="flip-half flip-upper flip-back">
+            <div class="flip-digit-text">${newChar}</div>
+          </div>
+          <div class="flip-half flip-lower flip-back">
+            <div class="flip-digit-text">${oldChar}</div>
+          </div>
+          <div class="flip-half flip-upper flip-leaf-top">
+            <div class="flip-digit-text">${oldChar}</div>
+          </div>
+          <div class="flip-half flip-lower flip-leaf-bot">
+            <div class="flip-digit-text">${newChar}</div>
+          </div>
+        </div>
+      `;
+    }
+
+    let lastFlipOrientationLandscape = window.matchMedia("(orientation: landscape)").matches;
+    function handleOrientationFlipCheck() {
+      const currentIsLandscape = window.matchMedia("(orientation: landscape)").matches;
+      if (currentIsLandscape !== lastFlipOrientationLandscape) {
+        lastFlipOrientationLandscape = currentIsLandscape;
+        if (appState.currentView === 'timer') {
+          ['time-h1', 'time-h2', 'time-m1', 'time-m2', 'time-s1', 'time-s2'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.removeAttribute('data-value');
+          });
+          updateTimerDisplay();
+        }
+      }
+    }
+    window.addEventListener('resize', handleOrientationFlipCheck);
+    window.addEventListener('orientationchange', () => {
+      setTimeout(handleOrientationFlipCheck, 80);
+    });
+
     function updateTimerDisplay(displaySeconds) {
       let currentSeconds = displaySeconds !== undefined ? displaySeconds : getElapsedSeconds();
 
@@ -2077,12 +2448,12 @@
       const mStr = String(m).padStart(2, '0');
       const sStr = String(s).padStart(2, '0');
 
-      safeSetText('time-h1', hStr[0]);
-      safeSetText('time-h2', hStr[1]);
-      safeSetText('time-m1', mStr[0]);
-      safeSetText('time-m2', mStr[1]);
-      safeSetText('time-s1', sStr[0]);
-      safeSetText('time-s2', sStr[1]);
+      renderTimerDigit('time-h1', hStr[0]);
+      renderTimerDigit('time-h2', hStr[1]);
+      renderTimerDigit('time-m1', mStr[0]);
+      renderTimerDigit('time-m2', mStr[1]);
+      renderTimerDigit('time-s1', sStr[0]);
+      renderTimerDigit('time-s2', sStr[1]);
     }
 
     function toggleTimer() {
@@ -2096,6 +2467,7 @@
         safeSetText('timer-play-icon', '▶');
         safeSetText('timer-play-text', t('btn_continue_focus'));
         safeSetText('timer-status-hint', t('btn_pause_focus'));
+        updateTimerCharacter();
       } else {
         // Start timer: store absolute start timestamp
         appState.timer.isRunning = true;
@@ -2104,6 +2476,7 @@
         safeSetText('timer-play-icon', '⏸');
         safeSetText('timer-play-text', t('btn_pause_focus'));
         safeSetText('timer-status-hint', `${appState.timer.taskName}`);
+        updateTimerCharacter();
 
         appState.timer.intervalId = setInterval(() => {
           const totalSec = getElapsedSeconds();
@@ -2115,6 +2488,7 @@
             safeSetText('timer-play-icon', '▶');
             safeSetText('timer-play-text', t('btn_start_focus'));
             safeSetText('timer-status-hint', '🎉 倒计时已完成！');
+            updateTimerCharacter();
             if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
           }
         }, 200);
@@ -2133,6 +2507,7 @@
       safeSetText('timer-play-text', t('btn_start_focus'));
       safeSetText('timer-status-hint', t('timer_hint_ready'));
       updateTimerDisplay(0);
+      updateTimerCharacter();
     }
 
     function promptCustomCountdown() {
@@ -2268,7 +2643,6 @@
         const subjectPlans = statsPlans.filter(p => p.title.trim() === subjectName);
         const firstPlan = subjectPlans[0];
         const cat = CATEGORIES[firstPlan.category] || CATEGORIES['学习'];
-        const translatedCat = getCategoryName(firstPlan.category);
 
         // Days in current month where this subject was activated/completed
         const monthPrefix = `${currentYear}-${String(currentMonth).padStart(2, '0')}`;
@@ -2311,7 +2685,6 @@
             <div class="flex items-center gap-2">
               <span class="w-3 h-3 rounded-full shadow-xs" style="background:${cat.color}"></span>
               <span class="text-sm font-black text-slate-900">${subjectName}</span>
-              <span class="text-xs px-2 py-0.5 rounded-full font-bold" style="background:${cat.bg}; color:${cat.text}">${translatedCat}</span>
             </div>
             <span class="text-xs font-bold text-slate-500">${completedDays.size}/${daysInMonth} ${t('unit_days')} (${pct}%)</span>
           </div>
@@ -2622,63 +2995,60 @@
           });
         }
 
-        const trCanvas = document.getElementById('trendChart');
-        if (trCanvas) {
-          const tCtx = trCanvas.getContext('2d');
-          if (trendChartInstance) trendChartInstance.destroy();
+        const trendCard = document.getElementById('trend-chart-card');
+        if (dim === 'month') {
+          // 月维度下完全隐藏专注趋势卡片，并且不初始化/渲染该折线图 (Requirement 1)
+          if (trendCard) trendCard.classList.add('hidden');
+          if (trendChartInstance) {
+            trendChartInstance.destroy();
+            trendChartInstance = null;
+          }
+        } else {
+          // 仅在“日”和“周”维度下展示专注趋势图
+          if (trendCard) trendCard.classList.remove('hidden');
+          const trCanvas = document.getElementById('trendChart');
+          if (trCanvas) {
+            const tCtx = trCanvas.getContext('2d');
+            if (trendChartInstance) trendChartInstance.destroy();
 
-          let trendLabels = [];
-          let trendData = [];
-          if (dim === 'month') {
-            trendLabels = appState.lang === 'zh'
-              ? ['第1周 (1-7)', '第2周 (8-14)', '第3周 (15-21)', '第4周 (22-28)', '第5周 (29+)']
-              : (appState.lang === 'ko'
-                ? ['1주 (1-7)', '2주 (8-14)', '3주 (15-21)', '4주 (22-28)', '5주 (29+)']
-                : ['W1 (1-7)', 'W2 (8-14)', 'W3 (15-21)', 'W4 (22-28)', 'W5 (29+)']);
-            trendData = [0, 0, 0, 0, 0];
-            filtered.forEach(p => {
-              const dayNum = parseInt(p.date.split('-')[2], 10);
-              const dur = timeToScaledMinutes(p.end) - timeToScaledMinutes(p.start);
-              const idx = dayNum <= 7 ? 0 : (dayNum <= 14 ? 1 : (dayNum <= 21 ? 2 : (dayNum <= 28 ? 3 : 4)));
-              trendData[idx] += (dur / 60);
-            });
-            trendData = trendData.map(v => parseFloat(v.toFixed(1)));
-          } else {
             const weekDays = getWeekDays(appState.currentWeekStart);
-            trendLabels = I18N[appState.lang].days_short;
-            trendData = weekDays.map(d => {
+            const trendLabels = I18N[appState.lang].days_short;
+            const trendData = weekDays.map(d => {
               const dPlans = filtered.filter(p => p.date === d.dateStr);
               let m = 0;
               dPlans.forEach(p => m += (timeToScaledMinutes(p.end) - timeToScaledMinutes(p.start)));
               return parseFloat((m / 60).toFixed(1));
             });
-          }
 
-          trendChartInstance = new Chart(tCtx, {
-            type: 'line',
-            data: {
-              labels: trendLabels,
-              datasets: [{
-                label: '专注时长 (小时)',
-                data: trendData,
-                borderColor: '#3B82F6',
-                backgroundColor: 'rgba(59, 130, 246, 0.1)',
-                fill: true,
-                tension: 0.35,
-                pointRadius: 4,
-                pointBackgroundColor: '#2563EB'
-              }]
-            },
-            options: {
-              responsive: true,
-              maintainAspectRatio: false,
-              plugins: { legend: { display: false } },
-              scales: {
-                y: { beginAtZero: true, grid: { color: '#F1F5F9' } },
-                x: { grid: { display: false } }
+            const maxHour = Math.max(...trendData, 0);
+            safeSetText('trend-peak-label', maxHour > 0 ? `峰值: ${maxHour}h` : '');
+
+            trendChartInstance = new Chart(tCtx, {
+              type: 'line',
+              data: {
+                labels: trendLabels,
+                datasets: [{
+                  label: '专注时长 (小时)',
+                  data: trendData,
+                  borderColor: '#3B82F6',
+                  backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                  fill: true,
+                  tension: 0.35,
+                  pointRadius: 4,
+                  pointBackgroundColor: '#2563EB'
+                }]
+              },
+              options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                  y: { beginAtZero: true, grid: { color: '#F1F5F9' } },
+                  x: { grid: { display: false } }
+                }
               }
-            }
-          });
+            });
+          }
         }
       }
     }
@@ -3268,6 +3638,9 @@
         }
 
         switchView('timetable');
+        try {
+          updateTimerCharacter();
+        } catch (e) {}
       } catch (fatalErr) {
         console.error('Fatal initialization error caught to prevent black screen:', fatalErr);
         try {
